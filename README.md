@@ -48,8 +48,8 @@ A 75-minute introductory lecture on software testing that ends with testing for 
 *E. Limits*
 
 18. When testing is complete: exit criteria
-19. Testing is hard: no oracle before launch
-20. A/B test: is the new algorithm better?
+19. Testing is hard: how much should one like change your feed?
+20. A/B test: how much should one like change the feed?
 
 **Part 2: Testing with agents (about 40 min)**
 
@@ -88,7 +88,7 @@ A 75-minute introductory lecture on software testing that ends with testing for 
 38. Back to TikTok with agents
 39. Takeaways
 
-The why section uses one real incident, CrowdStrike. From slide 7 on, one feature, the Like button, runs through the what-is-a-test, test-level, coverage, mutation, property-based, and bug-fix slides.
+The why section uses one real incident, CrowdStrike. From slide 7 on, one feature, the Like button, runs through the what-is-a-test, test-level, coverage, mutation, property-based, bug-fix, and A/B test slides. On slide 7 the phone works: click the heart or double-click the video.
 
 ## Sources
 

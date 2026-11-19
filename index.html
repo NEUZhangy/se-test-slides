@@ -275,7 +275,6 @@
   <ul>
     <li>Why we test: a real outage</li>
     <li>Our running example, and what a test is</li>
-    <li>Test levels, and how TikTok tested</li>
     <li>Levels, types, and techniques</li>
     <li>Coverage, good tests, and when to stop</li>
   </ul>
@@ -555,29 +554,23 @@
     background: radial-gradient(circle at 50% 38%, #f6d2b8 0 26%, transparent 27%), radial-gradient(circle at 50% 100%, #3b6fd8 0 48%, transparent 49%), #9fc3ff; }
   #sDemo .av i { position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: #fe2c55;
     font-style: normal; font-size: 17px; font-weight: 700; line-height: 20px; text-align: center; }
+  #sDemo .scr, #sDemo .like { cursor: pointer; }
   #sDemo .hb { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-  #sDemo .hb svg { animation: sDemopop 6s var(--ease) infinite; }
-  #sDemo .tap { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: .55; transform: none; animation: sDemotap 6s ease-out infinite; }
+  #sDemo .hb path { fill: #fff; }
+  #sDemo .hb.liked path { fill: #fe2c55; }
+  #sDemo .hb.pop svg { animation: sDemopop .5s var(--ease); }
   #sDemo .disc { width: 42px; height: 42px; border-radius: 50%; margin-top: 4px; animation: sDemospin 5s linear infinite;
     background: radial-gradient(circle, #ff8a5c 0 22%, #2a2a2e 23% 30%, #3a3a40 31% 36%, #232327 37% 100%); box-shadow: 0 0 0 7px #1b1b1f; }
-  #sDemo .dt { position: absolute; left: 118px; top: 318px; width: 0; height: 0; }
-  #sDemo .dt i { position: absolute; left: -28px; top: -28px; width: 56px; height: 56px; border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: 0; animation: sDemodt1 6s ease-out infinite; }
-  #sDemo .dt i + i { animation-name: sDemodt2; }
-  #sDemo .dt svg { position: absolute; left: -55px; top: -50px; display: block; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4));
-    transform: rotate(-12deg); animation: sDemobig 6s var(--ease) infinite; }
-  /* one 6s cycle: rail tap in the first half, double-tap on the video in the second */
-  @keyframes sDemopop { 0%, 9.5%, 100% { transform: scale(1); } 3.5% { transform: scale(1.28); } 6% { transform: scale(.94); } }
-  @keyframes sDemotap { 0% { opacity: .9; transform: scale(.45); } 18%, 100% { opacity: 0; transform: scale(1.5); } }
-  @keyframes sDemodt1 { 0%, 50% { opacity: 0; transform: scale(.4); } 50.5% { opacity: .9; transform: scale(.4); } 57%, 100% { opacity: 0; transform: scale(1.4); } }
-  @keyframes sDemodt2 { 0%, 54% { opacity: 0; transform: scale(.4); } 54.5% { opacity: .9; transform: scale(.4); } 61%, 100% { opacity: 0; transform: scale(1.4); } }
-  @keyframes sDemobig { 0%, 55% { opacity: 0; transform: translateY(0) rotate(-12deg) scale(.2); }
-    60% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1.22); } 64% { transform: translateY(0) rotate(-12deg) scale(.94); }
-    68% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1); } 80%, 100% { opacity: 0; transform: translateY(-80px) rotate(-12deg) scale(1.06); } }
+  #sDemo .burst { position: absolute; width: 110px; height: 101px; margin: -50px 0 0 -55px; pointer-events: none; opacity: 0;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4)); animation: sDemobig .9s var(--ease) forwards; }
+  #sDemo .burst svg { display: block; }
+  @keyframes sDemopop { 0%, 100% { transform: scale(1); } 35% { transform: scale(1.32); } 65% { transform: scale(.92); } }
+  @keyframes sDemobig { 0% { opacity: 0; transform: rotate(var(--r)) scale(.2); } 18% { opacity: 1; transform: rotate(var(--r)) scale(1.22); }
+    30% { transform: rotate(var(--r)) scale(.94); } 42% { opacity: 1; transform: rotate(var(--r)) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) rotate(var(--r)) scale(1.06); } }
   @keyframes sDemospin { to { transform: rotate(360deg); } }
-  html.still #sDemo .hb svg, html.still #sDemo .tap, html.still #sDemo .disc, html.still #sDemo .dt i, html.still #sDemo .dt svg,
-  html.rm #sDemo .hb svg, html.rm #sDemo .tap, html.rm #sDemo .disc, html.rm #sDemo .dt i, html.rm #sDemo .dt svg { animation: none; }
+  html.still #sDemo .disc, html.rm #sDemo .disc { animation: none; }
+  #sDemo .hint { position: absolute; left: 528px; top: 952px; font-size: 24px; color: var(--faint); }
   #sDemo .cap { position: absolute; left: 14px; bottom: 96px; width: 238px; font-size: 14px; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
   #sDemo .cap .u { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
   #sDemo .cap .t b { font-weight: 700; }
@@ -590,22 +583,21 @@
   #sDemo .mk { width: 44px; height: 29px; margin-top: 2px; border-radius: 9px; background: #fff; color: #000; font-size: 24px; font-weight: 600; line-height: 29px;
     box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55; }
   #sDemo .home { position: absolute; left: 50%; bottom: 7px; width: 116px; height: 4px; margin-left: -58px; border-radius: 2px; background: #fff; }
-  #sDemo .fs { left: 528px; top: 290px; width: 1288px; padding: 40px 48px 44px; }
-  #sDemo .fs ul { list-style: none; margin-top: 18px; display: flex; flex-direction: column; gap: 20px; }
+  #sDemo .fs { left: 528px; top: 256px; width: 1288px; padding: 38px 48px 42px; }
+  #sDemo .fs ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 17px; }
   #sDemo .fs li { font-size: 32px; line-height: 1.32; padding-left: 30px; position: relative; }
   #sDemo .fs li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12px; height: 12px; border-radius: 50%; background: var(--bad); }
   #sDemo .nx { position: absolute; left: 528px; top: 790px; width: 1288px; font-size: 36px; line-height: 1.3; font-weight: 600; letter-spacing: -.01em; color: var(--accent); }
 </style>
 <h2 class="rise" data-s="1">Our running example: TikTok's Like button</h2>
 <div class="phone rise" data-s="1" data-d="1" aria-hidden="true">
-  <div class="scr">
+  <div class="scr" data-interactive>
     <div class="vid">
       <div class="blob" style="left:-40px;top:150px;width:220px;height:220px;background:rgba(255,72,126,.55)"></div>
       <div class="blob" style="left:150px;top:300px;width:230px;height:250px;background:rgba(64,118,255,.5)"></div>
       <div class="blob" style="left:40px;top:470px;width:200px;height:150px;background:rgba(255,168,72,.38)"></div>
       <div class="blob" style="left:190px;top:90px;width:120px;height:120px;background:rgba(37,244,238,.22)"></div>
     </div>
-    <div class="dt"><i></i><i></i><svg width="110" height="101" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>
     <div class="prog"><i></i></div>
     <div class="island"></div>
     <div class="stat"><span>9:41</span>
@@ -618,7 +610,7 @@
     </div>
     <div class="rail">
       <div class="av"><i>+</i></div>
-      <div class="it"><div class="hb"><span class="tap"></span><svg width="38" height="36" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>128.4K</div>
+      <div class="it like"><div class="hb"><svg width="38" height="36" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z"/></svg></div><span class="n">128</span></div>
       <div class="it"><svg width="36" height="34" viewBox="0 0 24 23"><path d="M12 1.8C6 1.8 1.6 5.7 1.6 10.6c0 2.8 1.4 5.2 3.7 6.8l-.8 4 4.4-2.4c1 .2 2 .3 3.1.3 6 0 10.4-3.9 10.4-8.7S18 1.8 12 1.8z" fill="#fff"/><g fill="#5a5a60"><circle cx="7.4" cy="10.6" r="1.4"/><circle cx="12" cy="10.6" r="1.4"/><circle cx="16.6" cy="10.6" r="1.4"/></g></svg>1,024</div>
       <div class="it"><svg width="30" height="34" viewBox="0 0 20 23"><path d="M3 2.4c0-.8.6-1.4 1.4-1.4h11.2c.8 0 1.4.6 1.4 1.4v19L10 16.6l-7 4.8v-19z" fill="#fff"/></svg>8,812</div>
       <div class="it"><svg width="34" height="32" viewBox="0 0 24 22"><path d="M13.5 1.5l9 8.6-9 8.6v-5.1C7.6 13.6 4 15.6 1.5 20.5c.6-7 4.2-12.6 12-13.7V1.5z" fill="#fff"/></svg>2,301</div>
@@ -647,9 +639,52 @@
       <li>The count shows total likes.</li>
       <li>One like per user.</li>
       <li>On a slow network, the heart turns red at once and syncs later.</li>
+      <li>A like also tells the For You feed: show me more videos like this one.</li>
     </ul>
 </div>
-<p class="nx rise" data-s="1" data-d="4">We will test this one feature all lecture: what a test is, coverage, mutants, properties, and a real bug.</p>
+<p class="nx rise" data-s="1" data-d="4">We will test this one feature all lecture, from the +1 to what it does to your feed.</p>
+<p class="hint rise" data-s="1" data-d="5">Try it: tap the heart, or double-tap the video.</p>
+<script>
+  (window.deckHooks = window.deckHooks || {}).sDemo = {
+    init: function (el) {
+      var scr = el.querySelector('.scr'), hb = el.querySelector('.hb'), num = el.querySelector('.like .n');
+      var stage = document.getElementById('stage');
+      var HEART = el.querySelector('.hb svg').outerHTML.replace('width="38" height="36"', 'width="110" height="101"').replace('<path ', '<path fill="#fe2c55" ');
+      var like, shownLiked = false;
+      function tap(s) { return { liked: !s.liked, count: s.count + (s.liked ? -1 : 1) }; }
+      function doubleTap(s) { return s.liked ? s : { liked: true, count: s.count + 1 }; }
+      function render() {
+        hb.classList.toggle('liked', like.liked);
+        if (like.liked && !shownLiked) { hb.classList.remove('pop'); void hb.offsetWidth; hb.classList.add('pop'); }
+        shownLiked = like.liked;
+        num.textContent = like.count;
+      }
+      function burst(e) {
+        var box = scr.getBoundingClientRect(), k = stage.getBoundingClientRect().width / 1920;
+        var b = document.createElement('div');
+        b.className = 'burst';
+        b.style.left = (e.clientX - box.left) / k + 'px';
+        b.style.top = (e.clientY - box.top) / k + 'px';
+        b.style.setProperty('--r', Math.round(Math.random() * 30 - 15) + 'deg');
+        b.innerHTML = HEART;
+        b.addEventListener('animationend', function () { b.remove(); });
+        scr.appendChild(b);
+      }
+      el.querySelector('.like').addEventListener('click', function () { like = tap(like); render(); });
+      scr.addEventListener('dblclick', function (e) {
+        if (e.target.closest('.rail, .nav')) return;
+        like = doubleTap(like); render(); burst(e);
+      });
+      this.reset = function () {
+        like = { liked: false, count: 128 };
+        scr.querySelectorAll('.burst').forEach(function (b) { b.remove(); });
+        render();
+      };
+      this.reset();
+    },
+    step: function () { this.reset(); }
+  };
+</script>
 </section>
 
 <!-- ============ What is a test ============ -->
@@ -985,6 +1020,7 @@
       <li>The count shows total likes.</li>
       <li>One like per user.</li>
       <li>On a slow network, the heart turns red at once and syncs later.</li>
+      <li>A like also tells the For You feed: show me more videos like this one.</li>
     </ul>
   </div>
   <div class="rw rise" data-s="1" data-d="2"><span class="num">1</span><div class="q">Frontend unit test<small>Name one.</small></div><div class="ansbox" data-s="2" data-d="1">Double-tap a liked video: the heart stays red and the count does not change.</div></div>
@@ -1358,34 +1394,69 @@ p.likes  <span class="r"># -1</span></div>
 <!-- ============ Testing is hard ============ -->
 <section class="slide" id="sHard" data-steps="2">
 <style>
-  #sHard .hc { top: 300px; width: 400px; height: 340px; padding: 34px 36px; }
-  #sHard .hc .ic { width: 64px; height: 64px; border-radius: 18px; background: var(--warm-soft); display: flex; align-items: center; justify-content: center; }
-  #sHard .hc h3 { font-size: 32px; font-weight: 650; margin-top: 22px; line-height: 1.15; }
-  #sHard .hc p { font-size: 24px; color: var(--muted); margin-top: 12px; line-height: 1.38; }
-  #sHard .hc.key { background: var(--accent-soft); box-shadow: inset 0 0 0 2.5px var(--accent); }
-  #sHard .hc.key .ic { background: var(--card); }
-  #sHard .or { position: absolute; left: 104px; top: 720px; width: 1712px; font-size: 34px; line-height: 1.35; font-weight: 560; }
+  #sHard .hero { left: 104px; top: 268px; width: 1100px; height: 520px; padding: 34px 44px; background: var(--accent-soft); box-shadow: inset 0 0 0 2.5px var(--accent); }
+  #sHard .hero h3 { font-size: 38px; font-weight: 650; letter-spacing: -.01em; }
+  #sHard .mix { display: grid; grid-template-columns: 150px 1fr; column-gap: 24px; row-gap: 52px; align-items: center; margin-top: 30px; }
+  #sHard .mix .lab { font-size: 26px; font-weight: 600; line-height: 1.15; }
+  #sHard .mix .lab small { display: block; font-size: 19px; font-weight: 450; color: var(--muted); margin-top: 3px; }
+  #sHard .bar { position: relative; display: flex; height: 56px; font-size: 21px; font-weight: 600; }
+  #sHard .bar span { display: flex; align-items: center; justify-content: center; height: 100%; white-space: nowrap; }
+  #sHard .bar span:first-child { border-radius: 12px 0 0 12px; }
+  #sHard .bar span:last-child { border-radius: 0 12px 12px 0; }
+  #sHard .ck { background: var(--warm); color: #fff; }
+  #sHard .dn { background: var(--accent-mid); }
+  #sHard .pt { background: #a9d6bd; }
+  #sHard .gm { background: #d5d9e0; }
+  #sHard .rg { background: repeating-linear-gradient(135deg, rgba(201, 138, 75, .55) 0 9px, rgba(201, 138, 75, .2) 9px 18px); font-size: 23px; }
+  #sHard .rg em { font-style: normal; color: var(--warm-ink); background: rgba(255, 255, 255, .88); border-radius: 999px; padding: 2px 14px; }
+  #sHard .rest { background: #e3e6eb; color: var(--muted); font-weight: 500; }
+  #sHard .mk { position: absolute; top: -40px; width: 0; }
+  #sHard .mk b { position: absolute; left: -30px; width: 60px; top: 0; text-align: center; font-size: 21px; font-weight: 700; color: var(--warm-ink); }
+  #sHard .mk i { position: absolute; left: -1px; top: 28px; width: 2px; height: 12px; background: var(--warm-ink); }
+  #sHard .leg { display: flex; align-items: center; gap: 22px; margin: 16px 0 0 174px; font-size: 19px; color: var(--muted); }
+  #sHard .leg i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 7px; vertical-align: -1px; }
+  #sHard .leg em { margin-left: auto; font-style: normal; color: var(--faint); }
+  #sHard .why { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 28px; margin-top: 32px; }
+  #sHard .why p { font-size: 25px; line-height: 1.32; padding-top: 14px; border-top: 3px solid var(--accent-mid); }
+  #sHard .why b { font-weight: 650; }
+  #sHard .side { left: 1240px; top: 268px; width: 576px; height: 520px; padding: 34px 36px; display: flex; flex-direction: column; }
+  #sHard .side .kicker { font-size: 20px; }
+  #sHard .side ul { list-style: none; flex: 1; display: flex; flex-direction: column; margin-top: 10px; }
+  #sHard .side li { flex: 1; display: flex; align-items: center; gap: 20px; font-size: 28px; font-weight: 600; }
+  #sHard .side li + li { border-top: 1.5px solid #e6e8ec; }
+  #sHard .side .ic { flex: none; width: 56px; height: 56px; border-radius: 16px; background: var(--warm-soft); display: flex; align-items: center; justify-content: center; }
+  #sHard .or { position: absolute; left: 104px; top: 830px; width: 1712px; font-size: 34px; line-height: 1.35; font-weight: 560; }
   #sHard .or span { display: block; color: var(--muted); font-weight: 450; font-size: 28px; margin-top: 10px; }
 </style>
 <h2 class="rise" data-s="1">Testing is hard: some things can't be tested before launch</h2>
 <p class="sub rise" data-s="1" data-d="1">For these there is no test oracle: nothing can tell you the right answer ahead of time.</p>
-<div class="card hc key rise" data-s="1" data-d="2" style="left:104px">
-  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-9" fill="none" stroke="#2c59d6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  <h3>A new For You ranking</h3><p>Unit tests show it runs. Only users can show it's better.</p>
+<div class="card hero rise" data-s="1" data-d="2">
+  <h3>One like. How much should your feed change?</h3>
+  <div class="mix">
+    <div class="lab">Before<small>your For You mix</small></div>
+    <div class="bar"><span class="ck" style="width:10%">10%</span><span class="dn" style="width:30%">Dance 30%</span><span class="pt" style="width:25%">Pets 25%</span><span class="gm" style="width:35%">Games 35%</span></div>
+    <div class="lab">After<small>you like one cooking video</small></div>
+    <div class="bar">
+      <span class="ck" style="width:12%"></span><span class="rg" style="width:28%"><em>Cooking ?</em></span><span class="rest" style="width:60%">everything else shrinks, by how much?</span>
+      <span class="mk" style="left:12%"><b>12%?</b><i></i></span><span class="mk" style="left:20%"><b>20%?</b><i></i></span><span class="mk" style="left:40%"><b>40%?</b><i></i></span>
+    </div>
+  </div>
+  <div class="leg"><span><i class="ck"></i>Cooking</span><span><i class="dn"></i>Dance</span><span><i class="pt"></i>Pets</span><span><i class="gm"></i>Games</span><em>Illustration, not real data</em></div>
+  <div class="why">
+    <p><b>Too little:</b> the like feels ignored.</p>
+    <p><b>Too much:</b> the feed becomes all cooking.</p>
+    <p><b>The right amount</b> depends on how people feel next week, not on any spec.</p>
+  </div>
 </div>
-<div class="card hc rise" data-s="1" data-d="3" style="left:541px">
-  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5" fill="none" stroke="#c98a4b" stroke-width="2.2"/></svg></div>
-  <h3>Thousands of phone models</h3><p>No lab owns every screen, OS version, and network.</p>
+<div class="card side rise" data-s="1" data-d="3">
+  <div class="kicker">Also hard to test before launch</div>
+  <ul>
+    <li><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5" fill="none" stroke="#c98a4b" stroke-width="2.2"/></svg></span>Thousands of phone models</li>
+    <li><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="#c98a4b" stroke-width="2.2" stroke-linecap="round"/></svg></span>Real peak traffic</li>
+    <li><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2" fill="none" stroke="#c98a4b" stroke-width="2.2"/><circle cx="17" cy="10" r="2.6" fill="none" stroke="#c98a4b" stroke-width="2.2"/><path d="M3 19c.8-3.4 3-5 6-5s5.2 1.6 6 5M15 15.4c2.6-.6 4.8.6 5.6 3.6" fill="none" stroke="#c98a4b" stroke-width="2.2" stroke-linecap="round"/></svg></span>What people will do</li>
+  </ul>
 </div>
-<div class="card hc rise" data-s="1" data-d="4" style="left:978px">
-  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="#c98a4b" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-  <h3>Real peak traffic</h3><p>A viral moment is hard to fake in staging.</p>
-</div>
-<div class="card hc rise" data-s="1" data-d="5" style="left:1415px">
-  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2" fill="none" stroke="#c98a4b" stroke-width="2.2"/><circle cx="17" cy="10" r="2.6" fill="none" stroke="#c98a4b" stroke-width="2.2"/><path d="M3 19c.8-3.4 3-5 6-5s5.2 1.6 6 5M15 15.4c2.6-.6 4.8.6 5.6 3.6" fill="none" stroke="#c98a4b" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-  <h3>What people will do</h3><p>Users find flows no one wrote a test case for.</p>
-</div>
-<p class="or rise" data-s="2">So you test in production, carefully: release to a small slice and measure.<span>For "is it better?", the tool is an A/B test.</span></p>
+<p class="or rise" data-s="2">So you test in production, carefully: release to a small slice and measure.<span>For "how much is right?", the tool is an A/B test.</span></p>
 </section>
 
 <!-- ============ A/B testing ============ -->
@@ -1402,34 +1473,37 @@ p.likes  <span class="r"># -1</span></div>
   #sAB .rl li b { font-weight: 650; }
   #sAB .dq { right: 104px; top: 740px; width: 540px; height: 230px; padding: 28px 36px; background: var(--warm-soft); box-shadow: inset 0 0 0 2px rgba(201, 138, 75, .4); }
   #sAB .dq .kicker { color: var(--warm-ink); font-size: 20px; }
+  #sAB .gr { position: absolute; left: 104px; top: 858px; width: 1120px; font-size: 27px; line-height: 1.35; color: var(--muted); }
+  #sAB .gr b { color: var(--warm-ink); font-weight: 650; }
   #sAB .dq p { font-size: 27px; line-height: 1.35; margin-top: 8px; font-weight: 560; }
 </style>
-<h2 class="rise" data-s="1">A/B test: is the new algorithm actually better?</h2>
+<h2 class="rise" data-s="1">A/B test: how much should one like change the feed?</h2>
 <svg class="ab flows" viewBox="0 0 1920 1080" aria-hidden="true">
   <defs><marker id="sABa" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker></defs>
   <g data-s="1" data-d="1">
     <rect class="bx" x="104" y="470" width="240" height="130" rx="22"/>
     <text class="t b" x="224" y="514">Users</text><text class="cap" x="224" y="556">split at random</text>
-    <rect class="bx" x="440" y="270" width="350" height="140" rx="22"/>
-    <text class="t b" x="615" y="316">A: control</text><text class="cap" x="615" y="360">old ranking, 5% of users</text>
-    <rect class="bx key" x="440" y="660" width="350" height="140" rx="22"/>
-    <text class="t b" x="615" y="706">B: treatment</text><text class="cap" x="615" y="750">new ranking, 5% of users</text>
+    <rect class="bx" x="440" y="262" width="470" height="150" rx="22"/>
+    <text class="t b" x="675" y="302">A: control</text><text class="cap" x="675" y="342">A like boosts similar videos a little</text><text class="cap" x="675" y="378">5% of users</text>
+    <rect class="bx key" x="440" y="652" width="470" height="150" rx="22"/>
+    <text class="t b" x="675" y="692">B: treatment</text><text class="cap" x="675" y="732">A like boosts similar videos a lot</text><text class="cap" x="675" y="768">5% of users</text>
   </g>
   <g data-s="1" data-d="2">
     <path class="arrow fl" marker-end="url(#sABa)" d="M346 520 C390 520 390 340 434 340"/>
     <path class="arrow acc fl" marker-end="url(#sABa)" d="M346 550 C390 550 390 730 434 730"/>
   </g>
   <g data-s="2">
-    <path class="arrow fl" marker-end="url(#sABa)" d="M792 340 L858 340"/>
-    <path class="arrow acc fl" marker-end="url(#sABa)" d="M792 730 L858 730"/>
-    <rect class="bx" x="864" y="270" width="290" height="140" rx="22"/>
-    <text class="mt" x="1009" y="304">watch time / day</text><text class="mv" x="1009" y="352" style="fill:var(--ink)">52.0 min</text>
-    <rect class="bx good" x="864" y="660" width="290" height="140" rx="22"/>
-    <text class="mt" x="1009" y="694">watch time / day</text><text class="mv" x="1009" y="742" style="fill:var(--good)">53.6 min</text>
-    <text class="lbl rep" x="1009" y="545" text-anchor="middle">+3.1%</text>
-    <text class="cap" x="1009" y="585">numbers made up</text>
+    <path class="arrow fl" marker-end="url(#sABa)" d="M912 337 L966 337"/>
+    <path class="arrow acc fl" marker-end="url(#sABa)" d="M912 727 L966 727"/>
+    <rect class="bx" x="972" y="267" width="252" height="140" rx="22"/>
+    <text class="mt" x="1098" y="301">watch time / day</text><text class="mv" x="1098" y="349" style="fill:var(--ink)">52.0 min</text>
+    <rect class="bx good" x="972" y="657" width="252" height="140" rx="22"/>
+    <text class="mt" x="1098" y="691">watch time / day</text><text class="mv" x="1098" y="739" style="fill:var(--good)">53.6 min</text>
+    <text class="lbl rep" x="1098" y="522" text-anchor="middle">+3.1%</text>
+    <text class="cap" x="1098" y="562">numbers made up</text>
   </g>
 </svg>
+<p class="gr rise" data-s="2" data-d="2"><b>Guardrails:</b> "not interested" taps, reports, uninstalls</p>
 <div class="card rl rise" data-s="2" data-d="2">
   <h3>Rules for a fair test</h3>
   <ul>
@@ -1440,7 +1514,7 @@ p.likes  <span class="r"># -1</span></div>
     <li><b>Ramp up:</b> 1% → 10% → 50% → 100%.</li>
   </ul>
 </div>
-<div class="card dq rise" data-s="3"><span class="kicker">Discuss, 2 min</span><p>B wins on watch time, but reports of harmful videos rise 8%. Do you ship it?</p></div>
+<div class="card dq rise" data-s="3"><span class="kicker">Discuss, 2 min</span><p>B raises watch time, but "not interested" taps double. Ship B?</p></div>
 <script>
   (window.deckHooks = window.deckHooks || {}).sAB = {
     init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
@@ -2407,7 +2481,7 @@ p.likes  <span class="r"># -1</span></div>
     }
     e.preventDefault();
   });
-  document.addEventListener('click', function (e) { if (e.target.closest('a')) return; if (e.shiftKey) prev(); else next(); });
+  document.addEventListener('click', function (e) { if (e.target.closest('a, [data-interactive]')) return; if (e.shiftKey) prev(); else next(); });
   window.addEventListener('resize', fit);
 
   /* shared rAF loop; slide hooks draw continuous motion */
