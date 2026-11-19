@@ -2632,7 +2632,7 @@ p.likes  <span class="r"># -1</span></div>
 <div class="card hc rise" data-s="1" data-d="2" style="left:688px;top:226px"><div class="kicker">Fresh</div><h3>Review the commit you ship</h3><p>A pass on an older commit means nothing.</p></div>
 <div class="card hc rise" data-s="1" data-d="3" style="left:1272px;top:226px"><div class="kicker">No retry-until-green</div><h3>Flaky tests get fixed or deleted</h3><p>No sleeps, no skips. Find the cause, or delete it and write down why.</p></div>
 <div class="card hc rise" data-s="1" data-d="4" style="left:104px;top:578px"><div class="kicker">Escalate</div><h3>Three strikes, then a human</h3><p>After three failed rounds the agent stops and asks.</p></div>
-<div class="card hc rise" data-s="1" data-d="5" style="left:688px;top:578px"><div class="kicker">Roll out slowly</div><h3>Off → observe → enforce</h3><p>A new gate first only logs what it would block, to catch false alarms.</p></div>
+<div class="card hc rise" data-s="1" data-d="5" style="left:688px;top:578px"><div class="kicker">Roll out slowly</div><h3>Watch first, then block</h3><p>A new check starts by only recording what it would have stopped. Fix its false alarms, then let it block.</p></div>
 <div class="card hc rise" data-s="1" data-d="6" style="left:1272px;top:578px"><div class="kicker">Learn</div><h3>Test the checks too</h3><p>Score them on past bugs that got reverted. Every miss becomes a new rule.</p></div>
 <div class="src">Source: Osmani, "How the Claude Code team thinks about verification," claude.dev, Nov 2026.</div>
 </section>
