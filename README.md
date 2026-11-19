@@ -1,6 +1,6 @@
-# Testing for agents
+# Introduction to Software Testing
 
-A 75-minute lecture deck on software testing, from classic practice to testing with coding agents. It is one self-contained HTML file: open `index.html` in a browser.
+A 75-minute introductory lecture on software testing that ends with testing for coding agents. It is one self-contained HTML file: open `index.html` in a browser.
 
 ## Presenting
 
@@ -9,21 +9,22 @@ A 75-minute lecture deck on software testing, from classic practice to testing w
 - The URL tracks the position, e.g. `index.html?slide=7&step=2`.
 - `?still=1` shows each slide's final frame without animation, which helps for screenshots and PDF export.
 
-## Outline (32 slides)
+## Outline (34 slides)
 
-**Part 1 · Foundations (about 30 min)**
+**Part 1: Foundations (about 30 min)**
 1. Title, agenda
-2. How TikTok shipped before agents: dev tests → QA → bug loop → beta → release
-3. Exercise 1: test the Like button
-4. Black box, gray box, white box (mind map)
-5. Exercise 2: boundary values for a caption length rule
-6. Test coverage: statement, branch, path, function
-7. 100% coverage and still a bug
-8. What makes a test good: mutation testing
-9. When testing is complete: exit criteria
-10. Testing is hard: no oracle before launch → A/B tests
+2. Why test: three famous bugs, and what testing is for
+3. How TikTok shipped before agents: dev tests → QA → bug loop → beta → release
+4. Exercise 1: test the Like button
+5. Black box, gray box, white box (mind map)
+6. Exercise 2: boundary values for a caption length rule
+7. Test coverage: statement, branch, path, function
+8. 100% coverage and still a bug
+9. What makes a test good: mutation testing
+10. When testing is complete: exit criteria
+11. Testing is hard: no oracle before launch → A/B tests
 
-**Part 2 · Testing with agents (about 40 min)**
+**Part 2: Testing with agents (about 40 min)**
 1. Why tests matter more: agents are wrong without knowing it, reviewers are another sample, tests are deterministic
 2. Negative prompts: turn every "don't" into a check (Exercise 3)
 3. The verification loop

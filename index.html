@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Testing for agents</title>
+<title>Introduction to Software Testing</title>
 <script>
   window.onerror = function (msg, src, line) {
     document.documentElement.setAttribute('data-jserr', String(msg) + ' @' + line);
@@ -157,65 +157,91 @@
 <!-- ============ 1. Title ============ -->
 <section class="slide" id="s1" data-steps="1">
 <style>
-  #s1 .lead { position: absolute; left: 120px; top: 268px; width: 960px; }
+  #s1 .lead { position: absolute; left: 120px; top: 268px; width: 1080px; }
   #s1 .eyebrow { margin-bottom: 48px; }
-  #s1 h1 { font-size: 156px; line-height: .96; font-weight: 700; letter-spacing: -.036em; }
+  #s1 h1 { font-size: 116px; line-height: .98; font-weight: 700; letter-spacing: -.034em; }
   #s1 h1 em { font-style: normal; color: var(--accent); }
   #s1 .tag { font-size: 48px; line-height: 1.25; color: var(--muted); margin-top: 56px; font-weight: 450; letter-spacing: -.012em; }
   #s1 .rule { width: 96px; height: 6px; border-radius: 3px; background: var(--accent); margin-top: 64px; }
-  #s1 svg.motif { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
-  #s1 .src-n { fill: var(--bg); stroke: #b4bac4; stroke-width: 3; }
-  #s1 .fix-n { fill: var(--bg); stroke: var(--bad); stroke-width: 3; }
-  #s1 .hub { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 3; }
-  #s1 .hub-ring { fill: none; stroke: var(--accent-mid); stroke-width: 2; transform-origin: 1530px 550px; animation: s1ring 3.6s cubic-bezier(.22,.72,.16,1) infinite; }
-  #s1 .done { fill: var(--good); }
-  #s1 .arrow { stroke: #c3c8d0; stroke-width: 2.5; }
-  #s1 .arrow.rep { stroke: var(--good); stroke-width: 3.5; }
-  #s1 .arrow.bad { stroke: var(--bad); stroke-width: 3; }
-  #s1 .ml { font-size: 24px; fill: var(--faint); font-weight: 600; letter-spacing: .12em; text-anchor: middle; }
-  @keyframes s1ring { 0% { transform: scale(1); opacity: .9; } 70%, 100% { transform: scale(1.9); opacity: 0; } }
-  html.still #s1 .hub-ring, html.rm #s1 .hub-ring { animation: none; opacity: 0; }
+  #s1 svg.art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #s1 .ph { fill: var(--ink); }
+  #s1 .scr { fill: var(--card); }
+  #s1 .ln { fill: var(--panel); }
+  #s1 .cnt { font-size: 60px; font-weight: 750; fill: var(--bad); dominant-baseline: central; }
+  #s1 .bug { fill: var(--ink); }
+  #s1 .bug .leg, #s1 .bug .ant { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+  #s1 .bug .mid { stroke: #4a4f5a; stroke-width: 3; }
+  #s1 .crawl { animation: s1crawl 1.6s ease-in-out infinite alternate; }
+  #s1 .legs { transform-box: fill-box; animation: s1leg .32s ease-in-out infinite alternate; }
+  #s1 .legs.l { transform-origin: 100% 50%; }
+  #s1 .legs.r { transform-origin: 0 50%; animation-direction: alternate-reverse; }
+  #s1 .glass { transform-box: fill-box; transform-origin: 50% 50%; animation: s1bob 2.4s ease-in-out infinite alternate; }
+  #s1 .ring { fill: rgba(157, 180, 238, .22); stroke: var(--accent); stroke-width: 14; }
+  #s1 .handle { stroke: var(--accent); stroke-width: 24; stroke-linecap: round; }
+  #s1 .shine { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round; opacity: .8; }
+  #s1 .note { font-size: 36px; font-weight: 650; fill: var(--accent); }
+  #s1 .squig { fill: none; stroke: var(--accent); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes s1crawl { from { transform: translate(0, 0); } to { transform: translate(-7px, 4px); } }
+  @keyframes s1leg { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+  @keyframes s1bob { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(8px, -10px) rotate(3deg); } }
+  html.still #s1 .crawl, html.still #s1 .legs, html.still #s1 .glass,
+  html.rm #s1 .crawl, html.rm #s1 .legs, html.rm #s1 .glass { animation: none; }
 </style>
 <div class="lead">
-  <div class="eyebrow rise" data-s="1">Software Testing</div>
-  <h1 class="rise" data-s="1" data-d="1">Testing for<br><em>agents</em></h1>
-  <div class="tag rise" data-s="1" data-d="3">Agents write code fast.<br>Tests tell them when it's wrong.</div>
+  <div class="eyebrow rise" data-s="1">Software Engineering</div>
+  <h1 class="rise" data-s="1" data-d="1">Introduction to<br>Software <em>Testing</em></h1>
+  <div class="tag rise" data-s="1" data-d="3">Catch the bug before your users do.</div>
   <div class="rule rise" data-s="1" data-d="4"></div>
 </div>
-<svg class="motif flows" viewBox="0 0 1920 1080" aria-hidden="true">
+<svg class="art" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <linearGradient id="s1vid" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2c59d6"/><stop offset=".6" stop-color="#7a4fd6"/><stop offset="1" stop-color="#d64f8a"/>
+    </linearGradient>
+  </defs>
   <g data-s="1" data-d="4">
-    <text class="ml" x="1118" y="206">CODE</text>
-    <text class="ml" x="1530" y="650">TESTS</text>
-    <text class="ml" x="1772" y="610">SHIP</text>
-    <text class="ml" x="1118" y="1012" style="fill:var(--bad)">FIX</text>
-    <path class="arrow fl" d="M1132 250 C1330 250 1360 520 1484 540"/>
-    <path class="arrow fl" d="M1132 370 C1310 370 1350 530 1484 545"/>
-    <path class="arrow fl" d="M1132 490 C1300 490 1360 545 1484 550"/>
-    <path class="arrow fl" d="M1132 610 C1300 610 1360 555 1484 555"/>
-    <path class="arrow fl" d="M1132 730 C1310 730 1350 570 1484 560"/>
-    <path class="arrow fl" d="M1132 850 C1330 850 1360 580 1484 565"/>
-    <path class="arrow rep fl" data-r="9" d="M1578 550 L1748 550"/>
-    <path class="arrow bad dash fl" d="M1530 680 C1530 900 1300 962 1136 962"/>
-    <path class="arrow bad dash fl" d="M1104 952 C1040 920 1040 880 1104 856"/>
-    <circle class="src-n" cx="1118" cy="250" r="14"/>
-    <circle class="src-n" cx="1118" cy="370" r="14"/>
-    <circle class="src-n" cx="1118" cy="490" r="14"/>
-    <circle class="src-n" cx="1118" cy="610" r="14"/>
-    <circle class="src-n" cx="1118" cy="730" r="14"/>
-    <circle class="src-n" cx="1118" cy="850" r="14"/>
-    <circle class="fix-n" cx="1118" cy="962" r="14"/>
-    <circle class="hub-ring" cx="1530" cy="550" r="46"/>
-    <circle class="hub" cx="1530" cy="550" r="46"/>
-    <circle class="done" cx="1772" cy="550" r="22"/>
-    <path d="M1762 551 L1770 559 L1784 543" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect class="ph" x="1300" y="180" width="340" height="720" rx="58"/>
+    <rect class="scr" x="1318" y="198" width="304" height="684" rx="42"/>
+    <rect class="ph" x="1428" y="214" width="84" height="20" rx="10"/>
+    <rect x="1340" y="256" width="260" height="350" rx="26" fill="url(#s1vid)"/>
+    <circle cx="1470" cy="431" r="48" fill="#fff" fill-opacity=".28"/>
+    <path d="M1455 403 L1497 431 L1455 459 Z" fill="#fff"/>
+    <path transform="translate(1338 670) scale(2.4)" d="M12 21C12 21 3 14.6 3 8.6C3 5.5 5.4 3 8.3 3C10 3 11.3 3.9 12 5.1C12.7 3.9 14 3 15.7 3C18.6 3 21 5.5 21 8.6C21 14.6 12 21 12 21Z" fill="var(--bad)"/>
+    <text class="cnt" x="1408" y="700">-1</text>
+    <rect class="ln" x="1340" y="776" width="230" height="20" rx="10"/>
+    <rect class="ln" x="1340" y="812" width="160" height="20" rx="10"/>
+
+    <g transform="translate(1556 704) rotate(-28)">
+      <g class="bug crawl">
+        <g class="legs l">
+          <path class="leg" d="M-22 -14 L-40 -26 L-48 -40"/>
+          <path class="leg" d="M-24 2 L-46 2 L-56 -6"/>
+          <path class="leg" d="M-22 18 L-40 30 L-46 44"/>
+        </g>
+        <g class="legs r">
+          <path class="leg" d="M22 -14 L40 -26 L48 -40"/>
+          <path class="leg" d="M24 2 L46 2 L56 -6"/>
+          <path class="leg" d="M22 18 L40 30 L46 44"/>
+        </g>
+        <path class="ant" d="M-6 -46 C-10 -60 -18 -66 -26 -68"/>
+        <path class="ant" d="M6 -46 C10 -60 18 -66 26 -68"/>
+        <circle cx="0" cy="-38" r="14"/>
+        <ellipse cx="0" cy="4" rx="26" ry="34"/>
+        <line class="mid" x1="0" y1="-26" x2="0" y2="36"/>
+      </g>
+    </g>
+
+    <g class="glass">
+      <line class="handle" x1="1612" y1="762" x2="1702" y2="852"/>
+      <circle class="ring" cx="1556" cy="706" r="78"/>
+      <path class="shine" d="M1508 680 A54 54 0 0 1 1536 652"/>
+    </g>
+
+    <text class="note" x="1648" y="586" transform="rotate(-8 1648 586)">found one!</text>
+    <path class="squig" d="M1690 604 C1688 630 1668 642 1640 648"/>
+    <path class="squig" d="M1652 638 L1640 648 L1654 656"/>
   </g>
 </svg>
-<script>
-  (window.deckHooks = window.deckHooks || {}).s1 = {
-    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
-    tick: function (t) { this.flow(t, true); }
-  };
-</script>
 </section>
 
 <!-- ============ Agenda ============ -->
@@ -227,36 +253,168 @@
   #sAg .pt ul { list-style: none; margin-top: 32px; display: flex; flex-direction: column; gap: 22px; }
   #sAg .pt li { display: flex; gap: 18px; align-items: baseline; font-size: 31px; line-height: 1.3; }
   #sAg .pt li::before { content: ""; flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); transform: translateY(-4px); }
-  #sAg .pt li.x::before { background: var(--warm); border-radius: 3px; }
-  #sAg .pt li.x { color: var(--warm-ink); font-weight: 560; }
   #sAg .pt.two { background: var(--accent-soft); box-shadow: inset 0 0 0 2px rgba(44, 89, 214, .25); }
-  #sAg .ft { position: absolute; left: 104px; top: 900px; font-size: 30px; color: var(--muted); display: flex; align-items: center; gap: 14px; }
-  #sAg .ft i { width: 18px; height: 18px; border-radius: 4px; background: var(--warm); }
 </style>
 <h2 class="rise" data-s="1">Today, in two parts</h2>
 <div class="card pt rise" data-s="1" data-d="1" style="left:104px">
-  <div class="kicker">Part 1 · about 30 min</div>
+  <div class="kicker">Part 1, about 30 min</div>
   <h3>Foundations</h3>
   <ul>
+    <li>Why we test, and what testing is for</li>
     <li>How TikTok tested before agents</li>
-    <li class="x">Exercise: test the Like button</li>
+    <li>Exercise: test the Like button</li>
     <li>Black box, white box, gray box</li>
     <li>Coverage: what it measures, what it misses</li>
     <li>What makes a test good, and when to stop</li>
   </ul>
 </div>
 <div class="card pt two rise" data-s="1" data-d="2" style="left:988px">
-  <div class="kicker">Part 2 · about 40 min</div>
+  <div class="kicker">Part 2, about 40 min</div>
   <h3>Testing with agents</h3>
   <ul>
     <li>Why tests matter more now</li>
     <li>Negative prompts: making "don't" stick</li>
     <li>E2E, property-based, differential</li>
     <li>How pstack proves work is done</li>
-    <li class="x">Exercises along the way</li>
+    <li>Exercises along the way</li>
   </ul>
 </div>
-<div class="ft rise" data-s="1" data-d="4"><i></i>Orange marks an exercise. Grab a pen.</div>
+</section>
+
+<!-- ============ Why test ============ -->
+<section class="slide" id="sWhy" data-steps="3">
+<style>
+  #sWhy .st { top: 250px; width: 544px; height: 600px; padding: 40px 44px; }
+  #sWhy .st .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  #sWhy .st .ic { width: 96px; height: 96px; border-radius: 24px; background: var(--bad-soft); display: flex; align-items: center; justify-content: center; }
+  #sWhy .st .ic svg { display: block; }
+  #sWhy .st .big { font-size: 112px; line-height: 1; font-weight: 750; letter-spacing: -.03em; color: var(--bad); margin-top: 14px; font-variant-numeric: tabular-nums; }
+  #sWhy .st h3 { font-size: 40px; font-weight: 650; letter-spacing: -.015em; margin-top: 18px; }
+  #sWhy .st p { font-size: 25px; line-height: 1.4; color: var(--muted); margin-top: 14px; }
+  #sWhy .out { position: absolute; left: 104px; top: 884px; font-size: 36px; font-weight: 600; letter-spacing: -.01em; }
+  #sWhy .out em { font-style: normal; color: var(--accent); }
+</style>
+<h2 class="rise" data-s="1">Why test? Small bugs, huge bills</h2>
+
+<div class="card st rise" data-s="1" style="left:104px">
+  <div class="top"><div class="kicker">1996</div>
+    <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="rotate(35 32 32)">
+        <path d="M32 6 C42 16 44 30 40 44 L24 44 C20 30 22 16 32 6 Z" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
+        <circle cx="32" cy="24" r="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="3"/>
+        <path d="M24 34 L16 44 L24 44 M40 34 L48 44 L40 44" stroke="var(--ink)" stroke-width="3"/>
+        <path d="M27 48 L32 60 L37 48" fill="var(--warm)" stroke="var(--warm)" stroke-width="3"/>
+      </g>
+      <path d="M50 8 L54 4 M56 16 L61 15 M44 4 L45 0" stroke="var(--bad)" stroke-width="3"/>
+    </svg></div></div>
+  <div class="big">37 s</div>
+  <h3>Ariane 5</h3>
+  <p>The rocket broke apart about 37 seconds after launch. A 64-bit number was squeezed into 16 bits and overflowed. Code reused from Ariane 4 was never tested with Ariane 5's flight data.</p>
+</div>
+
+<div class="card st rise" data-s="2" style="left:688px">
+  <div class="top"><div class="kicker">2012</div>
+    <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 8 L8 56 L58 56" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M14 18 L24 26 L32 20 L42 38 L52 46" stroke="var(--bad)" stroke-width="4"/>
+      <path d="M42 46 L52 46 L52 36" stroke="var(--bad)" stroke-width="4"/>
+    </svg></div></div>
+  <div class="big">$440M</div>
+  <h3>Knight Capital</h3>
+  <p>A botched deployment left old code running. In 45 minutes it sent millions of unintended orders and lost about $440 million.</p>
+</div>
+
+<div class="card st rise" data-s="3" style="left:1272px">
+  <div class="top"><div class="kicker">2024</div>
+    <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="10" y="12" width="44" height="30" rx="4" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/>
+      <circle cx="25" cy="24" r="2.5" fill="#fff"/><circle cx="39" cy="24" r="2.5" fill="#fff"/>
+      <path d="M24 35 C27 31 37 31 40 35" stroke="#fff" stroke-width="3"/>
+      <path d="M4 50 L60 50 L56 44 L8 44 Z" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
+    </svg></div></div>
+  <div class="big">8.5M</div>
+  <h3>CrowdStrike</h3>
+  <p>One faulty update crashed about 8.5 million Windows PCs. Airlines, hospitals, and banks went down.</p>
+</div>
+
+<div class="out rise" data-s="3" data-d="5">Each was a small mistake. <em>Testing is how you find it first.</em></div>
+<div class="src">Sources: Ariane 501 Inquiry Board report (1996); SEC order on Knight Capital (2013); Microsoft, July 2024.</div>
+</section>
+
+<!-- ============ What testing is for ============ -->
+<section class="slide" id="sGoal" data-steps="2">
+<style>
+  #sGoal .gl { top: 232px; width: 404px; height: 348px; padding: 30px 32px; }
+  #sGoal .gl .ic { width: 64px; height: 64px; border-radius: 18px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
+  #sGoal .gl .ic svg { display: block; }
+  #sGoal .gl h3 { font-size: 29px; line-height: 1.16; font-weight: 650; letter-spacing: -.012em; margin-top: 20px; }
+  #sGoal .gl p { font-size: 22px; line-height: 1.38; color: var(--muted); margin-top: 10px; }
+  #sGoal svg.ch { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #sGoal .ttl { font-size: 36px; font-weight: 650; fill: var(--ink); letter-spacing: -.01em; }
+  #sGoal .nt { font-size: 22px; fill: var(--faint); }
+  #sGoal .bar { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+  #sGoal .bar.prod { fill: var(--bad); stroke: var(--bad); }
+  #sGoal .mx { font-size: 32px; font-weight: 700; fill: var(--accent); text-anchor: middle; }
+  #sGoal .mx.prod { fill: var(--bad); }
+  #sGoal .bl { font-size: 24px; font-weight: 560; fill: var(--ink); text-anchor: middle; }
+  #sGoal .ax { stroke: var(--line); stroke-width: 2; }
+</style>
+<h2 class="rise" data-s="1">What is testing for?</h2>
+
+<div class="card gl rise" data-s="1" style="left:104px">
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="14" rx="5" ry="6"/><circle cx="12" cy="6.5" r="2.5"/><path d="M12 8.5 V20"/>
+    <path d="M7 11 L3 9 M7 15 L3 15 M7.5 18.5 L4 21 M17 11 L21 9 M17 15 L21 15 M16.5 18.5 L20 21"/>
+  </svg></div>
+  <h3>Find bugs before users do</h3>
+  <p>A bug in the lab is cheap. A bug on a million phones is not.</p>
+</div>
+<div class="card gl rise" data-s="1" data-d="1" style="left:540px">
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="var(--accent)"/>
+  </svg></div>
+  <h3>Build it right, and build the right thing</h3>
+  <p>Verification checks the code matches the spec. Validation checks the spec matches what users need.</p>
+</div>
+<div class="card gl rise" data-s="1" data-d="2" style="left:976px">
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3 L19 6 V11.5 C19 16 16 19.5 12 21 C8 19.5 5 16 5 11.5 V6 Z"/><path d="M8.8 12 L11 14.2 L15.4 9.8"/>
+  </svg></div>
+  <h3>Change code without fear</h3>
+  <p>A test suite is a safety net. Refactor, then run it.</p>
+</div>
+<div class="card gl rise" data-s="1" data-d="3" style="left:1412px">
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 21 V3"/><path d="M5 4 C9 2 12 6 19 4 V13 C12 15 9 11 5 13"/>
+  </svg></div>
+  <h3>Know when to ship</h3>
+  <p>Tests lower risk. They never prove zero bugs.</p>
+</div>
+
+<svg class="ch" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="2">
+    <text class="ttl" x="104" y="720">The later you find a bug,</text>
+    <text class="ttl" x="104" y="766">the more it costs</text>
+    <text class="nt" x="104" y="818">A common rule of thumb, not a law.</text>
+    <line class="ax" x1="720" y1="950" x2="1816" y2="950"/>
+  </g>
+  <g data-s="2" data-d="1">
+    <rect class="bar" x="760" y="910" width="190" height="40" rx="10"/>
+    <text class="mx" x="855" y="894">1x</text><text class="bl" x="855" y="986">While coding</text>
+  </g>
+  <g data-s="2" data-d="2">
+    <rect class="bar" x="1030" y="848" width="190" height="102" rx="10"/>
+    <text class="mx" x="1125" y="832">3x</text><text class="bl" x="1125" y="986">In code review</text>
+  </g>
+  <g data-s="2" data-d="3">
+    <rect class="bar" x="1300" y="780" width="190" height="170" rx="10"/>
+    <text class="mx" x="1395" y="764">10x</text><text class="bl" x="1395" y="986">In QA</text>
+  </g>
+  <g data-s="2" data-d="4">
+    <rect class="bar prod" x="1570" y="660" width="190" height="290" rx="10"/>
+    <text class="mx prod" x="1665" y="644">100x</text><text class="bl" x="1665" y="986">In production</text>
+  </g>
+</svg>
 </section>
 
 <!-- ============ 2. Before agents: TikTok ============ -->
@@ -285,9 +443,9 @@
 <div class="card stg rise" data-s="1" style="left:104px;width:400px">
   <div class="hd"><span class="num">1</span><h3>Developers</h3></div>
   <div class="ds">Each side tests its own code</div>
-  <div class="subp"><div class="kicker">Frontend · app</div>
+  <div class="subp"><div class="kicker">Frontend (app)</div>
     <div class="row"><span class="chip">Unit tests</span><span class="chip">UI tests</span></div></div>
-  <div class="subp"><div class="kicker">Backend · services</div>
+  <div class="subp"><div class="kicker">Backend (services)</div>
     <div class="row"><span class="chip">Unit tests</span><span class="chip">API tests</span></div></div>
 </div>
 
@@ -358,7 +516,7 @@
   #sEx1 .rw .q small { display: block; font-size: 22px; color: var(--muted); font-weight: 450; margin-top: 4px; }
   #sEx1 .rw .ansbox { font-size: 25px; line-height: 1.3; }
 </style>
-<div class="eyebrow ex rise" data-s="1">Exercise 1</div><span class="timer rise" data-s="1">· 4 min</span>
+<div class="eyebrow ex rise" data-s="1">Exercise 1</div><span class="timer rise" data-s="1">4 min</span>
 <h2 class="rise" data-s="1">Test the Like button</h2>
 <div class="card spec rise" data-s="1" data-d="1">
   <div class="ht"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#c2412d"/></svg></div>
@@ -459,7 +617,7 @@
   #sEx2 .bot p { font-size: 27px; line-height: 1.35; margin-top: 8px; }
   #sEx2 .bot .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 </style>
-<div class="eyebrow ex rise" data-s="1">Exercise 2</div><span class="timer rise" data-s="1">· 3 min</span>
+<div class="eyebrow ex rise" data-s="1">Exercise 2</div><span class="timer rise" data-s="1">3 min</span>
 <h2 class="rise" data-s="1">Black box: which captions would you test?</h2>
 <div class="card spec rise" data-s="1" data-d="1"><span class="kicker">Spec</span><span class="s">A caption must be 1 to 150 characters.</span><span class="n">Made up for this exercise</span></div>
 <p class="q rise" data-s="1" data-d="2">You get five tests. Which inputs tell you the most?</p>
@@ -741,9 +899,9 @@ p.likes  <span class="r"># -1</span></div>
     <rect class="bx" x="104" y="470" width="240" height="130" rx="22"/>
     <text class="t b" x="224" y="514">Users</text><text class="cap" x="224" y="556">split at random</text>
     <rect class="bx" x="440" y="270" width="350" height="140" rx="22"/>
-    <text class="t b" x="615" y="316">A · control</text><text class="cap" x="615" y="360">old ranking, 5% of users</text>
+    <text class="t b" x="615" y="316">A: control</text><text class="cap" x="615" y="360">old ranking, 5% of users</text>
     <rect class="bx key" x="440" y="660" width="350" height="140" rx="22"/>
-    <text class="t b" x="615" y="706">B · treatment</text><text class="cap" x="615" y="750">new ranking, 5% of users</text>
+    <text class="t b" x="615" y="706">B: treatment</text><text class="cap" x="615" y="750">new ranking, 5% of users</text>
   </g>
   <g data-s="1" data-d="2">
     <path class="arrow fl" marker-end="url(#sABa)" d="M346 520 C390 520 390 340 434 340"/>
@@ -770,7 +928,7 @@ p.likes  <span class="r"># -1</span></div>
     <li><b>Ramp up:</b> 1% → 10% → 50% → 100%.</li>
   </ul>
 </div>
-<div class="card dq rise" data-s="3"><span class="kicker">Discuss · 2 min</span><p>B wins on watch time, but reports of harmful videos rise 8%. Do you ship it?</p></div>
+<div class="card dq rise" data-s="3"><span class="kicker">Discuss, 2 min</span><p>B wins on watch time, but reports of harmful videos rise 8%. Do you ship it?</p></div>
 <script>
   (window.deckHooks = window.deckHooks || {}).sAB = {
     init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
@@ -888,19 +1046,19 @@ p.likes  <span class="r"># -1</span></div>
 <p class="sub rise" data-s="1" data-d="1">Every rule you give an agent is a negative prompt: don't log emails, don't touch the tests, don't add sleep().</p>
 
 <div class="card st rise" data-s="1" data-d="2" style="left:104px;top:476px;height:244px">
-  <div class="kicker">1 · Ask</div><h3>Say it in the prompt</h3>
+  <div class="kicker">1. Ask</div><h3>Say it in the prompt</h3>
   <div class="ex">"Don't log user emails."</div>
 </div>
 <div class="card st rise" data-s="1" data-d="3" style="left:541px;top:416px;height:304px">
-  <div class="kicker">2 · Remind</div><h3>Write it in CLAUDE.md or a skill</h3>
+  <div class="kicker">2. Remind</div><h3>Write it in CLAUDE.md or a skill</h3>
   <div class="ex">- Never log PII</div>
 </div>
 <div class="card st rise" data-s="1" data-d="4" style="left:978px;top:356px;height:364px">
-  <div class="kicker">3 · Review</div><h3>Ask a reviewer agent to check</h3>
+  <div class="kicker">3. Review</div><h3>Ask a reviewer agent to check</h3>
   <div class="ex">"Does this log PII?"</div>
 </div>
 <div class="card st enf rise" data-s="2" style="left:1415px;top:296px;height:424px">
-  <div class="kicker">4 · Enforce</div><h3>A test, lint rule, or hook that fails</h3>
+  <div class="kicker">4. Enforce</div><h3>A test, lint rule, or hook that fails</h3>
   <div class="ex">assert email not in logs</div>
 </div>
 
@@ -975,7 +1133,7 @@ p.likes  <span class="r"># -1</span></div>
   #sEx3 .dc .q { font-size: 28px; font-weight: 600; margin-top: 26px; }
   #sEx3 .dc .ansbox { margin-top: auto; font-size: 26px; line-height: 1.35; }
 </style>
-<div class="eyebrow ex rise" data-s="1">Exercise 3</div><span class="timer rise" data-s="1">· 3 min</span>
+<div class="eyebrow ex rise" data-s="1">Exercise 3</div><span class="timer rise" data-s="1">3 min</span>
 <h2 class="rise" data-s="1">Turn these "don'ts" into checks</h2>
 <div class="card dc rise" data-s="1" data-d="1" style="left:104px">
   <div class="dn"><s>"Don't call the real payment API in tests."</s></div>
@@ -1069,7 +1227,7 @@ p.likes  <span class="r"># -1</span></div>
     <rect class="bx key" x="560" y="250" width="380" height="96" rx="20"/><text class="t b" x="750" y="298">Agent changes code</text>
     <rect class="bx" x="560" y="510" width="380" height="160" rx="22"/>
     <text class="t b" x="750" y="556">Checks run</text>
-    <text class="cap" x="750" y="600">tests · build · lint · E2E</text>
+    <text class="cap" x="750" y="600">tests, build, lint, E2E</text>
     <text class="cap" x="750" y="636">same input, same verdict</text>
   </g>
   <g data-s="1" data-d="2">
@@ -1089,7 +1247,7 @@ p.likes  <span class="r"># -1</span></div>
     <path class="arrow rep fl" marker-end="url(#s8g)" d="M750 672 L750 820"/>
     <text class="lbl rep" x="772" y="746">PASS</text>
     <path class="arrow fl" marker-end="url(#s8a)" d="M558 874 L430 874"/>
-    <text class="cap" x="750" y="958">screenshots · logs · red, then green</text>
+    <text class="cap" x="750" y="958">screenshots, logs, red then green</text>
   </g>
 </svg>
 <div class="card sc rise" data-s="2" data-d="2">
@@ -1210,7 +1368,7 @@ p.likes  <span class="r"># -1</span></div>
 </div>
 
 <div class="drv rise" data-s="2" data-d="3"><span class="kicker">How the agent drives it</span>
-  <span class="chip">Chrome DevTools Protocol · web</span><span class="chip">iOS / Android simulator</span><span class="chip">API harness · backend</span><span class="chip">Computer use · desktop</span></div>
+  <span class="chip">Chrome DevTools Protocol (web)</span><span class="chip">iOS / Android simulator</span><span class="chip">API harness (backend)</span><span class="chip">Computer use (desktop)</span></div>
 </section>
 
 <!-- ============ 11. Property-based ============ -->
@@ -1263,7 +1421,7 @@ p.likes  <span class="r"># -1</span></div>
   #sEx4 .ps .ansbox b { font-weight: 650; }
   #sEx4 .code { position: absolute; left: 1064px; top: 496px; width: 752px; font-size: 22px; }
 </style>
-<div class="eyebrow ex rise" data-s="1">Exercise 4</div><span class="timer rise" data-s="1">· 4 min</span>
+<div class="eyebrow ex rise" data-s="1">Exercise 4</div><span class="timer rise" data-s="1">4 min</span>
 <h2 class="rise" data-s="1">Write properties for the For You feed</h2>
 <div class="card spec rise" data-s="1" data-d="1"><span class="kicker">Function</span><code>rank(videos, user)</code><span class="d">returns the videos to show, best first</span></div>
 <p class="q rise" data-s="1" data-d="2">You can't say what the right order is. Name rules that hold for any input.</p>
@@ -1300,9 +1458,9 @@ p.likes  <span class="r"># -1</span></div>
     <rect class="bx" x="104" y="390" width="300" height="140" rx="22"/>
     <text class="t b" x="254" y="440">Real requests</text><text class="cap" x="254" y="482">sampled from traffic</text>
     <rect class="bx" x="520" y="250" width="340" height="120" rx="22"/>
-    <text class="t b" x="690" y="294">Old service</text><text class="cap" x="690" y="334">Python · the oracle</text>
+    <text class="t b" x="690" y="294">Old service</text><text class="cap" x="690" y="334">Python, the oracle</text>
     <rect class="bx key" x="520" y="550" width="340" height="120" rx="22"/>
-    <text class="t b" x="690" y="594">New service</text><text class="cap" x="690" y="634">Go · written by an agent</text>
+    <text class="t b" x="690" y="594">New service</text><text class="cap" x="690" y="634">Go, written by an agent</text>
     <rect class="bx" x="980" y="390" width="300" height="140" rx="22"/>
     <text class="t b" x="1130" y="440">Normalize</text><text class="cap" x="1130" y="482">drop ids, timestamps</text>
     <rect class="bx" x="1380" y="390" width="200" height="140" rx="22"/>
@@ -1392,7 +1550,7 @@ p.likes  <span class="r"># -1</span></div>
     </g>
   </g>
 </svg>
-<div class="lc rise" data-s="2" data-d="2"><b style="color:var(--accent)">Local, before the PR</b> · <b style="color:var(--faint)">shared</b><br>Don't spend shared review and CI on a bug the agent could catch itself.</div>
+<div class="lc rise" data-s="2" data-d="2"><b style="color:var(--accent)">Blue bars run locally, before the PR.</b> <b style="color:var(--faint)">Gray bars are shared.</b><br>Don't spend shared review and CI on a bug the agent could catch itself.</div>
 <div class="src" style="left:1040px;max-width:780px">Quote and ladder: Osmani, claude.dev, Nov 2026.</div>
 </section>
 
@@ -1429,7 +1587,7 @@ p.likes  <span class="r"># -1</span></div>
   #s15 .qt { position: absolute; left: 104px; top: 880px; width: 1712px; display: flex; gap: 64px; font-size: 29px; line-height: 1.35; }
   #s15 .qt div { flex: 1; padding-left: 24px; border-left: 5px solid var(--accent); }
 </style>
-<div class="eyebrow rise" data-s="1">pstack · Lauren Tan (poteto)</div>
+<div class="eyebrow rise" data-s="1">pstack by Lauren Tan (poteto)</div>
 <h2 class="rise" data-s="1">Prove it works, on the real thing</h2>
 <div class="card col bad rise" data-s="1" data-d="1" style="left:104px">
   <h3><span class="ico no" style="width:44px;height:44px"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>Doesn't count</h3>
@@ -1477,7 +1635,7 @@ p.likes  <span class="r"># -1</span></div>
   #s16 .rules li::before { content: ""; position: absolute; left: 0; top: 13px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
   #s16 .rules li b { font-weight: 650; }
 </style>
-<div class="eyebrow rise" data-s="1">pstack · bug-fix playbook</div>
+<div class="eyebrow rise" data-s="1">pstack bug-fix playbook</div>
 <h2 class="rise" data-s="1">Fix a bug: red first, then green</h2>
 <svg class="tl" viewBox="0 0 1920 1080" aria-hidden="true">
   <g data-s="1" data-d="1">
