@@ -9,7 +9,7 @@ A 75-minute introductory lecture on software testing that ends with testing for 
 - The URL tracks the position, e.g. `index.html?slide=7&step=2`.
 - `?still=1` shows each slide's final frame without animation, which helps for screenshots and PDF export.
 
-## Outline (39 slides)
+## Outline (41 slides)
 
 **Opening**
 1. Title: the V-model
@@ -37,58 +37,60 @@ A 75-minute introductory lecture on software testing that ends with testing for 
 
 12. Three ways to classify a test: level, type, technique
 13. Exercise 2: equivalence partitioning and boundary values for a caption length rule
+14. Exercise 2, part 2: what counts as one character? Code points, UTF-16 units, and UTF-8 bytes
 
 *D. Judging tests*
 
-14. Test coverage: statement, branch, path, function
-15. 100% coverage and still a bug
-16. What makes a test good: mutation testing
-17. Test behavior, not implementation
+15. Test coverage: statement, branch, path, function
+16. 100% coverage and still a bug
+17. What makes a test good: mutation testing
+18. Test behavior, not implementation
 
 *E. Limits*
 
-18. When testing is complete: exit criteria
-19. Testing is hard: how much should one like change your feed?
-20. A/B test: how much should one like change the feed?
+19. When testing is complete: exit criteria
+20. Testing is hard: how much should one like change your feed?
+21. A/B test: how much should one like change the feed?
+22. Why is Like one tap away, but "Not interested" is hidden?
 
 **Part 2: Testing with agents (about 40 min)**
 
-21. Part 2 divider
+23. Part 2 divider
 
 *A. What changes*
 
-22. What changes when agents write the code
-23. Why tests matter more: agents are wrong without knowing it, reviewers are another sample, tests are deterministic
+24. What changes when agents write the code
+25. Why tests matter more: agents are wrong without knowing it, reviewers are another sample, tests are deterministic
 
 *B. The loop*
 
-24. The verification loop
-25. The hardest instruction is "don't"
-26. Turn every "don't" into a check
-27. Exercise 3: turn these "don'ts" into checks
+26. The verification loop
+27. The hardest instruction is "don't"
+28. Turn every "don't" into a check
+29. Exercise 3: turn these "don'ts" into checks
 
 *C. What to test*
 
-28. Three tests worth investing in
-29. End-to-end
-30. Property-based
-31. Exercise 4: properties for the For You feed
-32. Differential
+30. Three tests worth investing in
+31. End-to-end
+32. Property-based
+33. Exercise 4: properties for the For You feed
+34. Differential
 
 *D. Trusting the result*
 
-33. Smoke-test every change with a verify skill
-34. Prove it works, on the real thing
-35. Fix a bug: red first, then green
-36. Independent verifier: the author doesn't grade its own work
-37. Keep the verifier honest
+35. Smoke-test every change with a verify skill
+36. Prove it works, on the real thing
+37. Fix a bug: red first, then green
+38. Independent verifier: the author doesn't grade its own work
+39. Keep the verifier honest
 
 *Wrap-up*
 
-38. Back to TikTok with agents
-39. Takeaways
+40. Back to TikTok with agents
+41. Takeaways
 
-The why section uses one real incident, CrowdStrike. From slide 7 on, one feature, the Like button, runs through the what-is-a-test, test-level, coverage, mutation, property-based, bug-fix, and A/B test slides. On slide 7 the phone works: click the heart or double-click the video.
+The why section uses one real incident, CrowdStrike. From slide 7 on, one feature, the Like button, runs through the what-is-a-test, test-level, coverage, mutation, property-based, bug-fix, and A/B test slides. On slide 7 the phone works: click the heart, double-click the video, or long-press the video (or click Share) to reach "Not interested".
 
 ## Sources
 
