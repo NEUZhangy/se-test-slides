@@ -197,14 +197,14 @@
     <path class="arrow dash vl" d="M1428 392 L1592 392"/>
     <path class="arrow dash vl" d="M1484 542 L1536 542"/>
     <path class="arrow dash vl" d="M1494 692 L1526 692"/>
-    <path class="arrow fl" marker-end="url(#s1a)" d="M1292 284 L1326 352"/>
-    <path class="arrow fl" marker-end="url(#s1a)" d="M1326 434 L1360 502"/>
-    <path class="arrow fl" marker-end="url(#s1a)" d="M1360 584 L1394 652"/>
-    <path class="arrow fl" marker-end="url(#s1a)" d="M1394 734 Q1394 842 1427 842"/>
-    <path class="arrow rep fl" marker-end="url(#s1g)" d="M1595 842 Q1626 842 1626 732"/>
-    <path class="arrow rep fl" marker-end="url(#s1g)" d="M1626 650 L1660 582"/>
-    <path class="arrow rep fl" marker-end="url(#s1g)" d="M1660 500 L1694 432"/>
-    <path class="arrow rep fl" marker-end="url(#s1g)" d="M1694 350 L1728 282"/>
+    <path class="arrow fl" data-seq="v" data-ord="0" marker-end="url(#s1a)" d="M1292 284 L1326 352"/>
+    <path class="arrow fl" data-seq="v" data-ord="1" marker-end="url(#s1a)" d="M1326 434 L1360 502"/>
+    <path class="arrow fl" data-seq="v" data-ord="2" marker-end="url(#s1a)" d="M1360 584 L1394 652"/>
+    <path class="arrow fl" data-seq="v" data-ord="3" marker-end="url(#s1a)" d="M1394 734 Q1394 842 1427 842"/>
+    <path class="arrow rep fl" data-seq="v" data-ord="4" marker-end="url(#s1g)" d="M1595 842 Q1626 842 1626 732"/>
+    <path class="arrow rep fl" data-seq="v" data-ord="5" marker-end="url(#s1g)" d="M1626 650 L1660 582"/>
+    <path class="arrow rep fl" data-seq="v" data-ord="6" marker-end="url(#s1g)" d="M1660 500 L1694 432"/>
+    <path class="arrow rep fl" data-seq="v" data-ord="7" marker-end="url(#s1g)" d="M1694 350 L1728 282"/>
     <rect class="pl" x="1180" y="210" width="224" height="64" rx="32"/>
     <text class="tl" x="1292" y="242">Requirements</text>
     <rect class="pr" x="1616" y="210" width="224" height="64" rx="32"/>
@@ -726,16 +726,28 @@
   #sEx1 .av i { position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: #fe2c55;
     font-style: normal; font-size: 17px; font-weight: 700; line-height: 20px; text-align: center; }
   #sEx1 .hb { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-  #sEx1 .hb svg { animation: sEx1pop 2s var(--ease) infinite; }
+  #sEx1 .hb svg { animation: sEx1pop 6s var(--ease) infinite; }
   #sEx1 .tap { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: .55; transform: none; animation: sEx1tap 2s ease-out infinite; }
+    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: .55; transform: none; animation: sEx1tap 6s ease-out infinite; }
   #sEx1 .disc { width: 42px; height: 42px; border-radius: 50%; margin-top: 4px; animation: sEx1spin 5s linear infinite;
     background: radial-gradient(circle, #ff8a5c 0 22%, #2a2a2e 23% 30%, #3a3a40 31% 36%, #232327 37% 100%); box-shadow: 0 0 0 7px #1b1b1f; }
-  @keyframes sEx1pop { 0%, 28%, 100% { transform: scale(1); } 10% { transform: scale(1.28); } 18% { transform: scale(.94); } }
-  @keyframes sEx1tap { 0% { opacity: .9; transform: scale(.45); } 55%, 100% { opacity: 0; transform: scale(1.5); } }
+  #sEx1 .dt { position: absolute; left: 118px; top: 318px; width: 0; height: 0; }
+  #sEx1 .dt i { position: absolute; left: -28px; top: -28px; width: 56px; height: 56px; border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: 0; animation: sEx1dt1 6s ease-out infinite; }
+  #sEx1 .dt i + i { animation-name: sEx1dt2; }
+  #sEx1 .dt svg { position: absolute; left: -55px; top: -50px; display: block; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4));
+    transform: rotate(-12deg); animation: sEx1big 6s var(--ease) infinite; }
+  /* one 6s cycle: rail tap in the first half, double-tap on the video in the second */
+  @keyframes sEx1pop { 0%, 9.5%, 100% { transform: scale(1); } 3.5% { transform: scale(1.28); } 6% { transform: scale(.94); } }
+  @keyframes sEx1tap { 0% { opacity: .9; transform: scale(.45); } 18%, 100% { opacity: 0; transform: scale(1.5); } }
+  @keyframes sEx1dt1 { 0%, 50% { opacity: 0; transform: scale(.4); } 50.5% { opacity: .9; transform: scale(.4); } 57%, 100% { opacity: 0; transform: scale(1.4); } }
+  @keyframes sEx1dt2 { 0%, 54% { opacity: 0; transform: scale(.4); } 54.5% { opacity: .9; transform: scale(.4); } 61%, 100% { opacity: 0; transform: scale(1.4); } }
+  @keyframes sEx1big { 0%, 55% { opacity: 0; transform: translateY(0) rotate(-12deg) scale(.2); }
+    60% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1.22); } 64% { transform: translateY(0) rotate(-12deg) scale(.94); }
+    68% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1); } 80%, 100% { opacity: 0; transform: translateY(-80px) rotate(-12deg) scale(1.06); } }
   @keyframes sEx1spin { to { transform: rotate(360deg); } }
-  html.still #sEx1 .hb svg, html.still #sEx1 .tap, html.still #sEx1 .disc,
-  html.rm #sEx1 .hb svg, html.rm #sEx1 .tap, html.rm #sEx1 .disc { animation: none; }
+  html.still #sEx1 .hb svg, html.still #sEx1 .tap, html.still #sEx1 .disc, html.still #sEx1 .dt i, html.still #sEx1 .dt svg,
+  html.rm #sEx1 .hb svg, html.rm #sEx1 .tap, html.rm #sEx1 .disc, html.rm #sEx1 .dt i, html.rm #sEx1 .dt svg { animation: none; }
   #sEx1 .cap { position: absolute; left: 14px; bottom: 96px; width: 238px; font-size: 14px; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
   #sEx1 .cap .u { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
   #sEx1 .cap .t b { font-weight: 700; }
@@ -750,7 +762,7 @@
   #sEx1 .home { position: absolute; left: 50%; bottom: 7px; width: 116px; height: 4px; margin-left: -58px; border-radius: 2px; background: #fff; }
   #sEx1 .rt { position: absolute; left: 528px; top: 232px; bottom: 80px; width: 1288px; display: flex; flex-direction: column; gap: 16px; }
   #sEx1 .fs { position: static; padding: 22px 32px 24px; border-radius: 24px; }
-  #sEx1 .fs ul { list-style: none; margin-top: 10px; display: grid; grid-template-columns: auto 1fr; grid-auto-flow: column; grid-template-rows: auto auto; gap: 8px 56px; }
+  #sEx1 .fs ul { list-style: none; margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: column; grid-template-rows: auto auto auto; gap: 8px 56px; }
   #sEx1 .fs li { font-size: 24px; line-height: 1.3; padding-left: 24px; position: relative; }
   #sEx1 .fs li::before { content: ""; position: absolute; left: 0; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--bad); }
   #sEx1 .rw { display: grid; grid-template-columns: 46px 280px 1fr; column-gap: 22px; align-items: center; flex: 1; background: var(--card); border-radius: 22px; padding: 16px 24px;
@@ -769,6 +781,7 @@
       <div class="blob" style="left:40px;top:470px;width:200px;height:150px;background:rgba(255,168,72,.38)"></div>
       <div class="blob" style="left:190px;top:90px;width:120px;height:120px;background:rgba(37,244,238,.22)"></div>
     </div>
+    <div class="dt"><i></i><i></i><svg width="110" height="101" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>
     <div class="prog"><i></i></div>
     <div class="island"></div>
     <div class="stat"><span>9:41</span>
@@ -807,12 +820,13 @@
     <div class="kicker">The feature</div>
     <ul>
       <li>Tap ♥ to like a video. Tap again to unlike.</li>
+      <li>Double-tap the video to like. Double-tapping again never unlikes.</li>
       <li>The count shows total likes.</li>
       <li>One like per user.</li>
       <li>On a slow network, the heart turns red at once and syncs later.</li>
     </ul>
   </div>
-  <div class="rw rise" data-s="1" data-d="2"><span class="num">1</span><div class="q">Frontend unit test<small>Name one.</small></div><div class="ansbox" data-s="2" data-d="1">Tap the heart: it turns red and the count goes up by 1</div></div>
+  <div class="rw rise" data-s="1" data-d="2"><span class="num">1</span><div class="q">Frontend unit test<small>Name one.</small></div><div class="ansbox" data-s="2" data-d="1">Double-tap a liked video: the heart stays red and the count does not change.</div></div>
   <div class="rw rise" data-s="1" data-d="3"><span class="num">2</span><div class="q">Backend API test<small>Name one.</small></div><div class="ansbox" data-s="2" data-d="2">Same user sends POST /like twice: count goes up by 1</div></div>
   <div class="rw rise" data-s="1" data-d="4"><span class="num">3</span><div class="q">QA, by hand<small>What would you try?</small></div><div class="ansbox" data-s="2" data-d="3">Like on a phone, check the tablet. Like in airplane mode, then reconnect.</div></div>
   <div class="rw rise" data-s="1" data-d="5"><span class="num">4</span><div class="q">Beta<small>What would you watch?</small></div><div class="ansbox" data-s="2" data-d="4">Like-error rate and crash reports, by app version</div></div>
