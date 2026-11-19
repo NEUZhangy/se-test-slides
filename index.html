@@ -177,6 +177,7 @@
   #s1 .ar { font-size: 20px; font-weight: 520; fill: var(--faint); dominant-baseline: central; }
   #s1 .ch { fill: var(--panel); stroke: #dde1e7; stroke-width: 1.5; }
   #s1 .cht { font-size: 20px; font-weight: 520; fill: var(--ink); }
+  #s1 svg.flows g.dots { visibility: hidden; }
 </style>
 <div class="lead">
   <div class="eyebrow rise" data-s="1">Software Engineering</div>
@@ -232,7 +233,29 @@
     <text class="cht" x="1702.5" y="962">Regression test</text>
   </g>
 </svg>
-<script>(window.deckHooks = window.deckHooks || {}).s1 = { init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); }, tick: function (t) { this.flow(t, true); } };</script>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s1 = {
+    init: function (el) {
+      var svg = el.querySelector('svg.flows');
+      this.flow = deck.Flow(svg);
+      this.dots = svg.querySelectorAll('circle.dot');
+      this.who = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      this.who.innerHTML = '<circle r="24" fill="currentColor"/><circle cy="-6" r="6.5" fill="#fff"/><path d="M-11 13 a11 9 0 0 1 22 0" fill="#fff"/>' +
+        '<path d="M-7 -12 a7 6.5 0 0 1 14 0 Z M-11 -12 h22 v2.6 h-22 Z" fill="#fff" stroke="currentColor" stroke-width="1.5" paint-order="stroke"/>';
+      svg.appendChild(this.who);
+    },
+    tick: function (t) {
+      this.flow(t * 0.5, true);
+      var best = null;
+      this.dots.forEach(function (c) { if (+c.style.opacity > (best ? +best.style.opacity : 0)) best = c; });
+      this.who.style.opacity = best ? best.style.opacity : 0;
+      if (!best) return;
+      var bob = deck.RM || deck.STILL ? 0 : Math.abs(Math.sin(t / 180)) * 4;
+      this.who.setAttribute('transform', 'translate(' + best.getAttribute('cx') + ' ' + (best.getAttribute('cy') - bob).toFixed(1) + ') scale(0.75)');
+      this.who.style.color = best.classList.contains('rep') ? 'var(--good)' : 'var(--accent)';
+    }
+  };
+</script>
 </section>
 
 <!-- ============ Agenda ============ -->
@@ -248,7 +271,6 @@
 </style>
 <h2 class="rise" data-s="1">Today, in two parts</h2>
 <div class="card pt rise" data-s="1" data-d="1" style="left:104px">
-  <div class="kicker">Part 1, about 30 min</div>
   <h3>Foundations</h3>
   <ul>
     <li>Why we test, and what a test is</li>
@@ -259,7 +281,6 @@
   </ul>
 </div>
 <div class="card pt two rise" data-s="1" data-d="2" style="left:988px">
-  <div class="kicker">Part 2, about 40 min</div>
   <h3>Testing with agents</h3>
   <ul>
     <li>What changes, and why tests matter more</li>
