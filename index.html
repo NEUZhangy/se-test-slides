@@ -1,0 +1,1894 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testing for agents</title>
+<script>
+  window.onerror = function (msg, src, line) {
+    document.documentElement.setAttribute('data-jserr', String(msg) + ' @' + line);
+  };
+</script>
+<style>
+  :root {
+    --bg: #fbfbf9;
+    --letterbox: #e6e6e2;
+    --ink: #15171c;
+    --muted: #5d6370;
+    --faint: #8b919c;
+    --line: #c9ced6;
+    --panel: #f2f3f5;
+    --card: #ffffff;
+    --accent: #2c59d6;
+    --accent-soft: #e7eefc;
+    --accent-mid: #9db4ee;
+    --good: #1f8a5b;
+    --good-soft: #e2f3ea;
+    --bad: #c2412d;
+    --bad-soft: #fbe9e5;
+    --warm: #c98a4b;
+    --warm-ink: #8f5a1f;
+    --warm-soft: #f8eedf;
+    --code-bg: #16181d;
+    --ease: cubic-bezier(.22, .72, .16, 1);
+    --sans: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--letterbox); }
+  body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; cursor: default; user-select: none; }
+
+  #stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+    transform-origin: 0 0; background: var(--bg); overflow: hidden;
+    box-shadow: 0 30px 80px -40px rgba(30, 36, 50, .25);
+  }
+  .slide {
+    position: absolute; inset: 0; padding: 84px 104px 0;
+    opacity: 0; visibility: hidden; transition: opacity .6s var(--ease), visibility 0s linear .6s;
+  }
+  .slide.active { opacity: 1; visibility: visible; transition: opacity .6s var(--ease), visibility 0s; }
+
+  h2 { font-size: 64px; line-height: 1.08; font-weight: 650; letter-spacing: -.022em; }
+  .eyebrow {
+    display: inline-block; font-size: 22px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 8px 20px;
+  }
+  .eyebrow + h2 { margin-top: 22px; }
+  p, .body { font-size: 30px; line-height: 1.4; }
+  .muted { color: var(--muted); }
+  .sub { margin-top: 14px; font-size: 30px; line-height: 1.4; color: var(--muted); }
+  svg text { font-family: var(--sans); }
+
+  /* shared building blocks */
+  .card {
+    position: absolute; background: var(--card); border-radius: 32px;
+    box-shadow: 0 0 0 1.5px rgba(21, 23, 28, .06), 0 24px 60px -36px rgba(30, 40, 70, .28);
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 520; line-height: 1.2;
+    padding: 10px 20px; border-radius: 999px; background: var(--panel); border: 1.5px solid #dde1e7; color: var(--ink);
+    transition: background .6s var(--ease), color .6s var(--ease), border-color .6s var(--ease);
+  }
+  .kicker { font-size: 22px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+  .code {
+    font-family: var(--mono); background: var(--code-bg); color: #e6e8ec; border-radius: 24px;
+    padding: 30px 36px; font-size: 24px; line-height: 1.55; white-space: pre; overflow: hidden;
+  }
+  .code .k { color: #8fb0ff; } .code .s { color: #9fd8b4; } .code .c { color: #7d8492; }
+  .code .r { color: #ff8b78; } .code .g { color: #7fd6a4; } .code .y { color: #f0c987; } .code .p { color: #7d8492; }
+  .src { position: absolute; left: 104px; bottom: 36px; font-size: 20px; color: var(--faint); max-width: 1450px; line-height: 1.35; }
+  .src a { color: inherit; }
+  .ico { display: inline-flex; align-items: center; justify-content: center; flex: none; border-radius: 50%; }
+  .ico svg { display: block; }
+  .ico.ok { background: var(--good-soft); color: var(--good); }
+  .ico.no { background: var(--bad-soft); color: var(--bad); }
+  .ico.no.solid { background: var(--bad); color: #fff; }
+  .ico.off { background: var(--panel); color: var(--faint); }
+  .num {
+    display: inline-flex; align-items: center; justify-content: center; flex: none; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums;
+  }
+
+  /* step reveal: [data-s=k] shows from step k on */
+  [data-s] { opacity: 0; transition: opacity .7s var(--ease), transform .8s var(--ease); }
+  [data-s].on { opacity: 1; }
+  .rise[data-s] { transform: translateY(18px); }
+  .rise[data-s].on { transform: none; }
+  [data-d="1"] { transition-delay: .15s; }
+  [data-d="2"] { transition-delay: .3s; }
+  [data-d="3"] { transition-delay: .45s; }
+  [data-d="4"] { transition-delay: .6s; }
+  [data-d="5"] { transition-delay: .9s; }
+  [data-d="6"] { transition-delay: 1.3s; }
+
+  #pageno {
+    position: absolute; right: 64px; bottom: 36px; font-size: 24px; font-weight: 500;
+    color: var(--faint); font-variant-numeric: tabular-nums; letter-spacing: .04em;
+  }
+  #pageno b { color: var(--ink); font-weight: 600; }
+  #stepdots { position: absolute; right: 176px; bottom: 44px; display: flex; gap: 12px; }
+  #stepdots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); transition: background .4s var(--ease); }
+  #stepdots i.on { background: var(--accent); }
+
+  /* still mode and reduced motion: final frame, no motion */
+  html.still *, html.still *::before, html.still *::after {
+    transition: none !important; animation-play-state: paused !important;
+  }
+  html.still .slide { transition: none !important; }
+  html.rm .rise[data-s] { transform: none; }
+  html.rm [data-s] { transition-property: opacity; }
+
+  /* arrows */
+  .arrow { fill: none; stroke: #9aa1ad; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .arrow.acc { stroke: var(--accent); }
+  .arrow.rep { stroke: var(--good); }
+  .arrow.bad { stroke: var(--bad); }
+  .arrow.warm { stroke: var(--warm); }
+  .arrow.dash { stroke-dasharray: 10 10; }
+  circle.dot { fill: var(--accent); }
+  circle.dot.ghost { fill: #a3a9b4; }
+  circle.dot.rep { fill: var(--good); }
+  circle.dot.bad { fill: var(--bad); }
+  circle.dot.warm { fill: var(--warm); }
+
+  /* svg diagram boxes */
+  svg .bx { fill: var(--card); stroke: #cdd2da; stroke-width: 1.5; }
+  svg .bx.key { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  svg .bx.good { fill: var(--good-soft); stroke: var(--good); stroke-width: 2.5; }
+  svg .bx.bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2.5; }
+  svg .t { font-size: 28px; font-weight: 500; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+  svg .t.b { font-weight: 650; font-size: 30px; }
+  svg .cap { font-size: 23px; fill: var(--muted); text-anchor: middle; dominant-baseline: central; }
+  svg .lbl { font-size: 24px; font-weight: 600; dominant-baseline: central; paint-order: stroke; stroke: var(--bg); stroke-width: 8px; stroke-linejoin: round; }
+  svg .lbl.bad { fill: var(--bad); } svg .lbl.rep { fill: var(--good); } svg .lbl.warm { fill: var(--warm-ink); } svg .lbl.mut { fill: var(--muted); }
+
+  /* exercises */
+  .eyebrow.ex { color: var(--warm-ink); background: var(--warm-soft); }
+  .timer { display: inline-flex; align-items: center; gap: 8px; margin-left: 16px; font-size: 22px; font-weight: 600; color: var(--warm-ink); vertical-align: middle; }
+  .ans { color: var(--good); font-weight: 560; }
+  .ansbox { background: var(--good-soft); border-radius: 18px; padding: 14px 20px; color: var(--ink); }
+  .ansbox .kicker { color: var(--good); font-size: 18px; display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ============ 1. Title ============ -->
+<section class="slide" id="s1" data-steps="1">
+<style>
+  #s1 .lead { position: absolute; left: 120px; top: 268px; width: 960px; }
+  #s1 .eyebrow { margin-bottom: 48px; }
+  #s1 h1 { font-size: 156px; line-height: .96; font-weight: 700; letter-spacing: -.036em; }
+  #s1 h1 em { font-style: normal; color: var(--accent); }
+  #s1 .tag { font-size: 48px; line-height: 1.25; color: var(--muted); margin-top: 56px; font-weight: 450; letter-spacing: -.012em; }
+  #s1 .rule { width: 96px; height: 6px; border-radius: 3px; background: var(--accent); margin-top: 64px; }
+  #s1 svg.motif { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #s1 .src-n { fill: var(--bg); stroke: #b4bac4; stroke-width: 3; }
+  #s1 .fix-n { fill: var(--bg); stroke: var(--bad); stroke-width: 3; }
+  #s1 .hub { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 3; }
+  #s1 .hub-ring { fill: none; stroke: var(--accent-mid); stroke-width: 2; transform-origin: 1530px 550px; animation: s1ring 3.6s cubic-bezier(.22,.72,.16,1) infinite; }
+  #s1 .done { fill: var(--good); }
+  #s1 .arrow { stroke: #c3c8d0; stroke-width: 2.5; }
+  #s1 .arrow.rep { stroke: var(--good); stroke-width: 3.5; }
+  #s1 .arrow.bad { stroke: var(--bad); stroke-width: 3; }
+  #s1 .ml { font-size: 24px; fill: var(--faint); font-weight: 600; letter-spacing: .12em; text-anchor: middle; }
+  @keyframes s1ring { 0% { transform: scale(1); opacity: .9; } 70%, 100% { transform: scale(1.9); opacity: 0; } }
+  html.still #s1 .hub-ring, html.rm #s1 .hub-ring { animation: none; opacity: 0; }
+</style>
+<div class="lead">
+  <div class="eyebrow rise" data-s="1">Software Testing</div>
+  <h1 class="rise" data-s="1" data-d="1">Testing for<br><em>agents</em></h1>
+  <div class="tag rise" data-s="1" data-d="3">Agents write code fast.<br>Tests tell them when it's wrong.</div>
+  <div class="rule rise" data-s="1" data-d="4"></div>
+</div>
+<svg class="motif flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="1" data-d="4">
+    <text class="ml" x="1118" y="206">CODE</text>
+    <text class="ml" x="1530" y="650">TESTS</text>
+    <text class="ml" x="1772" y="610">SHIP</text>
+    <text class="ml" x="1118" y="1012" style="fill:var(--bad)">FIX</text>
+    <path class="arrow fl" d="M1132 250 C1330 250 1360 520 1484 540"/>
+    <path class="arrow fl" d="M1132 370 C1310 370 1350 530 1484 545"/>
+    <path class="arrow fl" d="M1132 490 C1300 490 1360 545 1484 550"/>
+    <path class="arrow fl" d="M1132 610 C1300 610 1360 555 1484 555"/>
+    <path class="arrow fl" d="M1132 730 C1310 730 1350 570 1484 560"/>
+    <path class="arrow fl" d="M1132 850 C1330 850 1360 580 1484 565"/>
+    <path class="arrow rep fl" data-r="9" d="M1578 550 L1748 550"/>
+    <path class="arrow bad dash fl" d="M1530 680 C1530 900 1300 962 1136 962"/>
+    <path class="arrow bad dash fl" d="M1104 952 C1040 920 1040 880 1104 856"/>
+    <circle class="src-n" cx="1118" cy="250" r="14"/>
+    <circle class="src-n" cx="1118" cy="370" r="14"/>
+    <circle class="src-n" cx="1118" cy="490" r="14"/>
+    <circle class="src-n" cx="1118" cy="610" r="14"/>
+    <circle class="src-n" cx="1118" cy="730" r="14"/>
+    <circle class="src-n" cx="1118" cy="850" r="14"/>
+    <circle class="fix-n" cx="1118" cy="962" r="14"/>
+    <circle class="hub-ring" cx="1530" cy="550" r="46"/>
+    <circle class="hub" cx="1530" cy="550" r="46"/>
+    <circle class="done" cx="1772" cy="550" r="22"/>
+    <path d="M1762 551 L1770 559 L1784 543" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s1 = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
+</section>
+
+<!-- ============ Agenda ============ -->
+<section class="slide" id="sAg" data-steps="1">
+<style>
+  #sAg .pt { top: 236px; width: 828px; height: 610px; padding: 44px 48px; }
+  #sAg .pt .kicker { color: var(--accent); }
+  #sAg .pt h3 { font-size: 46px; font-weight: 650; letter-spacing: -.015em; margin-top: 10px; }
+  #sAg .pt ul { list-style: none; margin-top: 32px; display: flex; flex-direction: column; gap: 22px; }
+  #sAg .pt li { display: flex; gap: 18px; align-items: baseline; font-size: 31px; line-height: 1.3; }
+  #sAg .pt li::before { content: ""; flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); transform: translateY(-4px); }
+  #sAg .pt li.x::before { background: var(--warm); border-radius: 3px; }
+  #sAg .pt li.x { color: var(--warm-ink); font-weight: 560; }
+  #sAg .pt.two { background: var(--accent-soft); box-shadow: inset 0 0 0 2px rgba(44, 89, 214, .25); }
+  #sAg .ft { position: absolute; left: 104px; top: 900px; font-size: 30px; color: var(--muted); display: flex; align-items: center; gap: 14px; }
+  #sAg .ft i { width: 18px; height: 18px; border-radius: 4px; background: var(--warm); }
+</style>
+<h2 class="rise" data-s="1">Today, in two parts</h2>
+<div class="card pt rise" data-s="1" data-d="1" style="left:104px">
+  <div class="kicker">Part 1 · about 30 min</div>
+  <h3>Foundations</h3>
+  <ul>
+    <li>How TikTok tested before agents</li>
+    <li class="x">Exercise: test the Like button</li>
+    <li>Black box, white box, gray box</li>
+    <li>Coverage: what it measures, what it misses</li>
+    <li>What makes a test good, and when to stop</li>
+  </ul>
+</div>
+<div class="card pt two rise" data-s="1" data-d="2" style="left:988px">
+  <div class="kicker">Part 2 · about 40 min</div>
+  <h3>Testing with agents</h3>
+  <ul>
+    <li>Why tests matter more now</li>
+    <li>Negative prompts: making "don't" stick</li>
+    <li>E2E, property-based, differential</li>
+    <li>How pstack proves work is done</li>
+    <li class="x">Exercises along the way</li>
+  </ul>
+</div>
+<div class="ft rise" data-s="1" data-d="4"><i></i>Orange marks an exercise. Grab a pen.</div>
+</section>
+
+<!-- ============ 2. Before agents: TikTok ============ -->
+<section class="slide" id="s2" data-steps="4">
+<style>
+  #s2 .stg { top: 236px; height: 470px; padding: 32px 32px; }
+  #s2 .hd { display: flex; align-items: center; gap: 16px; }
+  #s2 .hd h3 { font-size: 36px; font-weight: 650; letter-spacing: -.015em; line-height: 1.1; }
+  #s2 .ds { font-size: 25px; color: var(--muted); margin-top: 12px; line-height: 1.3; }
+  #s2 .chips { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 24px; }
+  #s2 .subp { background: var(--panel); border-radius: 20px; padding: 16px 20px 18px; margin-top: 18px; }
+  #s2 .subp .kicker { font-size: 19px; }
+  #s2 .subp .row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  #s2 .subp .chip { background: var(--card); }
+  #s2 .stg.rel { display: flex; flex-direction: column; }
+  #s2 .stg.rel .big { margin: auto; }
+  #s2 svg.dg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #s2 .al { font-size: 21px; fill: var(--muted); text-anchor: middle; font-weight: 560; }
+  #s2 .nb { fill: var(--accent); }
+  #s2 .nbt { fill: #fff; font-size: 22px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+  #s2 .take { position: absolute; left: 1440px; top: 770px; width: 380px; font-size: 30px; line-height: 1.3; font-weight: 600; }
+  #s2 .take span { display: block; color: var(--muted); font-weight: 450; font-size: 26px; margin-top: 8px; }
+</style>
+<h2 class="rise" data-s="1">Before agents: how TikTok ships a release</h2>
+
+<div class="card stg rise" data-s="1" style="left:104px;width:400px">
+  <div class="hd"><span class="num">1</span><h3>Developers</h3></div>
+  <div class="ds">Each side tests its own code</div>
+  <div class="subp"><div class="kicker">Frontend · app</div>
+    <div class="row"><span class="chip">Unit tests</span><span class="chip">UI tests</span></div></div>
+  <div class="subp"><div class="kicker">Backend · services</div>
+    <div class="row"><span class="chip">Unit tests</span><span class="chip">API tests</span></div></div>
+</div>
+
+<div class="card stg rise" data-s="2" data-d="1" style="left:620px;width:360px">
+  <div class="hd"><span class="num">2</span><h3>QA engineers</h3></div>
+  <div class="ds">Install the test build and try to break it</div>
+  <div class="chips"><span class="chip">Test cases</span><span class="chip">Regression</span><span class="chip">Exploratory</span><span class="chip">Many devices</span></div>
+</div>
+
+<div class="card stg rise" data-s="4" data-d="1" style="left:1096px;width:330px">
+  <div class="hd"><span class="num">4</span><h3>Beta release</h3></div>
+  <div class="ds">Real users opt in early</div>
+  <div class="chips"><span class="chip">Crash reports</span><span class="chip">Feedback</span><span class="chip">Usage data</span></div>
+</div>
+
+<div class="card stg rel rise" data-s="4" data-d="3" style="left:1542px;width:274px">
+  <div class="hd"><h3>Public release</h3></div>
+  <div class="ds">App Store, Google Play</div>
+  <div class="big"><span class="ico ok" style="width:120px;height:120px"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+</div>
+
+<svg class="dg flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="s2a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+    <marker id="s2r" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c2412d"/></marker>
+    <marker id="s2w" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c98a4b"/></marker>
+  </defs>
+  <g data-s="2">
+    <text class="al" x="562" y="306">test build</text>
+    <path class="arrow fl" marker-end="url(#s2a)" d="M510 330 L612 330"/>
+  </g>
+  <g data-s="3">
+    <path class="arrow bad fl" marker-end="url(#s2r)" d="M800 712 C800 850 330 850 330 716"/>
+    <circle class="nb" cx="850" cy="790" r="22"/><text class="nbt" x="850" y="791">3</text>
+    <text class="lbl bad" x="886" y="791">Bug → fix → retest</text>
+  </g>
+  <g data-s="4">
+    <text class="al" x="1038" y="306">passes</text>
+    <path class="arrow fl" marker-end="url(#s2a)" d="M986 330 L1088 330"/>
+    <text class="al" x="1484" y="306">stable</text>
+    <path class="arrow fl" marker-end="url(#s2a)" d="M1432 330 L1534 330"/>
+    <path class="arrow warm fl" marker-end="url(#s2w)" d="M1261 712 C1261 1000 230 1000 230 716"/>
+    <text class="lbl warm" x="745" y="958" text-anchor="middle">Feedback → fix → next build</text>
+  </g>
+</svg>
+<div class="take rise" data-s="4" data-d="5">People were the oracle.<span>One trip around a loop took days.</span></div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s2 = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
+</section>
+
+<!-- ============ Exercise 1: Like button ============ -->
+<section class="slide" id="sEx1" data-steps="2">
+<style>
+  #sEx1 .spec { left: 104px; top: 260px; width: 640px; height: 600px; padding: 40px 44px; }
+  #sEx1 .spec .ht { width: 96px; height: 96px; border-radius: 28px; background: var(--bad-soft); display: flex; align-items: center; justify-content: center; }
+  #sEx1 .spec h3 { font-size: 38px; font-weight: 650; margin-top: 24px; }
+  #sEx1 .spec ul { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+  #sEx1 .spec li { font-size: 28px; line-height: 1.32; padding-left: 26px; position: relative; }
+  #sEx1 .spec li::before { content: ""; position: absolute; left: 0; top: 14px; width: 10px; height: 10px; border-radius: 50%; background: var(--bad); }
+  #sEx1 .rows { position: absolute; left: 800px; top: 260px; width: 1016px; display: flex; flex-direction: column; gap: 18px; }
+  #sEx1 .rw { display: grid; grid-template-columns: 46px 300px 1fr; column-gap: 22px; align-items: center; background: var(--card); border-radius: 24px; padding: 22px 28px; min-height: 136px;
+    box-shadow: 0 0 0 1.5px rgba(21, 23, 28, .06), 0 24px 60px -40px rgba(30, 40, 70, .28); }
+  #sEx1 .rw .q { font-size: 28px; font-weight: 600; line-height: 1.2; }
+  #sEx1 .rw .q small { display: block; font-size: 22px; color: var(--muted); font-weight: 450; margin-top: 4px; }
+  #sEx1 .rw .ansbox { font-size: 25px; line-height: 1.3; }
+</style>
+<div class="eyebrow ex rise" data-s="1">Exercise 1</div><span class="timer rise" data-s="1">· 4 min</span>
+<h2 class="rise" data-s="1">Test the Like button</h2>
+<div class="card spec rise" data-s="1" data-d="1">
+  <div class="ht"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#c2412d"/></svg></div>
+  <h3>The feature</h3>
+  <ul>
+    <li>Tap ♥ to like a video. Tap again to unlike.</li>
+    <li>The count shows total likes.</li>
+    <li>One like per user.</li>
+    <li>On a slow network, the heart turns red at once and syncs later.</li>
+  </ul>
+</div>
+<div class="rows">
+  <div class="rw rise" data-s="1" data-d="2"><span class="num">1</span><div class="q">Frontend unit test<small>Name one.</small></div><div class="ansbox" data-s="2" data-d="1">Tap the heart: it turns red and the count goes up by 1</div></div>
+  <div class="rw rise" data-s="1" data-d="3"><span class="num">2</span><div class="q">Backend API test<small>Name one.</small></div><div class="ansbox" data-s="2" data-d="2">Same user sends POST /like twice: count goes up by 1</div></div>
+  <div class="rw rise" data-s="1" data-d="4"><span class="num">3</span><div class="q">QA, by hand<small>What would you try?</small></div><div class="ansbox" data-s="2" data-d="3">Like on a phone, check the tablet. Like in airplane mode, then reconnect.</div></div>
+  <div class="rw rise" data-s="1" data-d="5"><span class="num">4</span><div class="q">Beta<small>What would you watch?</small></div><div class="ansbox" data-s="2" data-d="4">Like-error rate and crash reports, by app version</div></div>
+</div>
+</section>
+
+<!-- ============ 3. Taxonomy ============ -->
+<section class="slide" id="s3" data-steps="4">
+<style>
+  #s3 svg.tree { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #s3 .tl { fill: none; stroke: var(--line); stroke-width: 3; stroke-linecap: round; }
+  #s3 .root {
+    position: absolute; left: 790px; top: 196px; width: 340px; height: 76px; border-radius: 38px;
+    background: var(--ink); color: #fff; font-size: 31px; font-weight: 650; display: flex; align-items: center; justify-content: center;
+  }
+  #s3 .br { position: absolute; top: 330px; width: 512px; height: 160px; padding: 28px 32px; }
+  #s3 .br h3 { font-size: 40px; font-weight: 650; letter-spacing: -.015em; display: flex; align-items: center; gap: 16px; }
+  #s3 .br p { font-size: 25px; color: var(--muted); margin-top: 10px; line-height: 1.3; }
+  #s3 .bxi { width: 34px; height: 34px; border-radius: 8px; flex: none; }
+  #s3 .leaves { position: absolute; top: 522px; width: 512px; display: flex; flex-wrap: wrap; gap: 12px; align-content: flex-start; }
+  #s3 .chip { font-size: 23px; padding: 9px 18px; }
+  #s3[data-step="4"] .chip.focus { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #s3 .legend { position: absolute; left: 104px; bottom: 40px; display: flex; align-items: center; gap: 14px; font-size: 26px; color: var(--muted); }
+  #s3 .legend i { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); }
+</style>
+<h2 class="rise" data-s="1">Three ways to look at a test</h2>
+<svg class="tree" viewBox="0 0 1920 1080" aria-hidden="true">
+  <path class="tl" data-s="1" d="M960 272 C960 310 360 290 360 328"/>
+  <path class="tl" data-s="2" d="M960 272 L960 328"/>
+  <path class="tl" data-s="3" d="M960 272 C960 310 1560 290 1560 328"/>
+</svg>
+<div class="root rise" data-s="1">Software testing</div>
+
+<div class="card br rise" data-s="1" data-d="1" style="left:104px">
+  <h3><span class="bxi" style="background:var(--ink)"></span>Black box</h3>
+  <p>Test from the outside. You don't see the code.</p>
+</div>
+<div class="leaves rise" data-s="1" data-d="2" style="left:104px">
+  <span class="chip">Functional</span><span class="chip focus">Smoke</span><span class="chip">Sanity</span>
+  <span class="chip focus">Regression</span><span class="chip">UI</span><span class="chip focus">End-to-end (E2E)</span>
+  <span class="chip">Acceptance (UAT)</span><span class="chip">Alpha / Beta</span><span class="chip">Exploratory</span>
+  <span class="chip">Usability</span><span class="chip">Boundary value</span><span class="chip">Equivalence classes</span>
+  <span class="chip focus">Differential</span>
+</div>
+
+<div class="card br rise" data-s="2" data-d="1" style="left:704px">
+  <h3><span class="bxi" style="background:#a3a9b4"></span>Gray box</h3>
+  <p>Know some internals. Test through the interface.</p>
+</div>
+<div class="leaves rise" data-s="2" data-d="2" style="left:704px">
+  <span class="chip">Integration</span><span class="chip">API</span><span class="chip">Contract</span>
+  <span class="chip">Database</span><span class="chip">Security / Penetration</span><span class="chip">Performance / Load</span>
+  <span class="chip">Snapshot</span><span class="chip focus">Property-based</span>
+</div>
+
+<div class="card br rise" data-s="3" data-d="1" style="left:1304px">
+  <h3><span class="bxi" style="background:var(--card);box-shadow:inset 0 0 0 3px var(--ink)"></span>White box</h3>
+  <p>Test from the inside. You know the code.</p>
+</div>
+<div class="leaves rise" data-s="3" data-d="2" style="left:1304px">
+  <span class="chip">Unit</span><span class="chip">Statement coverage</span><span class="chip">Branch coverage</span>
+  <span class="chip">Path coverage</span><span class="chip">Mutation testing</span><span class="chip">Static analysis</span>
+  <span class="chip">Data-flow</span><span class="chip focus">Code review</span>
+</div>
+<div class="legend" data-s="4"><i></i>What we focus on today</div>
+</section>
+
+<!-- ============ Exercise 2: boundaries ============ -->
+<section class="slide" id="sEx2" data-steps="2">
+<style>
+  #sEx2 .spec { left: 104px; top: 256px; width: 1712px; height: 120px; padding: 0 44px; display: flex; align-items: center; gap: 24px; }
+  #sEx2 .spec .kicker { color: var(--accent); }
+  #sEx2 .spec .s { font-size: 36px; font-weight: 600; }
+  #sEx2 .spec .n { margin-left: auto; font-size: 21px; color: var(--faint); }
+  #sEx2 svg.nl { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #sEx2 .rg.bad { fill: var(--bad-soft); } #sEx2 .rg.good { fill: var(--good-soft); }
+  #sEx2 .rl { font-size: 26px; font-weight: 650; text-anchor: middle; }
+  #sEx2 .pv { stroke: #fff; stroke-width: 4; }
+  #sEx2 .pl { font-size: 30px; font-weight: 700; text-anchor: middle; fill: var(--ink); font-family: var(--mono); }
+  #sEx2 .pd { font-size: 21px; font-weight: 600; text-anchor: middle; letter-spacing: .08em; }
+  #sEx2 .q { position: absolute; left: 104px; top: 420px; font-size: 32px; font-weight: 560; }
+  #sEx2 .bot { position: absolute; left: 104px; top: 790px; width: 1712px; display: flex; gap: 40px; }
+  #sEx2 .bot > div { flex: 1; }
+  #sEx2 .bot .kicker { font-size: 20px; color: var(--good); }
+  #sEx2 .bot p { font-size: 27px; line-height: 1.35; margin-top: 8px; }
+  #sEx2 .bot .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+</style>
+<div class="eyebrow ex rise" data-s="1">Exercise 2</div><span class="timer rise" data-s="1">· 3 min</span>
+<h2 class="rise" data-s="1">Black box: which captions would you test?</h2>
+<div class="card spec rise" data-s="1" data-d="1"><span class="kicker">Spec</span><span class="s">A caption must be 1 to 150 characters.</span><span class="n">Made up for this exercise</span></div>
+<p class="q rise" data-s="1" data-d="2">You get five tests. Which inputs tell you the most?</p>
+<svg class="nl" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="1" data-d="2">
+    <rect class="rg bad" x="200" y="540" width="210" height="64" rx="14"/>
+    <rect class="rg good" x="410" y="540" width="1100" height="64"/>
+    <rect class="rg bad" x="1510" y="540" width="210" height="64" rx="14"/>
+    <rect x="400" y="540" width="20" height="64" fill="var(--good-soft)"/>
+    <text class="rl" x="305" y="516" style="fill:var(--bad)">too short</text>
+    <text class="rl" x="960" y="516" style="fill:var(--good)">valid</text>
+    <text class="rl" x="1615" y="516" style="fill:var(--bad)">too long</text>
+  </g>
+  <g data-s="2">
+    <circle class="pv" cx="360" cy="572" r="16" fill="var(--bad)"/><text class="pl" x="360" y="660">0</text><text class="pd" x="360" y="696" style="fill:var(--bad)">REJECT</text>
+    <circle class="pv" cx="460" cy="572" r="16" fill="var(--good)"/><text class="pl" x="460" y="660">1</text><text class="pd" x="460" y="696" style="fill:var(--good)">ACCEPT</text>
+    <circle class="pv" cx="960" cy="572" r="16" fill="var(--good)"/><text class="pl" x="960" y="660">75</text><text class="pd" x="960" y="696" style="fill:var(--good)">ACCEPT</text>
+    <circle class="pv" cx="1460" cy="572" r="16" fill="var(--good)"/><text class="pl" x="1460" y="660">150</text><text class="pd" x="1460" y="696" style="fill:var(--good)">ACCEPT</text>
+    <circle class="pv" cx="1560" cy="572" r="16" fill="var(--bad)"/><text class="pl" x="1560" y="660">151</text><text class="pd" x="1560" y="696" style="fill:var(--bad)">REJECT</text>
+  </g>
+</svg>
+<div class="bot">
+  <div class="rise" data-s="2" data-d="2"><span class="kicker">Equivalence classes</span><p>Three regions, so one input from each: 0, 75, 200 would do.</p></div>
+  <div class="rise" data-s="2" data-d="3"><span class="kicker">Boundary values</span><p>Bugs hide at the edges: test on each edge and one step past it.</p></div>
+  <div class="rise" data-s="2" data-d="4"><span class="kicker">Ones people forget</span><div class="chips"><span class="chip">Only spaces</span><span class="chip">Emoji 👍</span><span class="chip">Missing field</span></div></div>
+</div>
+</section>
+
+<!-- ============ Coverage ============ -->
+<section class="slide" id="sCov" data-steps="3">
+<style>
+  #sCov .cv { position: absolute; left: 104px; top: 236px; width: 900px; white-space: normal; padding: 26px 0; }
+  #sCov .cv .l { white-space: pre; position: relative; padding-left: 86px; padding-right: 30px; }
+  #sCov .cv .l b { position: absolute; left: 26px; width: 34px; text-align: right; color: #5d6370; font-weight: 400; }
+  #sCov .cv .mk { position: absolute; left: 70px; top: 4px; bottom: 4px; width: 6px; border-radius: 3px; background: #3fbf7f; }
+  #sCov .cv .mk.p { background: var(--warm); }
+  #sCov .cv .tag { position: absolute; right: 24px; font-family: var(--sans); font-size: 19px; font-weight: 650; color: var(--warm); letter-spacing: .04em; }
+  #sCov .ts { position: absolute; left: 104px; top: 590px; width: 900px; font-size: 20px; padding: 24px 32px; }
+  #sCov .df { left: 1064px; top: 236px; width: 752px; height: 340px; padding: 32px 38px; }
+  #sCov .df .r { display: grid; grid-template-columns: 170px 1fr; padding: 12px 0; border-top: 1.5px solid #e1e4e9; font-size: 25px; line-height: 1.3; }
+  #sCov .df .r:first-child { border-top: 0; padding-top: 0; }
+  #sCov .df .r b { font-weight: 650; }
+  #sCov .df .r span { color: var(--muted); }
+  #sCov .st { position: absolute; top: 606px; width: 362px; height: 170px; border-radius: 28px; padding: 26px 30px; }
+  #sCov .st .kicker { font-size: 20px; }
+  #sCov .st .v { font-size: 72px; font-weight: 700; letter-spacing: -.03em; margin-top: 4px; line-height: 1; }
+  #sCov .st .w { font-size: 22px; color: var(--muted); margin-top: 8px; }
+  #sCov .st.g { background: var(--good-soft); } #sCov .st.g .v { color: var(--good); }
+  #sCov .st.o { background: var(--warm-soft); } #sCov .st.o .v { color: var(--warm-ink); }
+  #sCov .qx { position: absolute; left: 1064px; top: 806px; width: 752px; font-size: 27px; line-height: 1.35; }
+  #sCov .qx .kicker { color: var(--warm-ink); font-size: 20px; }
+  #sCov .qx .ansbox { margin-top: 12px; font-size: 25px; }
+  #sCov .tools { position: absolute; left: 104px; top: 930px; font-size: 24px; color: var(--muted); }
+</style>
+<h2 class="rise" data-s="1">Test coverage: which code ran during the tests</h2>
+<div class="code cv rise" data-s="1" data-d="1">
+<div class="l"><b>1</b><span class="mk" data-s="2"></span><span class="k">def</span> tap(post, action, user):</div>
+<div class="l"><b>2</b><span class="mk" data-s="2"></span>    <span class="k">if</span> action == <span class="s">"like"</span>:</div>
+<div class="l"><b>3</b><span class="mk p" data-s="2"></span>        <span class="k">if</span> user <span class="k">not in</span> post.liked_by:<span class="tag" data-s="2">ONLY TRUE</span></div>
+<div class="l"><b>4</b><span class="mk" data-s="2"></span>            post.liked_by.add(user)</div>
+<div class="l"><b>5</b><span class="mk" data-s="2"></span>            post.likes += <span class="y">1</span></div>
+<div class="l"><b>6</b>    <span class="k">else</span>:</div>
+<div class="l"><b>7</b><span class="mk" data-s="2"></span>        post.liked_by.discard(user)</div>
+<div class="l"><b>8</b><span class="mk" data-s="2"></span>        post.likes -= <span class="y">1</span></div>
+</div>
+<div class="code ts rise" data-s="1" data-d="2"><span class="k">def</span> test_like():
+    p = Post(); tap(p, <span class="s">"like"</span>, <span class="s">"u1"</span>)
+    <span class="k">assert</span> p.likes == <span class="y">1</span>
+<span class="k">def</span> test_unlike():
+    p = Post(); tap(p, <span class="s">"like"</span>, <span class="s">"u1"</span>); tap(p, <span class="s">"unlike"</span>, <span class="s">"u1"</span>)
+    <span class="k">assert</span> p.likes == <span class="y">0</span></div>
+<div class="card df rise" data-s="1" data-d="3">
+  <div class="r"><b>Statement</b><span>Every line ran at least once</span></div>
+  <div class="r"><b>Branch</b><span>Every <code style="font-family:var(--mono)">if</code> went both ways</span></div>
+  <div class="r"><b>Path</b><span>Every route through the function</span></div>
+  <div class="r"><b>Function</b><span>Every function was called</span></div>
+</div>
+<div class="st g rise" data-s="2" data-d="2" style="left:1064px"><div class="kicker">Statement</div><div class="v">100%</div><div class="w">7 of 7 lines</div></div>
+<div class="st o rise" data-s="2" data-d="3" style="left:1454px"><div class="kicker">Branch</div><div class="v">75%</div><div class="w">3 of 4 branch outcomes</div></div>
+<div class="qx rise" data-s="3"><span class="kicker">Quick question</span><br>Which test gets branch coverage to 100%?
+  <div class="ansbox" data-s="3" data-d="5">Same user likes twice. The count should stay at 1.</div></div>
+<div class="tools rise" data-s="1" data-d="4">Tools: coverage.py (Python), Istanbul / nyc (JS), JaCoCo (Java)</div>
+</section>
+
+<!-- ============ 100% coverage, still a bug ============ -->
+<section class="slide" id="sBug" data-steps="2">
+<style>
+  #sBug .t3 { position: absolute; left: 104px; top: 236px; width: 900px; font-size: 23px; }
+  #sBug .tiles { position: absolute; left: 104px; top: 470px; display: flex; gap: 24px; }
+  #sBug .tile { width: 418px; border-radius: 28px; padding: 24px 30px; background: var(--good-soft); }
+  #sBug .tile .kicker { font-size: 20px; }
+  #sBug .tile .v { font-size: 64px; font-weight: 700; color: var(--good); letter-spacing: -.03em; line-height: 1.05; }
+  #sBug .bg { left: 1024px; top: 236px; width: 792px; height: 400px; padding: 36px 40px; background: var(--bad-soft); box-shadow: inset 0 0 0 2px rgba(194, 65, 45, .3); }
+  #sBug .bg .kicker { color: var(--bad); }
+  #sBug .bg h3 { font-size: 36px; font-weight: 650; margin-top: 8px; }
+  #sBug .bg .code { margin-top: 20px; font-size: 23px; padding: 22px 28px; }
+  #sBug .bg p { font-size: 25px; color: var(--muted); margin-top: 18px; line-height: 1.35; }
+  #sBug .why { position: absolute; left: 104px; top: 690px; width: 1712px; display: flex; gap: 40px; }
+  #sBug .why > div { flex: 1; font-size: 27px; line-height: 1.35; padding-top: 18px; border-top: 3px solid var(--ink); }
+  #sBug .why b { display: block; font-size: 29px; font-weight: 650; margin-bottom: 6px; }
+  #sBug .why span { color: var(--muted); }
+  #sBug .dj { position: absolute; left: 104px; top: 920px; font-size: 32px; font-weight: 560; }
+  #sBug .dj span { color: var(--faint); font-weight: 450; font-size: 24px; margin-left: 12px; }
+</style>
+<h2 class="rise" data-s="1">100% coverage, and still a bug</h2>
+<div class="code t3 rise" data-s="1" data-d="1"><span class="c"># added after the quick question</span>
+<span class="k">def</span> test_double_like():
+    p = Post(); tap(p, <span class="s">"like"</span>, <span class="s">"u1"</span>); tap(p, <span class="s">"like"</span>, <span class="s">"u1"</span>)
+    <span class="k">assert</span> p.likes == <span class="y">1</span></div>
+<div class="tiles rise" data-s="1" data-d="2">
+  <div class="tile"><div class="kicker">Statement</div><div class="v">100%</div></div>
+  <div class="tile"><div class="kicker">Branch</div><div class="v">100%</div></div>
+</div>
+<div class="card bg rise" data-s="2">
+  <div class="kicker">But a user does this</div>
+  <h3>Unlike a video they never liked</h3>
+  <div class="code">p = Post()
+tap(p, <span class="s">"unlike"</span>, <span class="s">"u1"</span>)
+p.likes  <span class="r"># -1</span></div>
+  <p>The check "did this user like it?" is missing from the else branch.</p>
+</div>
+<div class="why">
+  <div class="rise" data-s="2" data-d="2"><b>Coverage counts what ran</b><span>Not what was checked. A test with no assert still earns coverage.</span></div>
+  <div class="rise" data-s="2" data-d="3"><b>Missing code has no lines</b><span>The bug is a check that should exist. There is nothing to cover.</span></div>
+  <div class="rise" data-s="2" data-d="4"><b>Use it as a flashlight</b><span>Low coverage shows untested code. High coverage proves little.</span></div>
+</div>
+<p class="dj rise" data-s="2" data-d="6">"Testing can show the presence of bugs, never their absence."<span>Edsger Dijkstra, 1970 (paraphrased)</span></p>
+</section>
+
+<!-- ============ What makes a good test ============ -->
+<section class="slide" id="sGood" data-steps="3">
+<style>
+  #sGood .gq { left: 104px; top: 236px; width: 700px; height: 680px; padding: 40px 44px; }
+  #sGood .gq h3 { font-size: 36px; font-weight: 650; }
+  #sGood .gq ul { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 20px; }
+  #sGood .gq li { display: flex; gap: 16px; align-items: flex-start; font-size: 28px; line-height: 1.3; }
+  #sGood .gq li .ico { width: 36px; height: 36px; margin-top: 1px; }
+  #sGood .gq li small { display: block; font-size: 22px; color: var(--muted); margin-top: 3px; }
+  #sGood .mu { position: absolute; left: 864px; top: 236px; width: 952px; }
+  #sGood .mu h3 { font-size: 36px; font-weight: 650; }
+  #sGood .mu > p { font-size: 26px; color: var(--muted); margin-top: 8px; }
+  #sGood .mt { margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+  #sGood .m { display: grid; grid-template-columns: 70px 1fr 230px; align-items: center; background: var(--card); border-radius: 20px; padding: 16px 24px;
+    box-shadow: 0 0 0 1.5px rgba(21, 23, 28, .06); font-size: 24px; }
+  #sGood .m .id { font-weight: 700; color: var(--faint); }
+  #sGood .m code { font-family: var(--mono); font-size: 22px; }
+  #sGood .m code s { color: var(--muted); }
+  #sGood .m code em { font-style: normal; color: var(--accent); font-weight: 600; }
+  #sGood .m .v { justify-self: end; font-size: 20px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 6px 14px; }
+  #sGood .m .v.k { color: var(--good); background: var(--good-soft); }
+  #sGood .m .v.s { color: #fff; background: var(--bad); }
+  #sGood .m .v.q { color: var(--warm-ink); background: var(--warm-soft); }
+  #sGood .sc { margin-top: 22px; display: flex; align-items: baseline; gap: 18px; font-size: 26px; color: var(--muted); }
+  #sGood .sc b { font-size: 44px; color: var(--ink); font-weight: 700; }
+  #sGood .ex2 { margin-top: 14px; font-size: 24px; line-height: 1.35; }
+  #sGood .tools { position: absolute; left: 864px; top: 930px; font-size: 24px; color: var(--muted); }
+</style>
+<h2 class="rise" data-s="1">What makes a test good?</h2>
+<div class="card gq rise" data-s="1" data-d="1">
+  <h3>A good test…</h3>
+  <ul>
+    <li><span class="ico ok"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Fails when the behavior breaks<small>and only then</small></div></li>
+    <li><span class="ico ok"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Gives the same result every run<small>no timing, no shared state</small></div></li>
+    <li><span class="ico ok"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Runs fast enough for every change</div></li>
+    <li><span class="ico ok"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Checks one thing, and says what broke</div></li>
+    <li><span class="ico ok"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Survives a refactor<small>tests behavior, not internals</small></div></li>
+  </ul>
+</div>
+<div class="mu">
+  <div class="rise" data-s="2"><h3>Measure it: mutation testing</h3><p>Plant small bugs (mutants) in the code. Good tests kill them.</p></div>
+  <div class="mt">
+    <div class="m rise" data-s="2" data-d="1"><span class="id">M1</span><code><s>likes += 1</s> → <em>likes += 2</em></code><span class="v k">Killed</span></div>
+    <div class="m rise" data-s="2" data-d="2"><span class="id">M2</span><code><s>not in</s> → <em>in</em></code><span class="v k">Killed</span></div>
+    <div class="m rise" data-s="2" data-d="3"><span class="id">M3</span><code><s>likes -= 1</s> → <em>likes += 1</em></code><span class="v k">Killed</span></div>
+    <div class="m rise" data-s="2" data-d="4"><span class="id">M4</span><code>delete <em>liked_by.discard(user)</em></code><span class="v q" data-s="2">Exercise: ?</span></div>
+  </div>
+  <div class="sc rise" data-s="3"><b>3 / 4</b>mutation score: M4 survives</div>
+  <div class="ex2 ansbox rise" data-s="3" data-d="2">No test checks that a user can like again after unliking. Add: like, unlike, like → count is 1.</div>
+</div>
+<div class="tools rise" data-s="2" data-d="5">Tools: mutmut (Python), Stryker (JS/TS), PIT (Java)</div>
+</section>
+
+<!-- ============ When is testing complete ============ -->
+<section class="slide" id="sDone" data-steps="2">
+<style>
+  #sDone svg.ch { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #sDone .ax { stroke: var(--line); stroke-width: 2; }
+  #sDone .cv { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
+  #sDone .ar { fill: var(--accent-soft); }
+  #sDone .at { font-size: 22px; fill: var(--muted); }
+  #sDone .an { font-size: 24px; font-weight: 600; fill: var(--accent); }
+  #sDone .ck { left: 1000px; top: 300px; width: 816px; height: 600px; padding: 36px 44px; }
+  #sDone .ck h3 { font-size: 34px; font-weight: 650; }
+  #sDone .ck ul { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+  #sDone .ck li { display: flex; gap: 16px; align-items: flex-start; font-size: 27px; line-height: 1.3; }
+  #sDone .ck li i { flex: none; width: 28px; height: 28px; border-radius: 7px; border: 2.5px solid var(--accent); margin-top: 3px; }
+  #sDone .ck li small { color: var(--muted); font-size: 22px; display: block; margin-top: 2px; }
+</style>
+<h2 class="rise" data-s="1">When is testing complete?</h2>
+<p class="sub rise" data-s="1" data-d="1">Never fully. You stop when the risk left is low enough to ship.</p>
+<svg class="ch" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="1" data-d="2">
+    <line class="ax" x1="180" y1="830" x2="900" y2="830"/>
+    <line class="ax" x1="180" y1="330" x2="180" y2="830"/>
+    <path class="ar" d="M180 830 C300 560 420 440 560 390 C680 350 780 340 880 336 L880 830 Z"/>
+    <path class="cv" d="M180 830 C300 560 420 440 560 390 C680 350 780 340 880 336"/>
+    <text class="at" x="540" y="874" text-anchor="middle">days of testing</text>
+    <text class="at" transform="translate(150 580) rotate(-90)" text-anchor="middle">bugs found, total</text>
+    <text class="an" x="600" y="320">new bugs slow down</text>
+    <text class="at" x="200" y="370">illustration</text>
+  </g>
+</svg>
+<div class="card ck rise" data-s="2">
+  <h3>Exit criteria teams use</h3>
+  <ul>
+    <li><i></i><div>Every requirement has a test<small>a traceability matrix maps them</small></div></li>
+    <li><i></i><div>Each input class and boundary is covered</div></li>
+    <li><i></i><div>The riskiest flows get tested deepest<small>login, payment, posting</small></div></li>
+    <li><i></i><div>Coverage and mutation score meet the target</div></li>
+    <li><i></i><div>New bugs per day have flattened</div></li>
+    <li><i></i><div>No open critical bugs</div></li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ Testing is hard ============ -->
+<section class="slide" id="sHard" data-steps="2">
+<style>
+  #sHard .hc { top: 300px; width: 400px; height: 340px; padding: 34px 36px; }
+  #sHard .hc .ic { width: 64px; height: 64px; border-radius: 18px; background: var(--warm-soft); display: flex; align-items: center; justify-content: center; }
+  #sHard .hc h3 { font-size: 32px; font-weight: 650; margin-top: 22px; line-height: 1.15; }
+  #sHard .hc p { font-size: 24px; color: var(--muted); margin-top: 12px; line-height: 1.38; }
+  #sHard .hc.key { background: var(--accent-soft); box-shadow: inset 0 0 0 2.5px var(--accent); }
+  #sHard .hc.key .ic { background: var(--card); }
+  #sHard .or { position: absolute; left: 104px; top: 720px; width: 1712px; font-size: 34px; line-height: 1.35; font-weight: 560; }
+  #sHard .or span { display: block; color: var(--muted); font-weight: 450; font-size: 28px; margin-top: 10px; }
+</style>
+<h2 class="rise" data-s="1">Testing is hard: some things can't be tested before launch</h2>
+<p class="sub rise" data-s="1" data-d="1">For these there is no test oracle: nothing can tell you the right answer ahead of time.</p>
+<div class="card hc key rise" data-s="1" data-d="2" style="left:104px">
+  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-9" fill="none" stroke="#2c59d6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h3>A new For You ranking</h3><p>Unit tests show it runs. Only users can show it's better.</p>
+</div>
+<div class="card hc rise" data-s="1" data-d="3" style="left:541px">
+  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5" fill="none" stroke="#c98a4b" stroke-width="2.2"/></svg></div>
+  <h3>Thousands of phone models</h3><p>No lab owns every screen, OS version, and network.</p>
+</div>
+<div class="card hc rise" data-s="1" data-d="4" style="left:978px">
+  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="#c98a4b" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+  <h3>Real peak traffic</h3><p>A viral moment is hard to fake in staging.</p>
+</div>
+<div class="card hc rise" data-s="1" data-d="5" style="left:1415px">
+  <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2" fill="none" stroke="#c98a4b" stroke-width="2.2"/><circle cx="17" cy="10" r="2.6" fill="none" stroke="#c98a4b" stroke-width="2.2"/><path d="M3 19c.8-3.4 3-5 6-5s5.2 1.6 6 5M15 15.4c2.6-.6 4.8.6 5.6 3.6" fill="none" stroke="#c98a4b" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+  <h3>What people will do</h3><p>Users find flows no one wrote a test case for.</p>
+</div>
+<p class="or rise" data-s="2">So you test in production, carefully: release to a small slice and measure.<span>For "is it better?", the tool is an A/B test.</span></p>
+</section>
+
+<!-- ============ A/B testing ============ -->
+<section class="slide" id="sAB" data-steps="3">
+<style>
+  #sAB svg.ab { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #sAB .mt { font-size: 22px; fill: var(--muted); text-anchor: middle; }
+  #sAB .mv { font-size: 38px; font-weight: 700; text-anchor: middle; }
+  #sAB .rl { right: 104px; top: 236px; width: 540px; height: 470px; padding: 34px 40px; }
+  #sAB .rl h3 { font-size: 32px; font-weight: 650; }
+  #sAB .rl ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 14px; }
+  #sAB .rl li { font-size: 25px; line-height: 1.32; padding-left: 24px; position: relative; }
+  #sAB .rl li::before { content: ""; position: absolute; left: 0; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  #sAB .rl li b { font-weight: 650; }
+  #sAB .dq { right: 104px; top: 740px; width: 540px; height: 230px; padding: 28px 36px; background: var(--warm-soft); box-shadow: inset 0 0 0 2px rgba(201, 138, 75, .4); }
+  #sAB .dq .kicker { color: var(--warm-ink); font-size: 20px; }
+  #sAB .dq p { font-size: 27px; line-height: 1.35; margin-top: 8px; font-weight: 560; }
+</style>
+<h2 class="rise" data-s="1">A/B test: is the new algorithm actually better?</h2>
+<svg class="ab flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs><marker id="sABa" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker></defs>
+  <g data-s="1" data-d="1">
+    <rect class="bx" x="104" y="470" width="240" height="130" rx="22"/>
+    <text class="t b" x="224" y="514">Users</text><text class="cap" x="224" y="556">split at random</text>
+    <rect class="bx" x="440" y="270" width="350" height="140" rx="22"/>
+    <text class="t b" x="615" y="316">A · control</text><text class="cap" x="615" y="360">old ranking, 5% of users</text>
+    <rect class="bx key" x="440" y="660" width="350" height="140" rx="22"/>
+    <text class="t b" x="615" y="706">B · treatment</text><text class="cap" x="615" y="750">new ranking, 5% of users</text>
+  </g>
+  <g data-s="1" data-d="2">
+    <path class="arrow fl" marker-end="url(#sABa)" d="M346 520 C390 520 390 340 434 340"/>
+    <path class="arrow acc fl" marker-end="url(#sABa)" d="M346 550 C390 550 390 730 434 730"/>
+  </g>
+  <g data-s="2">
+    <path class="arrow fl" marker-end="url(#sABa)" d="M792 340 L858 340"/>
+    <path class="arrow acc fl" marker-end="url(#sABa)" d="M792 730 L858 730"/>
+    <rect class="bx" x="864" y="270" width="290" height="140" rx="22"/>
+    <text class="mt" x="1009" y="304">watch time / day</text><text class="mv" x="1009" y="352" style="fill:var(--ink)">52.0 min</text>
+    <rect class="bx good" x="864" y="660" width="290" height="140" rx="22"/>
+    <text class="mt" x="1009" y="694">watch time / day</text><text class="mv" x="1009" y="742" style="fill:var(--good)">53.6 min</text>
+    <text class="lbl rep" x="1009" y="545" text-anchor="middle">+3.1%</text>
+    <text class="cap" x="1009" y="585">numbers made up</text>
+  </g>
+</svg>
+<div class="card rl rise" data-s="2" data-d="2">
+  <h3>Rules for a fair test</h3>
+  <ul>
+    <li><b>Random split,</b> so the groups are alike.</li>
+    <li><b>Pick the metric before you start.</b></li>
+    <li><b>Guardrails too:</b> crashes, reports, latency.</li>
+    <li><b>Run long enough</b> for the difference to be real, not noise.</li>
+    <li><b>Ramp up:</b> 1% → 10% → 50% → 100%.</li>
+  </ul>
+</div>
+<div class="card dq rise" data-s="3"><span class="kicker">Discuss · 2 min</span><p>B wins on watch time, but reports of harmful videos rise 8%. Do you ship it?</p></div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).sAB = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
+</section>
+
+<!-- ============ Part 2 divider ============ -->
+<section class="slide" id="sP2" data-steps="1">
+<style>
+  #sP2 .big { position: absolute; left: 120px; top: 250px; font-size: 300px; font-weight: 700; letter-spacing: -.05em; color: #d3def8; line-height: 1; }
+  #sP2 .lead { position: absolute; left: 120px; top: 600px; width: 1500px; }
+  #sP2 h1 { font-size: 110px; line-height: 1; font-weight: 700; letter-spacing: -.034em; }
+  #sP2 h1 em { font-style: normal; color: var(--accent); }
+  #sP2 .tag { font-size: 40px; color: var(--muted); margin-top: 36px; }
+</style>
+<div class="big rise" data-s="1">02</div>
+<div class="lead">
+  <h1 class="rise" data-s="1" data-d="1">When <em>agents</em> write the code</h1>
+  <div class="tag rise" data-s="1" data-d="3">Why tests matter more now, and which ones to invest in.</div>
+</div>
+</section>
+
+<!-- ============ 4. Why testing matters more ============ -->
+<section class="slide" id="s4" data-steps="3">
+<style>
+  #s4 .why { top: 220px; width: 528px; height: 650px; padding: 40px 44px; }
+  #s4 .why .n { font-size: 56px; font-weight: 700; color: var(--accent); line-height: 1; letter-spacing: -.02em; }
+  #s4 .why h3 { font-size: 38px; font-weight: 650; letter-spacing: -.015em; line-height: 1.15; margin-top: 18px; min-height: 88px; }
+  #s4 .vis { margin-top: 28px; height: 236px; }
+  #s4 .cap { font-size: 26px; line-height: 1.35; color: var(--muted); margin-top: 26px; }
+  #s4 .bub { display: flex; gap: 14px; align-items: flex-start; }
+  #s4 .av { width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex: none; position: relative; }
+  #s4 .av::after { content: ""; position: absolute; left: 15px; top: 15px; width: 18px; height: 18px; border-radius: 5px; background: #fff; }
+  #s4 .bub .tx { background: var(--accent-soft); border-radius: 6px 22px 22px 22px; padding: 16px 20px; font-size: 25px; line-height: 1.3; }
+  #s4 .real { margin-top: 18px; background: var(--bad-soft); border-radius: 18px; padding: 14px 20px; }
+  #s4 .real .kicker { color: var(--bad); font-size: 19px; }
+  #s4 .real .m { font-family: var(--mono); font-size: 23px; margin-top: 6px; color: var(--ink); }
+  #s4 .rl { font-size: 22px; color: var(--muted); font-weight: 560; }
+  #s4 .runs { display: flex; gap: 18px; margin-top: 18px; }
+  #s4 .run { width: 64px; height: 64px; }
+  #s4 .rk { display: flex; gap: 22px; margin-top: 18px; font-size: 21px; color: var(--muted); }
+  #s4 .rk span { display: inline-flex; align-items: center; gap: 8px; }
+  #s4 .rk i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+  #s4 .outro { position: absolute; left: 104px; top: 912px; font-size: 38px; font-weight: 600; letter-spacing: -.01em; }
+</style>
+<h2 class="rise" data-s="1">Why testing matters more with agents</h2>
+
+<div class="card why rise" data-s="1" style="left:104px">
+  <div class="n">1</div>
+  <h3>Agents are wrong<br>and don't know it</h3>
+  <div class="vis">
+    <div class="bub"><span class="av"></span><div class="tx">Fixed the upload bug. Everything works now.</div></div>
+    <div class="real"><div class="kicker">What actually happens</div><div class="m">Tap Post → spinner forever</div></div>
+  </div>
+  <div class="cap">The claim sounds the same whether it's true or false.</div>
+</div>
+
+<div class="card why rise" data-s="2" style="left:696px">
+  <div class="n">2</div>
+  <h3>Another agent<br>won't fix it</h3>
+  <div class="vis">
+    <div class="rl">Same buggy diff, a reviewer agent, 5 runs</div>
+    <div class="runs">
+      <span class="ico ok run" data-s="2" data-d="1"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="ico ok run" data-s="2" data-d="2"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="ico no solid run" data-s="2" data-d="3"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>
+      <span class="ico ok run" data-s="2" data-d="4"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="ico ok run" data-s="2" data-d="5"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="rk"><span><i style="background:var(--good)"></i>"Looks good"</span><span><i style="background:var(--bad)"></i>Found the bug</span></div>
+  </div>
+  <div class="cap">A reviewer is one more random sample, with the same blind spots. (Illustration)</div>
+</div>
+
+<div class="card why rise" data-s="3" style="left:1288px">
+  <div class="n">3</div>
+  <h3>You need a signal that never changes its mind</h3>
+  <div class="vis">
+    <div class="rl">Same buggy diff, a test, 5 runs</div>
+    <div class="runs">
+      <span class="ico no solid run" data-s="3" data-d="1"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>
+      <span class="ico no solid run" data-s="3" data-d="2"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>
+      <span class="ico no solid run" data-s="3" data-d="3"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>
+      <span class="ico no solid run" data-s="3" data-d="4"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>
+      <span class="ico no solid run" data-s="3" data-d="5"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="rk"><span><i style="background:var(--bad)"></i>FAIL, every time</span></div>
+  </div>
+  <div class="cap">Same code, same verdict. The agent can't talk its way past it.</div>
+</div>
+<div class="outro rise" data-s="3" data-d="6">A test turns "I think it works" into a fact.</div>
+</section>
+
+<!-- ============ 5. Negative prompts ============ -->
+<section class="slide" id="s5" data-steps="2">
+<style>
+  #s5 .st { width: 400px; padding: 30px 32px; display: flex; flex-direction: column; }
+  #s5 .st .kicker { color: var(--accent); }
+  #s5 .st h3 { font-size: 32px; font-weight: 650; letter-spacing: -.01em; margin-top: 10px; line-height: 1.15; }
+  #s5 .st .ex { margin-top: auto; font-family: var(--mono); font-size: 20px; background: var(--panel); border-radius: 14px; padding: 12px 16px; color: var(--ink); }
+  #s5 .st.enf { background: var(--accent-soft); box-shadow: inset 0 0 0 2.5px var(--accent), 0 24px 60px -36px rgba(30, 40, 70, .28); }
+  #s5 .st.enf .ex { background: var(--card); }
+  #s5 svg.br { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #s5 .bk { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  #s5 .bl { font-size: 26px; font-weight: 600; text-anchor: middle; }
+  #s5 .rs { position: absolute; top: 856px; left: 104px; right: 104px; display: flex; gap: 40px; }
+  #s5 .rs > div { flex: 1; display: flex; gap: 18px; align-items: flex-start; font-size: 27px; line-height: 1.3; }
+  #s5 .rs .ico { width: 44px; height: 44px; margin-top: 2px; }
+  #s5 .rs b { display: block; font-weight: 650; }
+  #s5 .rs span.d { color: var(--muted); }
+</style>
+<h2 class="rise" data-s="1">The hardest instruction is "don't"</h2>
+<p class="sub rise" data-s="1" data-d="1">Every rule you give an agent is a negative prompt: don't log emails, don't touch the tests, don't add sleep().</p>
+
+<div class="card st rise" data-s="1" data-d="2" style="left:104px;top:476px;height:244px">
+  <div class="kicker">1 · Ask</div><h3>Say it in the prompt</h3>
+  <div class="ex">"Don't log user emails."</div>
+</div>
+<div class="card st rise" data-s="1" data-d="3" style="left:541px;top:416px;height:304px">
+  <div class="kicker">2 · Remind</div><h3>Write it in CLAUDE.md or a skill</h3>
+  <div class="ex">- Never log PII</div>
+</div>
+<div class="card st rise" data-s="1" data-d="4" style="left:978px;top:356px;height:364px">
+  <div class="kicker">3 · Review</div><h3>Ask a reviewer agent to check</h3>
+  <div class="ex">"Does this log PII?"</div>
+</div>
+<div class="card st enf rise" data-s="2" style="left:1415px;top:296px;height:424px">
+  <div class="kicker">4 · Enforce</div><h3>A test, lint rule, or hook that fails</h3>
+  <div class="ex">assert email not in logs</div>
+</div>
+
+<svg class="br" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="1" data-d="5">
+    <path class="bk" style="stroke:var(--warm)" d="M110 748 L110 762 L1372 762 L1372 748"/>
+    <text class="bl" style="fill:var(--warm-ink)" x="741" y="804">Probabilistic: the model may still slip</text>
+  </g>
+  <g data-s="2" data-d="1">
+    <path class="bk" style="stroke:var(--accent)" d="M1421 748 L1421 762 L1809 762 L1809 748"/>
+    <text class="bl" style="fill:var(--accent)" x="1615" y="804">Deterministic: blocks every time</text>
+  </g>
+</svg>
+
+<div class="rs">
+  <div class="rise" data-s="1" data-d="5"><span class="ico no"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 7h16M4 12h11M4 17h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><div><b>Rules fade</b><span class="d">The longer the context, the less a line from the start counts.</span></div></div>
+  <div class="rise" data-s="1" data-d="5"><span class="ico no"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-dasharray="3 3.5"/></svg></span><div><b>"Don't" leaves no trace</b><span class="d">A slip looks like normal code. Nothing prompts a second look.</span></div></div>
+  <div class="rise" data-s="1" data-d="5"><span class="ico no"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="9.5" cy="9.5" r="1.4" fill="currentColor"/><circle cx="14.5" cy="14.5" r="1.4" fill="currentColor"/></svg></span><div><b>A reviewer is another roll</b><span class="d">It can miss the same slip, on a different run.</span></div></div>
+</div>
+</section>
+
+<!-- ============ 6. Don't -> check ============ -->
+<section class="slide" id="s6" data-steps="1">
+<style>
+  #s6 .tb { margin-top: 56px; display: grid; grid-template-columns: 600px 1fr 150px; column-gap: 0; }
+  #s6 .c { padding: 24px 28px; font-size: 29px; line-height: 1.3; display: flex; align-items: center; border-top: 1.5px solid #e1e4e9; }
+  #s6 .h { font-size: 22px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); border-top: 0; padding-top: 0; padding-bottom: 18px; }
+  #s6 .h.acc { color: var(--accent); }
+  #s6 .dn { font-family: var(--mono); font-size: 25px; color: var(--muted); }
+  #s6 .dn s { text-decoration-color: var(--bad); text-decoration-thickness: 3px; }
+  #s6 .ck { font-weight: 560; background: var(--accent-soft); }
+  #s6 .ck code { font-family: var(--mono); font-size: 24px; background: var(--card); border-radius: 8px; padding: 2px 8px; margin: 0 4px; }
+  #s6 .kd span { font-size: 20px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 6px 14px; }
+  #s6 .tb .ck.h { background: none; }
+  #s6 .outro { margin-top: 48px; font-size: 34px; font-weight: 560; line-height: 1.3; max-width: 1600px; }
+  #s6 .outro span { color: var(--muted); font-weight: 450; }
+</style>
+<h2 class="rise" data-s="1">Turn every "don't" into a check</h2>
+<div class="tb">
+  <div class="c h rise" data-s="1" data-d="1">Negative prompt</div><div class="c h acc ck rise" data-s="1" data-d="1">Deterministic check</div><div class="c h rise" data-s="1" data-d="1">Kind</div>
+
+  <div class="c dn rise" data-s="1" data-d="2"><s>"Don't log user emails."</s></div>
+  <div class="c ck rise" data-s="1" data-d="2">Sign up a fake user, then assert the email is not in the logs</div>
+  <div class="c kd rise" data-s="1" data-d="2"><span>Test</span></div>
+
+  <div class="c dn rise" data-s="1" data-d="3"><s>"Don't fix flaky tests with sleep()."</s></div>
+  <div class="c ck rise" data-s="1" data-d="3">A lint rule bans <code>sleep</code> in test files</div>
+  <div class="c kd rise" data-s="1" data-d="3"><span>Lint</span></div>
+
+  <div class="c dn rise" data-s="1" data-d="4"><s>"Don't use @ts-ignore."</s></div>
+  <div class="c ck rise" data-s="1" data-d="4"><code>ban-ts-comment</code> fails the build</div>
+  <div class="c kd rise" data-s="1" data-d="4"><span>Lint</span></div>
+
+  <div class="c dn rise" data-s="1" data-d="5"><s>"Don't edit the tests to pass."</s></div>
+  <div class="c ck rise" data-s="1" data-d="5">Check rules are read from main, so the change can't rewrite them</div>
+  <div class="c kd rise" data-s="1" data-d="5"><span>Gate</span></div>
+
+  <div class="c dn rise" data-s="1" data-d="5"><s>"Don't commit without verifying."</s></div>
+  <div class="c ck rise" data-s="1" data-d="5">A commit hook blocks if the session never ran <code>/verify</code></div>
+  <div class="c kd rise" data-s="1" data-d="5"><span>Hook</span></div>
+</div>
+<p class="outro rise" data-s="1" data-d="6">The agent keeps breaking a rule? Make it a hook or a test. <span>The Claude Code team does this, and it mostly stops the issue from coming back.</span></p>
+<div class="src">Source: Addy Osmani, "How the Claude Code team thinks about verification," claude.dev blog, Nov 2026.</div>
+</section>
+
+<!-- ============ Exercise 3: don'ts ============ -->
+<section class="slide" id="sEx3" data-steps="2">
+<style>
+  #sEx3 .dc { top: 290px; width: 544px; height: 470px; padding: 38px 40px; display: flex; flex-direction: column; }
+  #sEx3 .dc .dn { font-family: var(--mono); font-size: 25px; line-height: 1.4; color: var(--muted); }
+  #sEx3 .dc .dn s { text-decoration-color: var(--bad); text-decoration-thickness: 3px; }
+  #sEx3 .dc .q { font-size: 28px; font-weight: 600; margin-top: 26px; }
+  #sEx3 .dc .ansbox { margin-top: auto; font-size: 26px; line-height: 1.35; }
+</style>
+<div class="eyebrow ex rise" data-s="1">Exercise 3</div><span class="timer rise" data-s="1">· 3 min</span>
+<h2 class="rise" data-s="1">Turn these "don'ts" into checks</h2>
+<div class="card dc rise" data-s="1" data-d="1" style="left:104px">
+  <div class="dn"><s>"Don't call the real payment API in tests."</s></div>
+  <div class="q">What blocks it every time?</div>
+  <div class="ansbox" data-s="2" data-d="1"><span class="kicker">One answer</span>The test setup blocks all network calls. Any real call fails the test.</div>
+</div>
+<div class="card dc rise" data-s="1" data-d="2" style="left:688px">
+  <div class="dn"><s>"Don't commit API keys."</s></div>
+  <div class="q">What blocks it every time?</div>
+  <div class="ansbox" data-s="2" data-d="2"><span class="kicker">One answer</span>A pre-commit secret scanner, such as gitleaks, refuses the commit.</div>
+</div>
+<div class="card dc rise" data-s="1" data-d="3" style="left:1272px">
+  <div class="dn"><s>"Don't edit old database migrations."</s></div>
+  <div class="q">What blocks it every time?</div>
+  <div class="ansbox" data-s="2" data-d="3"><span class="kicker">One answer</span>CI fails if any existing migration file changed. New ones only.</div>
+</div>
+</section>
+
+<!-- ============ 7. What changes ============ -->
+<section class="slide" id="s7" data-steps="1">
+<style>
+  #s7 .cmp { position: relative; margin-top: 52px; display: grid; grid-template-columns: 250px 1fr 1fr; column-gap: 28px; }
+  #s7 .colbg { grid-column: 3; grid-row: 1 / span 6; background: var(--accent-soft); border-radius: 28px; box-shadow: inset 0 0 0 1.5px rgba(44, 89, 214, .18); }
+  #s7 .cell { position: relative; z-index: 1; padding: 24px 36px; font-size: 34px; line-height: 1.28; display: flex; align-items: center; }
+  #s7 .hd { font-size: 36px; font-weight: 650; letter-spacing: -.01em; padding-top: 28px; padding-bottom: 18px; }
+  #s7 .hd.ag { color: var(--accent); }
+  #s7 .k { grid-column: 1; font-size: 23px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding-left: 0; }
+  #s7 .b { grid-column: 2; color: var(--muted); }
+  #s7 .a { grid-column: 3; color: var(--ink); font-weight: 560; }
+  #s7 .r { border-top: 1.5px solid #e1e4e9; }
+  #s7 .a.r { border-top-color: rgba(44, 89, 214, .16); }
+  #s7 .outro { margin-top: 48px; font-size: 38px; line-height: 1.3; font-weight: 560; letter-spacing: -.01em; }
+</style>
+<h2 class="rise" data-s="1">What changes when agents write the code</h2>
+<div class="cmp">
+  <div class="colbg" data-s="1" data-d="1"></div>
+  <div class="cell hd" style="grid-row:1;grid-column:1"></div>
+  <div class="cell hd rise" style="grid-row:1;grid-column:2" data-s="1" data-d="1">Before agents</div>
+  <div class="cell hd ag rise" style="grid-row:1;grid-column:3" data-s="1" data-d="1">With agents</div>
+
+  <div class="cell k r rise" style="grid-row:2" data-s="1" data-d="2">Writes code</div>
+  <div class="cell b r rise" style="grid-row:2" data-s="1" data-d="2">Developers</div>
+  <div class="cell a r rise" style="grid-row:2" data-s="1" data-d="2">Agents, many at once</div>
+
+  <div class="cell k r rise" style="grid-row:3" data-s="1" data-d="3">Tests it</div>
+  <div class="cell b r rise" style="grid-row:3" data-s="1" data-d="3">A QA team, after the build</div>
+  <div class="cell a r rise" style="grid-row:3" data-s="1" data-d="3">The agent, before every commit</div>
+
+  <div class="cell k r rise" style="grid-row:4" data-s="1" data-d="4">Feedback</div>
+  <div class="cell b r rise" style="grid-row:4" data-s="1" data-d="4">Days</div>
+  <div class="cell a r rise" style="grid-row:4" data-s="1" data-d="4">Seconds to minutes</div>
+
+  <div class="cell k r rise" style="grid-row:5" data-s="1" data-d="5">Says "wrong"</div>
+  <div class="cell b r rise" style="grid-row:5" data-s="1" data-d="5">A person</div>
+  <div class="cell a r rise" style="grid-row:5" data-s="1" data-d="5">A check that gives the same answer every run</div>
+
+  <div class="cell k r rise" style="grid-row:6" data-s="1" data-d="5">Your job</div>
+  <div class="cell b r rise" style="grid-row:6" data-s="1" data-d="5">Write code, then test it</div>
+  <div class="cell a r rise" style="grid-row:6" data-s="1" data-d="5">Define "done", then read the evidence</div>
+</div>
+<p class="outro rise" data-s="1" data-d="6">Testing moves from the end of the pipeline into the agent's inner loop.</p>
+</section>
+
+<!-- ============ 8. Verification loop ============ -->
+<section class="slide" id="s8" data-steps="2">
+<style>
+  #s8 svg.lp { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #s8 .sc { left: 1210px; top: 236px; width: 606px; height: 690px; padding: 40px 44px; }
+  #s8 .sc h3 { font-size: 38px; font-weight: 650; letter-spacing: -.015em; }
+  #s8 .row { margin-top: 36px; }
+  #s8 .row .kicker { font-size: 20px; }
+  #s8 .row .ln { font-size: 28px; font-weight: 560; margin-top: 8px; }
+  #s8 .ags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; width: 470px; }
+  #s8 .ags i { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); position: relative; }
+  #s8 .ags i::after { content: ""; position: absolute; left: 10px; top: 10px; width: 12px; height: 12px; border-radius: 3px; background: #fff; }
+  #s8 .ags.few i { background: #a3a9b4; }
+  #s8 .res { font-size: 26px; color: var(--muted); margin-top: 14px; }
+  #s8 .res b { color: var(--accent); }
+  #s8 .sc .foot { position: absolute; left: 44px; right: 44px; bottom: 34px; font-size: 19px; color: var(--faint); line-height: 1.35; }
+</style>
+<h2 class="rise" data-s="1">The verification loop</h2>
+<svg class="lp flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="s8a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+    <marker id="s8b" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#2c59d6"/></marker>
+    <marker id="s8r" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c2412d"/></marker>
+    <marker id="s8g" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#1f8a5b"/></marker>
+  </defs>
+  <g data-s="1">
+    <rect class="bx" x="104" y="250" width="320" height="96" rx="20"/><text class="t b" x="264" y="298">You define "done"</text>
+    <rect class="bx key" x="560" y="250" width="380" height="96" rx="20"/><text class="t b" x="750" y="298">Agent changes code</text>
+    <rect class="bx" x="560" y="510" width="380" height="160" rx="22"/>
+    <text class="t b" x="750" y="556">Checks run</text>
+    <text class="cap" x="750" y="600">tests · build · lint · E2E</text>
+    <text class="cap" x="750" y="636">same input, same verdict</text>
+  </g>
+  <g data-s="1" data-d="2">
+    <path class="arrow fl" marker-end="url(#s8a)" d="M426 298 L554 298"/>
+    <path class="arrow acc fl" marker-end="url(#s8b)" d="M750 348 L750 504"/>
+    <path class="arrow bad fl" marker-end="url(#s8r)" d="M942 590 C1090 590 1090 298 946 298"/>
+    <text class="lbl bad" x="1080" y="420">FAIL</text>
+    <text class="lbl mut" x="1080" y="456" style="font-weight:500">exact error</text>
+    <text class="lbl mut" x="1080" y="488" style="font-weight:500">goes back</text>
+    <path class="arrow dash fl ghost" marker-end="url(#s8a)" d="M556 620 C380 620 264 560 264 352"/>
+    <text class="lbl mut" x="296" y="430" style="font-weight:500">after 3 failed</text>
+    <text class="lbl mut" x="296" y="464" style="font-weight:500">rounds, ask you</text>
+  </g>
+  <g data-s="2">
+    <rect class="bx good" x="560" y="826" width="380" height="96" rx="20"/><text class="t b" x="750" y="874">Evidence</text>
+    <rect class="bx" x="104" y="826" width="320" height="96" rx="20"/><text class="t b" x="264" y="874">You read it</text>
+    <path class="arrow rep fl" marker-end="url(#s8g)" d="M750 672 L750 820"/>
+    <text class="lbl rep" x="772" y="746">PASS</text>
+    <path class="arrow fl" marker-end="url(#s8a)" d="M558 874 L430 874"/>
+    <text class="cap" x="750" y="958">screenshots · logs · red, then green</text>
+  </g>
+</svg>
+<div class="card sc rise" data-s="2" data-d="2">
+  <h3>Why it scales</h3>
+  <div class="row"><div class="kicker">You check every diff</div>
+    <div class="ags few"><i></i><i></i></div>
+    <div class="res">1 or 2 agents at a time</div></div>
+  <div class="row"><div class="kicker">The loop checks, you read evidence</div>
+    <div class="ags"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="res"><b>Dozens</b> in parallel</div></div>
+  <div class="foot">The Claude Code team says about 90% of its code is written and reviewed by Claude. Osmani, claude.dev, Nov 2026.</div>
+</div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s8 = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
+</section>
+
+<!-- ============ 9. Three tests ============ -->
+<section class="slide" id="s9" data-steps="1">
+<style>
+  #s9 .tc { top: 330px; width: 544px; height: 520px; padding: 40px 44px; display: flex; flex-direction: column; }
+  #s9 .tc .ic { width: 72px; height: 72px; border-radius: 20px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
+  #s9 .tc h3 { font-size: 42px; font-weight: 650; letter-spacing: -.015em; margin-top: 26px; }
+  #s9 .tc .q { font-size: 32px; line-height: 1.25; margin-top: 12px; font-weight: 520; }
+  #s9 .tc .how { font-size: 26px; color: var(--muted); margin-top: 14px; line-height: 1.35; }
+  #s9 .tc .best { margin-top: auto; padding-top: 20px; border-top: 1.5px solid #e1e4e9; font-size: 25px; line-height: 1.35; }
+  #s9 .tc .best .kicker { font-size: 19px; display: block; margin-bottom: 6px; }
+  #s9 .pick { position: absolute; top: -18px; right: 32px; font-size: 19px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--accent); border-radius: 999px; padding: 8px 16px; }
+  #s9 .note { position: absolute; left: 104px; top: 890px; font-size: 30px; color: var(--muted); max-width: 1600px; }
+  #s9 .note b { color: var(--ink); font-weight: 600; }
+</style>
+<div class="eyebrow rise" data-s="1">Claude Code team</div>
+<h2 class="rise" data-s="1">Three tests worth investing in</h2>
+
+<div class="card tc rise" data-s="1" data-d="1" style="left:104px">
+  <span class="pick">Pick this if only one</span>
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><rect x="11" y="4" width="18" height="32" rx="4" fill="none" stroke="#2c59d6" stroke-width="2.6"/><path d="M16 22l3 3 6-7" fill="none" stroke="#2c59d6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h3>End-to-end</h3>
+  <div class="q">Does the real feature work?</div>
+  <div class="how">Drive the running app the way a user would.</div>
+  <div class="best"><span class="kicker">Best for</span>User flows: post a video, like, comment</div>
+</div>
+<div class="card tc rise" data-s="1" data-d="2" style="left:688px">
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><g fill="#2c59d6"><circle cx="9" cy="10" r="3"/><circle cx="20" cy="7" r="3"/><circle cx="31" cy="12" r="3"/><circle cx="12" cy="21" r="3"/><circle cx="26" cy="22" r="3"/><circle cx="8" cy="31" r="3"/><circle cx="20" cy="32" r="3"/><circle cx="32" cy="30" r="3"/></g></svg></div>
+  <h3>Property-based</h3>
+  <div class="q">Does a rule hold for any input?</div>
+  <div class="how">State the rule. The tool tries thousands of inputs to break it.</div>
+  <div class="best"><span class="kicker">Best for</span>Parsers, counters, money, edge cases</div>
+</div>
+<div class="card tc rise" data-s="1" data-d="3" style="left:1272px">
+  <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><g fill="none" stroke="#2c59d6" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="8" width="13" height="24" rx="3"/><rect x="23" y="8" width="13" height="24" rx="3"/><path d="M8 15h5M8 20h5M27 15h5M27 20h5"/></g></svg></div>
+  <h3>Differential</h3>
+  <div class="q">Does new behave like old?</div>
+  <div class="how">Feed both the same inputs and compare outputs.</div>
+  <div class="best"><span class="kicker">Best for</span>Migrations, rewrites, big refactors</div>
+</div>
+<p class="note rise" data-s="1" data-d="5"><b>Unit tests still help:</b> fast and rarely flaky. But they can pass while the feature is broken.</p>
+</section>
+
+<!-- ============ 10. E2E ============ -->
+<section class="slide" id="s10" data-steps="2">
+<style>
+  #s10 .lb { position: absolute; top: 232px; }
+  #s10 .lb .kicker { font-size: 22px; }
+  #s10 .ut { position: absolute; left: 104px; top: 280px; width: 700px; height: 330px; }
+  #s10 .utc { position: absolute; left: 104px; top: 636px; width: 700px; font-size: 30px; line-height: 1.35; }
+  #s10 .utc b { color: var(--bad); }
+  #s10 .utc span { display: block; font-size: 25px; color: var(--muted); margin-top: 12px; }
+  #s10 .e2e { left: 860px; top: 280px; width: 956px; height: 580px; padding: 36px 40px; }
+  #s10 .steps { width: 530px; display: flex; flex-direction: column; gap: 16px; }
+  #s10 .sp { display: flex; align-items: center; gap: 16px; font-size: 27px; line-height: 1.25; }
+  #s10 .sp .ico { width: 40px; height: 40px; }
+  #s10 .sp.no { color: var(--bad); font-weight: 600; }
+  #s10 .sp.off { color: var(--faint); }
+  #s10 .sum { margin-top: 26px; width: 530px; background: var(--bad-soft); border-radius: 18px; padding: 18px 22px; font-size: 25px; line-height: 1.35; }
+  #s10 .sum .kicker { color: var(--bad); font-size: 19px; display: block; margin-bottom: 6px; }
+  #s10 .ph { position: absolute; right: 44px; top: 36px; width: 280px; height: 508px; border-radius: 42px; background: var(--ink); padding: 14px; }
+  #s10 .scr { width: 100%; height: 100%; border-radius: 30px; background: #f4f5f7; position: relative; overflow: hidden; }
+  #s10 .vid { position: absolute; left: 16px; right: 16px; top: 44px; height: 220px; border-radius: 16px; background: linear-gradient(135deg, #2c59d6, #7a4fd6 60%, #d64f8a); }
+  #s10 .vid::after { content: ""; position: absolute; left: 50%; top: 50%; margin: -18px 0 0 -12px; border-left: 30px solid rgba(255,255,255,.85); border-top: 18px solid transparent; border-bottom: 18px solid transparent; }
+  #s10 .fld { position: absolute; left: 16px; right: 16px; top: 282px; height: 52px; border-radius: 12px; background: #fff; border: 1.5px solid #d5d9e0; font-size: 19px; padding: 14px 14px; color: var(--ink); font-family: var(--mono); }
+  #s10 .post { position: absolute; left: 16px; right: 16px; bottom: 24px; height: 58px; border-radius: 14px; background: #d5d9e0; color: #8b919c; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  #s10 .post::after { content: ""; position: absolute; inset: -7px; border-radius: 19px; border: 3px dashed var(--bad); }
+  #s10 .ptag { position: absolute; right: 22px; bottom: 98px; font-size: 16px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--bad); border-radius: 8px; padding: 4px 10px; }
+  #s10 .drv { position: absolute; left: 104px; top: 912px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; width: 1712px; }
+  #s10 .drv .kicker { margin-right: 6px; }
+</style>
+<h2 class="rise" data-s="1">End-to-end: give the agent hands and eyes</h2>
+<div class="lb rise" data-s="1" style="left:104px"><span class="kicker">Unit test fails</span></div>
+<div class="code ut rise" data-s="1" data-d="1"><span class="p">$</span> npm test
+
+ <span class="r">FAIL</span>  upload.test.ts
+  <span class="r">✕</span> uploads a video <span class="c">(30012 ms)</span>
+
+  <span class="r">Error: Timeout after 30 seconds</span></div>
+<div class="utc rise" data-s="1" data-d="2"><b>No step. No trace.</b> The agent can only guess.
+  <span>Unit tests can pass while the feature is broken: the test and the agent can both miss the full task.</span></div>
+
+<div class="lb rise" data-s="2" style="left:860px"><span class="kicker" style="color:var(--accent)">E2E run fails: post a video</span></div>
+<div class="card e2e rise" data-s="2" data-d="1">
+  <div class="steps">
+    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Open the app, signed in</div>
+    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Record a 15-second clip</div>
+    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Add the caption "#cs101"</div>
+    <div class="sp no"><span class="ico no solid"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>Tap Post: the button stays disabled</div>
+    <div class="sp off"><span class="ico off"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"/></svg></span>Video shows in followers' feeds</div>
+  </div>
+  <div class="sum"><span class="kicker">What the agent gets back</span>Failed at step 4. "Post" stayed disabled after the caption was added. Screenshot attached.</div>
+  <div class="ph"><div class="scr">
+    <div class="vid"></div>
+    <div class="fld">#cs101</div>
+    <span class="ptag">disabled</span>
+    <div class="post">Post</div>
+  </div></div>
+</div>
+
+<div class="drv rise" data-s="2" data-d="3"><span class="kicker">How the agent drives it</span>
+  <span class="chip">Chrome DevTools Protocol · web</span><span class="chip">iOS / Android simulator</span><span class="chip">API harness · backend</span><span class="chip">Computer use · desktop</span></div>
+</section>
+
+<!-- ============ 11. Property-based ============ -->
+<section class="slide" id="s11" data-steps="2">
+<style>
+  #s11 .pc { position: absolute; left: 104px; top: 236px; width: 900px; height: 392px; }
+  #s11 .po { position: absolute; left: 104px; top: 652px; width: 900px; height: 136px; background: #2a1714; }
+  #s11 .poc { position: absolute; left: 104px; top: 812px; width: 900px; font-size: 26px; color: var(--muted); line-height: 1.35; }
+  #s11 .props { position: absolute; left: 1064px; top: 236px; width: 752px; }
+  #s11 .pr { display: flex; flex-direction: column; padding: 22px 0; border-top: 1.5px solid #e1e4e9; }
+  #s11 .pr:first-child { border-top: 0; padding-top: 0; }
+  #s11 .pr .nm { font-size: 30px; font-weight: 650; }
+  #s11 .pr .ex { font-family: var(--mono); font-size: 24px; color: var(--accent); margin-top: 8px; }
+  #s11 .pr .mn { font-size: 24px; color: var(--muted); margin-top: 6px; }
+  #s11 .libs { position: absolute; left: 1064px; top: 846px; width: 752px; font-size: 25px; color: var(--muted); line-height: 1.4; }
+  #s11 .libs b { color: var(--ink); font-weight: 600; }
+</style>
+<h2 class="rise" data-s="1">Property-based: state a rule, let the machine attack it</h2>
+<div class="code pc rise" data-s="1" data-d="1"><span class="k">from</span> hypothesis <span class="k">import</span> given, strategies <span class="k">as</span> st
+
+<span class="y">@given</span>(st.lists(st.sampled_from([<span class="s">"like"</span>, <span class="s">"unlike"</span>])))
+<span class="k">def</span> test_likes_never_negative(taps):
+    post = Post(likes=<span class="y">0</span>)
+    <span class="k">for</span> tap <span class="k">in</span> taps:
+        post.tap(tap, user=<span class="s">"u1"</span>)
+    <span class="k">assert</span> post.likes >= <span class="y">0</span></div>
+<div class="code po rise" data-s="2"><span class="r">Falsifying example:</span> taps=[<span class="s">'unlike'</span>]
+<span class="r">AssertionError:</span> assert -1 >= 0</div>
+<div class="poc rise" data-s="2" data-d="1">Hypothesis tried hundreds of tap sequences, then shrank the failure to the smallest one: unlike a post you never liked.</div>
+
+<div class="props">
+  <div class="pr rise" data-s="1" data-d="2"><span class="nm">Round-trip</span><span class="ex">decode(encode(draft)) == draft</span><span class="mn">Saving and reopening a draft loses nothing</span></div>
+  <div class="pr rise" data-s="1" data-d="3"><span class="nm">Invariant</span><span class="ex">post.likes >= 0</span><span class="mn">True after any sequence of actions</span></div>
+  <div class="pr rise" data-s="1" data-d="4"><span class="nm">Idempotent</span><span class="ex">upload twice == upload once</span><span class="mn">A retry never double-posts</span></div>
+  <div class="pr rise" data-s="1" data-d="5"><span class="nm">Equivalence</span><span class="ex">fast_rank(feed) == slow_rank(feed)</span><span class="mn">The optimized code matches the simple, correct one</span></div>
+</div>
+<div class="libs rise" data-s="1" data-d="6"><b>Why it suits agents:</b> the rule comes from the spec, not from the agent's code, so it has different blind spots.<br><b>Tools:</b> Hypothesis (Python), fast-check (JS/TS), proptest (Rust)</div>
+</section>
+
+<!-- ============ Exercise 4: properties ============ -->
+<section class="slide" id="sEx4" data-steps="2">
+<style>
+  #sEx4 .spec { left: 104px; top: 256px; width: 1712px; height: 120px; padding: 0 44px; display: flex; align-items: center; gap: 24px; }
+  #sEx4 .spec .kicker { color: var(--accent); }
+  #sEx4 .spec code { font-family: var(--mono); font-size: 32px; font-weight: 600; }
+  #sEx4 .spec span.d { font-size: 28px; color: var(--muted); }
+  #sEx4 .q { position: absolute; left: 104px; top: 420px; font-size: 32px; font-weight: 560; }
+  #sEx4 .ps { position: absolute; left: 104px; top: 496px; width: 900px; display: flex; flex-direction: column; gap: 14px; }
+  #sEx4 .ps .ansbox { font-size: 27px; line-height: 1.32; }
+  #sEx4 .ps .ansbox b { font-weight: 650; }
+  #sEx4 .code { position: absolute; left: 1064px; top: 496px; width: 752px; font-size: 22px; }
+</style>
+<div class="eyebrow ex rise" data-s="1">Exercise 4</div><span class="timer rise" data-s="1">· 4 min</span>
+<h2 class="rise" data-s="1">Write properties for the For You feed</h2>
+<div class="card spec rise" data-s="1" data-d="1"><span class="kicker">Function</span><code>rank(videos, user)</code><span class="d">returns the videos to show, best first</span></div>
+<p class="q rise" data-s="1" data-d="2">You can't say what the right order is. Name rules that hold for any input.</p>
+<div class="ps">
+  <div class="ansbox" data-s="2" data-d="1"><b>Nothing invented.</b> Every video shown came from the input.</div>
+  <div class="ansbox" data-s="2" data-d="2"><b>No duplicates.</b> Each video shows up once.</div>
+  <div class="ansbox" data-s="2" data-d="3"><b>Blocked creators never appear.</b></div>
+  <div class="ansbox" data-s="2" data-d="4"><b>Same input, same order.</b> Ranking is repeatable.</div>
+</div>
+<div class="code rise" data-s="2" data-d="5"><span class="y">@given</span>(st.lists(videos()), users())
+<span class="k">def</span> test_rank_invents_nothing(vs, u):
+    out = rank(vs, u)
+    <span class="k">assert</span> set(out) <= set(vs)
+    <span class="k">assert</span> len(out) == len(set(out))</div>
+</section>
+
+<!-- ============ 12. Differential ============ -->
+<section class="slide" id="s12" data-steps="1">
+<style>
+  #s12 svg.df { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #s12 .bc { top: 766px; width: 544px; height: 200px; padding: 32px 36px; }
+  #s12 .bc h3 { font-size: 32px; font-weight: 650; letter-spacing: -.01em; }
+  #s12 .bc p { font-size: 25px; color: var(--muted); margin-top: 10px; line-height: 1.35; }
+</style>
+<h2 class="rise" data-s="1">Differential: the old system is the oracle</h2>
+<p class="sub rise" data-s="1" data-d="1">Example: an agent rewrites the comment service from Python to Go. Nothing should change.</p>
+<svg class="df flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="s12a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+    <marker id="s12g" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#1f8a5b"/></marker>
+    <marker id="s12r" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c2412d"/></marker>
+  </defs>
+  <g data-s="1" data-d="1">
+    <rect class="bx" x="104" y="390" width="300" height="140" rx="22"/>
+    <text class="t b" x="254" y="440">Real requests</text><text class="cap" x="254" y="482">sampled from traffic</text>
+    <rect class="bx" x="520" y="250" width="340" height="120" rx="22"/>
+    <text class="t b" x="690" y="294">Old service</text><text class="cap" x="690" y="334">Python · the oracle</text>
+    <rect class="bx key" x="520" y="550" width="340" height="120" rx="22"/>
+    <text class="t b" x="690" y="594">New service</text><text class="cap" x="690" y="634">Go · written by an agent</text>
+    <rect class="bx" x="980" y="390" width="300" height="140" rx="22"/>
+    <text class="t b" x="1130" y="440">Normalize</text><text class="cap" x="1130" y="482">drop ids, timestamps</text>
+    <rect class="bx" x="1380" y="390" width="200" height="140" rx="22"/>
+    <text class="t b" x="1480" y="460">Compare</text>
+    <rect class="bx good" x="1640" y="270" width="176" height="90" rx="20"/><text class="t b" x="1728" y="315">Same</text>
+    <rect class="bx bad" x="1640" y="560" width="176" height="90" rx="20"/><text class="t b" x="1728" y="605">Different</text>
+    <text class="cap" x="1728" y="684">a bug, or an</text><text class="cap" x="1728" y="714">approved change</text>
+  </g>
+  <g data-s="1" data-d="3">
+    <path class="arrow fl" marker-end="url(#s12a)" d="M406 445 C462 445 462 310 514 310"/>
+    <path class="arrow fl" marker-end="url(#s12a)" d="M406 475 C462 475 462 610 514 610"/>
+    <path class="arrow fl" marker-end="url(#s12a)" d="M862 310 C920 310 920 445 974 445"/>
+    <path class="arrow acc fl" marker-end="url(#s12a)" d="M862 610 C920 610 920 475 974 475"/>
+    <path class="arrow fl" marker-end="url(#s12a)" d="M1282 460 L1374 460"/>
+    <path class="arrow rep fl" marker-end="url(#s12g)" d="M1582 440 C1612 440 1608 315 1634 315"/>
+    <path class="arrow bad fl" marker-end="url(#s12r)" d="M1582 480 C1612 480 1608 605 1634 605"/>
+  </g>
+</svg>
+<div class="card bc rise" data-s="1" data-d="4" style="left:104px"><h3>No spec needed</h3><p>Old behavior is the answer key, even where the docs drifted.</p></div>
+<div class="card bc rise" data-s="1" data-d="5" style="left:688px"><h3>Normalize the noise</h3><p>Ignore whitespace, ids, and times, so only real differences show up.</p></div>
+<div class="card bc rise" data-s="1" data-d="6" style="left:1272px"><h3>Keep an approved list</h3><p>Intended changes go on a list. Everything else is a bug until shown otherwise.</p></div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s12 = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
+</section>
+
+<!-- ============ 13. verify skill + ladder ============ -->
+<section class="slide" id="s13" data-steps="2">
+<style>
+  #s13 .fc { left: 104px; top: 236px; width: 840px; height: 610px; overflow: hidden; }
+  #s13 .fh { display: flex; align-items: center; gap: 12px; padding: 22px 30px; background: var(--panel); border-bottom: 1.5px solid #e1e4e9; font-family: var(--mono); font-size: 22px; color: var(--muted); }
+  #s13 .fh i { width: 14px; height: 14px; border-radius: 50%; background: #d5d9e0; }
+  #s13 .fb { padding: 26px 34px; font-family: var(--mono); font-size: 23px; line-height: 1.6; white-space: pre; color: var(--ink); }
+  #s13 .fb .c { color: var(--faint); } #s13 .fb .k { color: var(--accent); font-weight: 600; }
+  #s13 .q { position: absolute; left: 104px; top: 878px; width: 840px; font-size: 27px; line-height: 1.35; color: var(--muted); }
+  #s13 .q b { color: var(--ink); font-weight: 600; }
+  #s13 svg.ld { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #s13 .bar { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+  #s13 .bar.sh { fill: var(--panel); stroke: #b4bac4; }
+  #s13 .bl { font-size: 21px; fill: var(--ink); text-anchor: middle; font-weight: 560; }
+  #s13 .bt { font-size: 19px; fill: var(--muted); text-anchor: middle; }
+  #s13 .ttl { font-size: 34px; font-weight: 650; fill: var(--ink); }
+  #s13 .brk { fill: none; stroke-width: 3; stroke-linecap: round; }
+  #s13 .bk { font-size: 23px; font-weight: 600; text-anchor: middle; }
+  #s13 .lc { position: absolute; left: 1040px; top: 878px; width: 776px; font-size: 27px; line-height: 1.35; color: var(--muted); }
+</style>
+<h2 class="rise" data-s="1">Smoke-test every change with a verify skill</h2>
+<div class="card fc rise" data-s="1" data-d="1">
+  <div class="fh"><i></i><i></i><i></i>.claude/skills/verify/SKILL.md</div>
+  <div class="fb"><span class="c">---</span>
+<span class="k">name:</span> verify
+<span class="k">description:</span> Boot the app and check that
+  the change works. Use before every commit.
+<span class="c">---</span>
+1. Run `npm run dev`, wait for :3000
+2. Open the screen you changed
+3. Do the user flow, take a screenshot
+4. Read the console and server log
+5. Report PASS or FAIL, with the evidence</div>
+</div>
+<div class="q rise" data-s="1" data-d="3"><b>"This is how we test nearly all changes at Anthropic."</b> Keep it fast and reliable.</div>
+
+<svg class="ld" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="2">
+    <text class="ttl" x="1040" y="262">Cheap checks first</text>
+    <g transform="translate(1040 0)">
+      <rect class="bar" x="0"   y="700" width="96" height="60"  rx="10"/><text class="bt" x="48"  y="686">sec</text>
+      <rect class="bar" x="112" y="660" width="96" height="100" rx="10"/><text class="bt" x="160" y="646">sec</text>
+      <rect class="bar" x="224" y="610" width="96" height="150" rx="10"/><text class="bt" x="272" y="596">min</text>
+      <rect class="bar" x="336" y="550" width="96" height="210" rx="10"/><text class="bt" x="384" y="536">min</text>
+      <rect class="bar sh" x="448" y="480" width="96" height="280" rx="10"/><text class="bt" x="496" y="466">min</text>
+      <rect class="bar sh" x="560" y="400" width="96" height="360" rx="10"/><text class="bt" x="608" y="386">10+ min</text>
+      <rect class="bar sh" x="672" y="310" width="96" height="450" rx="10"/><text class="bt" x="720" y="296">hours</text>
+      <text class="bl" x="48"  y="790">Lint,</text><text class="bl" x="48"  y="816">types</text>
+      <text class="bl" x="160" y="790">Unit</text><text class="bl" x="160" y="816">tests</text>
+      <text class="bl" x="272" y="790">Build</text>
+      <text class="bl" x="384" y="790">verify</text><text class="bl" x="384" y="816">skill</text>
+      <text class="bl" x="496" y="790">Code</text><text class="bl" x="496" y="816">review</text>
+      <text class="bl" x="608" y="790">CI</text>
+      <text class="bl" x="720" y="790">Human</text>
+      <path class="brk" style="stroke:var(--accent)" d="M2 836 L2 846 L430 846 L430 836"/>
+      <text class="bk" style="fill:var(--accent)" x="216" y="866" dominant-baseline="hanging"></text>
+      <path class="brk" style="stroke:#b4bac4" d="M450 836 L450 846 L766 846 L766 836"/>
+    </g>
+  </g>
+</svg>
+<div class="lc rise" data-s="2" data-d="2"><b style="color:var(--accent)">Local, before the PR</b> · <b style="color:var(--faint)">shared</b><br>Don't spend shared review and CI on a bug the agent could catch itself.</div>
+<div class="src" style="left:1040px;max-width:780px">Quote and ladder: Osmani, claude.dev, Nov 2026.</div>
+</section>
+
+<!-- ============ 14. Keep the verifier honest ============ -->
+<section class="slide" id="s14" data-steps="1">
+<style>
+  #s14 .hc { width: 544px; height: 316px; padding: 34px 38px; }
+  #s14 .hc .kicker { color: var(--accent); font-size: 20px; }
+  #s14 .hc h3 { font-size: 34px; font-weight: 650; letter-spacing: -.01em; line-height: 1.15; margin-top: 12px; }
+  #s14 .hc p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.38; }
+</style>
+<h2 class="rise" data-s="1">Keep the verifier honest</h2>
+<div class="card hc rise" data-s="1" data-d="1" style="left:104px;top:226px"><div class="kicker">Out of reach</div><h3>A change can't edit its own checks</h3><p>Review rules are read from the main branch, never from the PR.</p></div>
+<div class="card hc rise" data-s="1" data-d="2" style="left:688px;top:226px"><div class="kicker">Fresh</div><h3>Review the commit you ship</h3><p>A pass on an older commit means nothing.</p></div>
+<div class="card hc rise" data-s="1" data-d="3" style="left:1272px;top:226px"><div class="kicker">No retry-until-green</div><h3>Flaky tests get fixed or deleted</h3><p>No sleeps, no skips. Find the cause, or delete it and write down why.</p></div>
+<div class="card hc rise" data-s="1" data-d="4" style="left:104px;top:578px"><div class="kicker">Escalate</div><h3>Three strikes, then a human</h3><p>After three failed rounds the agent stops and asks.</p></div>
+<div class="card hc rise" data-s="1" data-d="5" style="left:688px;top:578px"><div class="kicker">Roll out slowly</div><h3>Off → observe → enforce</h3><p>A new gate first only logs what it would block, to catch false alarms.</p></div>
+<div class="card hc rise" data-s="1" data-d="6" style="left:1272px;top:578px"><div class="kicker">Learn</div><h3>Test the checks too</h3><p>Score them on past bugs that got reverted. Every miss becomes a new rule.</p></div>
+<div class="src">Source: Osmani, "How the Claude Code team thinks about verification," claude.dev, Nov 2026.</div>
+</section>
+
+<!-- ============ 15. pstack: prove it works ============ -->
+<section class="slide" id="s15" data-steps="2">
+<style>
+  #s15 .col { top: 340px; width: 828px; height: 500px; padding: 36px 44px; }
+  #s15 .col h3 { font-size: 36px; font-weight: 650; display: flex; align-items: center; gap: 14px; }
+  #s15 .col ul { list-style: none; margin-top: 26px; display: flex; flex-direction: column; gap: 18px; }
+  #s15 .col li { display: flex; gap: 16px; align-items: flex-start; font-size: 29px; line-height: 1.3; }
+  #s15 .col li .ico { width: 12px; height: 12px; margin-top: 15px; }
+  #s15 .col.bad li .ico { background: #b4bac4; }
+  #s15 .col li small { display: block; font-size: 23px; color: var(--muted); margin-top: 4px; }
+  #s15 .col.bad li { color: var(--muted); }
+  #s15 .col.good { background: var(--good-soft); box-shadow: inset 0 0 0 2px rgba(31,138,91,.35); }
+  #s15 .qt { position: absolute; left: 104px; top: 880px; width: 1712px; display: flex; gap: 64px; font-size: 29px; line-height: 1.35; }
+  #s15 .qt div { flex: 1; padding-left: 24px; border-left: 5px solid var(--accent); }
+</style>
+<div class="eyebrow rise" data-s="1">pstack · Lauren Tan (poteto)</div>
+<h2 class="rise" data-s="1">Prove it works, on the real thing</h2>
+<div class="card col bad rise" data-s="1" data-d="1" style="left:104px">
+  <h3><span class="ico no" style="width:44px;height:44px"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></span>Doesn't count</h3>
+  <ul>
+    <li><span class="ico off"></span>"It compiles"</li>
+    <li><span class="ico off"></span>The agent says it's done</li>
+    <li><span class="ico off"></span>Old or cached output</li>
+    <li><span class="ico off"></span>The file changed</li>
+    <li><span class="ico off"></span><div>Unit tests pass<small>They show branch behavior, not that the bug is gone</small></div></li>
+  </ul>
+</div>
+<div class="card col good rise" data-s="2" style="left:988px">
+  <h3><span class="ico ok" style="width:44px;height:44px;background:#fff"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Counts</h3>
+  <ul>
+    <li><span class="ico ok" style="background:var(--good)"></span>Run the feature</li>
+    <li><span class="ico ok" style="background:var(--good)"></span>Read the actual value</li>
+    <li><span class="ico ok" style="background:var(--good)"></span>Check on the same surface as the bug</li>
+    <li><span class="ico ok" style="background:var(--good)"></span>Paste the output: failing, then passing</li>
+    <li><span class="ico ok" style="background:var(--good)"></span>A script anyone can rerun</li>
+  </ul>
+</div>
+<div class="qt rise" data-s="2" data-d="3">
+  <div>When a check fails, first doubt how you looked, then the system.</div>
+  <div>Never hand the human a check the agent could run itself.</div>
+</div>
+</section>
+
+<!-- ============ 16. Bug fix: red then green ============ -->
+<section class="slide" id="s16" data-steps="2">
+<style>
+  #s16 svg.tl { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #s16 .ln { stroke: var(--line); stroke-width: 3; }
+  #s16 .nd { fill: var(--card); stroke: var(--accent); stroke-width: 3; }
+  #s16 .nd.r { stroke: var(--bad); fill: var(--bad-soft); }
+  #s16 .nd.g { stroke: var(--good); fill: var(--good-soft); }
+  #s16 .nt { font-size: 26px; font-weight: 700; fill: var(--accent); text-anchor: middle; dominant-baseline: central; }
+  #s16 .nt.r { fill: var(--bad); } #s16 .nt.g { fill: var(--good); }
+  #s16 .sl { font-size: 26px; font-weight: 600; fill: var(--ink); text-anchor: middle; }
+  #s16 .sc { font-size: 22px; fill: var(--muted); text-anchor: middle; }
+  #s16 .term { position: absolute; left: 104px; top: 520px; width: 980px; height: 400px; }
+  #s16 .rules { left: 1144px; top: 520px; width: 672px; height: 400px; padding: 34px 40px; }
+  #s16 .rules h3 { font-size: 32px; font-weight: 650; }
+  #s16 .rules ul { list-style: none; margin-top: 18px; display: flex; flex-direction: column; gap: 14px; }
+  #s16 .rules li { font-size: 26px; line-height: 1.32; padding-left: 26px; position: relative; }
+  #s16 .rules li::before { content: ""; position: absolute; left: 0; top: 13px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  #s16 .rules li b { font-weight: 650; }
+</style>
+<div class="eyebrow rise" data-s="1">pstack · bug-fix playbook</div>
+<h2 class="rise" data-s="1">Fix a bug: red first, then green</h2>
+<svg class="tl" viewBox="0 0 1920 1080" aria-hidden="true">
+  <g data-s="1" data-d="1">
+    <line class="ln" x1="230" y1="320" x2="1690" y2="320"/>
+    <circle class="nd" cx="230" cy="320" r="34"/><text class="nt" x="230" y="321">1</text>
+    <circle class="nd" cx="522" cy="320" r="34"/><text class="nt" x="522" y="321">2</text>
+    <circle class="nd r" cx="814" cy="320" r="34"/><text class="nt r" x="814" y="321">3</text>
+    <circle class="nd" cx="1106" cy="320" r="34"/><text class="nt" x="1106" y="321">4</text>
+    <circle class="nd g" cx="1398" cy="320" r="34"/><text class="nt g" x="1398" y="321">5</text>
+    <circle class="nd" cx="1690" cy="320" r="34"/><text class="nt" x="1690" y="321">6</text>
+    <text class="sl" x="230" y="400">Reproduce it</text><text class="sc" x="230" y="432">yourself</text>
+    <text class="sl" x="522" y="400">Find the cause</text><text class="sc" x="522" y="432">evidence, not guesses</text>
+    <text class="sl" x="814" y="400">Failing test</text><text class="sc" x="814" y="432">fails for the right reason</text>
+    <text class="sl" x="1106" y="400">Smallest fix</text><text class="sc" x="1106" y="432">nothing that "might help"</text>
+    <text class="sl" x="1398" y="400">Verify</text><text class="sc" x="1398" y="432">on the same surface</text>
+    <text class="sl" x="1690" y="400">Commit</text><text class="sc" x="1690" y="432">the repro before the fix</text>
+  </g>
+</svg>
+<div class="code term rise" data-s="2"><span class="p">$</span> pytest tests/test_likes.py
+<span class="r">FAILED</span> test_unlike_without_like
+  <span class="r">assert post.likes >= 0   # got -1</span>
+
+<span class="c"># fix: only unlike if this user liked it</span>
+
+<span class="p">$</span> pytest tests/test_likes.py
+<span class="g">1 passed</span> <span class="c">in 0.04s</span></div>
+<div class="card rules rise" data-s="2" data-d="2">
+  <h3>Rules for the test</h3>
+  <ul>
+    <li>Don't change the test to match wrong code.</li>
+    <li>Don't weaken an assertion without a reason.</li>
+    <li><b>Prefer no new test over a bad test.</b></li>
+    <li>Show both runs: failing before, passing after.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ 17. Behavior, not implementation ============ -->
+<section class="slide" id="s17" data-steps="2">
+<style>
+  #s17 .ex { left: 104px; width: 760px; height: 284px; padding: 34px 40px; }
+  #s17 .ex .kicker { color: var(--accent); font-size: 20px; }
+  #s17 .ex h3 { font-size: 36px; font-weight: 650; margin-top: 10px; letter-spacing: -.01em; }
+  #s17 .ex .ar { font-size: 30px; margin-top: 14px; font-weight: 560; }
+  #s17 .ex .ar b { color: var(--good); }
+  #s17 .ex p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.35; }
+  #s17 .ex p b { color: var(--bad); font-weight: 600; }
+  #s17 .cl { position: absolute; left: 924px; width: 892px; }
+  #s17 .cl .kicker { display: inline-flex; align-items: center; gap: 10px; }
+  #s17 .cl .code { margin-top: 12px; font-size: 23px; padding: 26px 32px; }
+  #s17 .ft { position: absolute; left: 104px; top: 930px; font-size: 29px; color: var(--muted); }
+  #s17 .ft b { color: var(--ink); font-weight: 600; }
+</style>
+<div class="eyebrow rise" data-s="1">pstack</div>
+<h2 class="rise" data-s="1">Test behavior, not implementation</h2>
+<div class="card ex rise" data-s="1" data-d="1" style="top:300px">
+  <div class="kicker">Check 1</div><h3>Break the behavior</h3>
+  <div class="ar">→ the test must <b style="color:var(--bad)">fail</b></div>
+  <p><b>Still passes?</b> It proves nothing. Usually a loose assertion, or an expected value computed by the code under test.</p>
+</div>
+<div class="card ex rise" data-s="1" data-d="2" style="top:608px">
+  <div class="kicker">Check 2</div><h3>Change the internals, keep the results</h3>
+  <div class="ar">→ the test must <b>pass</b></div>
+  <p><b>Fails?</b> It's pinned to the implementation, and it will break on every refactor.</p>
+</div>
+<div class="cl rise" data-s="2" style="top:300px">
+  <span class="kicker" style="color:var(--bad)"><span class="ico no solid" style="width:28px;height:28px"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></span>Pinned to implementation</span>
+  <div class="code"><span class="k">def</span> test_post_video():
+    db = Mock()
+    post_video(db, clip)
+    db.insert.assert_called_once()</div>
+</div>
+<div class="cl rise" data-s="2" data-d="2" style="top:612px">
+  <span class="kicker" style="color:var(--good)"><span class="ico ok" style="width:28px;height:28px"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Tests what a user sees</span>
+  <div class="code"><span class="k">def</span> test_followers_see_new_video():
+    post_video(app, clip, by=alice)
+    <span class="k">assert</span> clip.id <span class="k">in</span> feed(app, for_user=bob)</div>
+</div>
+<p class="ft rise" data-s="2" data-d="4"><b>Take expected values from the requirement,</b> never from the code you're testing.</p>
+</section>
+
+<!-- ============ 18. Independent verifier ============ -->
+<section class="slide" id="s18" data-steps="2">
+<style>
+  #s18 svg.iv { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #s18 .vd { font-size: 24px; font-weight: 700; letter-spacing: .06em; text-anchor: middle; dominant-baseline: central; }
+  #s18 .qc { position: absolute; left: 104px; top: 790px; width: 830px; font-size: 30px; line-height: 1.35; padding-left: 26px; border-left: 5px solid var(--accent); }
+  #s18 .qc span { display: block; font-size: 22px; color: var(--faint); margin-top: 10px; }
+  #s18 .ic { left: 1010px; top: 236px; width: 806px; height: 720px; padding: 38px 44px; }
+  #s18 .ic .kicker { color: var(--accent); }
+  #s18 .ic h3 { font-size: 36px; font-weight: 650; margin-top: 8px; letter-spacing: -.01em; }
+  #s18 .ic > p { font-size: 26px; color: var(--muted); margin-top: 10px; line-height: 1.35; }
+  #s18 .fd { margin-top: 26px; display: flex; flex-direction: column; gap: 14px; }
+  #s18 .f { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 18px; background: var(--panel); font-size: 26px; }
+  #s18 .f .ico { width: 38px; height: 38px; }
+  #s18 .f .pf { margin-left: auto; font-size: 20px; font-weight: 600; color: var(--good); text-align: right; }
+  #s18 .f.dr { color: var(--faint); }
+  #s18 .f.dr .tx { text-decoration: line-through; }
+  #s18 .f.dr .pf { color: var(--faint); }
+  #s18 .ic .foot { position: absolute; left: 44px; right: 44px; bottom: 34px; font-size: 26px; line-height: 1.35; font-weight: 560; }
+</style>
+<div class="eyebrow rise" data-s="1">pstack</div>
+<h2 class="rise" data-s="1">The author doesn't grade its own work</h2>
+<svg class="iv flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="s18a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+  </defs>
+  <g data-s="1" data-d="1">
+    <rect class="bx" x="104" y="340" width="300" height="100" rx="20"/><text class="t b" x="254" y="378">Author agent</text><text class="cap" x="254" y="414">opens the PR</text>
+    <rect class="bx key" x="560" y="340" width="360" height="100" rx="20"/><text class="t b" x="740" y="378">Verifier agent</text><text class="cap" x="740" y="414">never saw the code</text>
+    <rect class="bx" x="560" y="520" width="360" height="90" rx="20"/><text class="t" x="740" y="565">Runs it like a user</text>
+    <rect x="510" y="680" width="120" height="60" rx="30" fill="var(--good-soft)" stroke="var(--good)" stroke-width="2"/><text class="vd" x="570" y="711" fill="var(--good)">PASS</text>
+    <rect x="646" y="680" width="200" height="60" rx="30" fill="var(--warm-soft)" stroke="var(--warm)" stroke-width="2"/><text class="vd" x="746" y="711" fill="var(--warm-ink)">PASS+NOTES</text>
+    <rect x="862" y="680" width="110" height="60" rx="30" fill="var(--bad-soft)" stroke="var(--bad)" stroke-width="2"/><text class="vd" x="917" y="711" fill="var(--bad)">FAIL</text>
+  </g>
+  <g data-s="1" data-d="2">
+    <path class="arrow fl" marker-end="url(#s18a)" d="M406 390 L554 390"/>
+    <path class="arrow acc fl" marker-end="url(#s18a)" d="M740 442 L740 514"/>
+    <path class="arrow fl" marker-end="url(#s18a)" d="M740 612 L740 674"/>
+  </g>
+</svg>
+<div class="qc rise" data-s="1" data-d="3">Green CI and an approving bot review are not verdicts.<span>pstack shipping playbook</span></div>
+
+<div class="card ic rise" data-s="2">
+  <div class="kicker">Interrogate</div>
+  <h3>Several models attack the diff</h3>
+  <p>A finding counts only if it comes with a run: a failing test, a repro script, or command output.</p>
+  <div class="fd">
+    <div class="f rise" data-s="2" data-d="1"><span class="ico ok"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">Crash on an empty caption</span><span class="pf">failing test</span></div>
+    <div class="f rise" data-s="2" data-d="2"><span class="ico ok"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">Retry posts the video twice</span><span class="pf">repro script</span></div>
+    <div class="f dr rise" data-s="2" data-d="3"><span class="ico off"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span class="tx">Might be slow at scale</span><span class="pf">no run, dropped</span></div>
+    <div class="f dr rise" data-s="2" data-d="4"><span class="ico off"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span class="tx">Rename this variable</span><span class="pf">style, dropped</span></div>
+  </div>
+  <div class="foot rise" data-s="2" data-d="6">Other agents still make mistakes. So a verdict rests on a run, not an opinion.</div>
+</div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s18 = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
+</section>
+
+<!-- ============ 19. Back to TikTok ============ -->
+<section class="slide" id="s19" data-steps="2">
+<style>
+  #s19 .gr { margin-top: 56px; display: grid; grid-template-columns: 150px repeat(4, 1fr); column-gap: 20px; row-gap: 20px; }
+  #s19 .hc { display: flex; align-items: center; gap: 14px; font-size: 28px; font-weight: 650; line-height: 1.15; padding: 0 6px 4px; }
+  #s19 .rk { font-size: 22px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding-top: 30px; }
+  #s19 .rk.acc { color: var(--accent); }
+  #s19 .cc { border-radius: 24px; padding: 26px 28px; font-size: 27px; line-height: 1.32; min-height: 190px; }
+  #s19 .cc.then { background: var(--panel); color: var(--muted); }
+  #s19 .cc.now { background: var(--accent-soft); box-shadow: inset 0 0 0 1.5px rgba(44, 89, 214, .25); font-weight: 520; }
+  #s19 .cc.now code { font-family: var(--mono); font-size: 24px; }
+</style>
+<h2 class="rise" data-s="1">Back to TikTok: the same pipeline, with agents</h2>
+<div class="gr">
+  <div></div>
+  <div class="hc rise" data-s="1"><span class="num">1</span>Dev tests</div>
+  <div class="hc rise" data-s="1"><span class="num">2</span>QA tests the build</div>
+  <div class="hc rise" data-s="1"><span class="num">3</span>Bug → fix → retest</div>
+  <div class="hc rise" data-s="1"><span class="num">4</span>Beta feedback</div>
+
+  <div class="rk rise" data-s="1" data-d="1">Then</div>
+  <div class="cc then rise" data-s="1" data-d="1">Developers write unit and UI tests</div>
+  <div class="cc then rise" data-s="1" data-d="2">QA engineers run test cases on real devices</div>
+  <div class="cc then rise" data-s="1" data-d="3">A ticket goes back. Days later, a retest.</div>
+  <div class="cc then rise" data-s="1" data-d="4">Users report bugs. The next release fixes them.</div>
+
+  <div class="rk acc rise" data-s="2">Now</div>
+  <div class="cc now rise" data-s="2" data-d="1">The agent runs lint, unit tests, and build before every commit</div>
+  <div class="cc now rise" data-s="2" data-d="2">A <code>verify</code> skill and a separate verifier agent run E2E like a user</div>
+  <div class="cc now rise" data-s="2" data-d="3">The failing test goes back to the agent. After 3 rounds, a human.</div>
+  <div class="cc now rise" data-s="2" data-d="4">Differential tests on real traffic. Every miss becomes a rule.</div>
+</div>
+</section>
+
+<!-- ============ 20. Takeaways ============ -->
+<section class="slide" id="s20" data-steps="1">
+<style>
+  #s20 .tk { position: absolute; left: 104px; top: 226px; width: 1040px; list-style: none; display: flex; flex-direction: column; gap: 20px; }
+  #s20 .tk li { display: flex; gap: 22px; align-items: flex-start; font-size: 30px; line-height: 1.28; }
+  #s20 .tk li b { font-weight: 650; }
+  #s20 .tk li span.d { color: var(--muted); }
+  #s20 .tk .num { margin-top: 0; }
+  #s20 .try { left: 1200px; top: 236px; width: 616px; height: 560px; padding: 40px 44px; background: var(--accent-soft); box-shadow: inset 0 0 0 2px rgba(44, 89, 214, .3); }
+  #s20 .try .kicker { color: var(--accent); }
+  #s20 .try h3 { font-size: 40px; font-weight: 650; margin-top: 10px; }
+  #s20 .try ol { margin-top: 22px; padding-left: 34px; display: flex; flex-direction: column; gap: 16px; font-size: 28px; line-height: 1.32; }
+  #s20 .refs { position: absolute; left: 104px; bottom: 36px; font-size: 20px; color: var(--faint); line-height: 1.5; }
+</style>
+<h2 class="rise" data-s="1">Takeaways</h2>
+<ol class="tk">
+  <li class="rise" data-s="1" data-d="1"><span class="num">1</span><div><b>Coverage shows what ran, not what was checked.</b> <span class="d">Mutation testing shows whether tests catch bugs.</span></div></li>
+  <li class="rise" data-s="1" data-d="1"><span class="num">2</span><div><b>Some things only users can test.</b> <span class="d">Use A/B tests with guardrails.</span></div></li>
+  <li class="rise" data-s="1" data-d="2"><span class="num">3</span><div><b>Agents are confidently wrong.</b> <span class="d">A second agent is one more sample, not proof.</span></div></li>
+  <li class="rise" data-s="1" data-d="3"><span class="num">4</span><div><b>Turn every "don't" into a check.</b> <span class="d">Prompts can slip. Tests, lint rules, and hooks don't.</span></div></li>
+  <li class="rise" data-s="1" data-d="4"><span class="num">5</span><div><b>Invest in E2E, property, and differential tests.</b> <span class="d">They are hard to fool.</span></div></li>
+  <li class="rise" data-s="1" data-d="5"><span class="num">6</span><div><b>Prove it on the real thing.</b> <span class="d">Red first, then green, and test behavior, not internals.</span></div></li>
+</ol>
+<div class="card try rise" data-s="1" data-d="5">
+  <div class="kicker">Try it this week</div>
+  <h3>Make an agent fail a test</h3>
+  <ol>
+    <li>Pick one function in your project.</li>
+    <li>Write one property for it with Hypothesis or fast-check.</li>
+    <li>Ask an agent to change the code until the property fails.</li>
+    <li>Keep the smallest failing input as a regression test.</li>
+  </ol>
+</div>
+<div class="refs rise" data-s="1" data-d="6">
+  Addy Osmani, "How the Claude Code team thinks about verification," claude.dev/blog, Nov 2026.<br>
+  Lauren Tan (poteto), pstack, github.com/cursor/plugins/tree/main/pstack
+</div>
+</section>
+
+<div id="stepdots"></div>
+<div id="pageno"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var params = new URLSearchParams(location.search);
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* still=1 freezes the final frame. Reduced motion keeps fades and the slow
+     dot flow that carries the diagrams, and drops movement and pulsing.
+     motion=full ignores the system setting. */
+  var STILL = params.get('still') === '1';
+  var RM = !STILL && reduced && params.get('motion') !== 'full';
+  if (STILL) document.documentElement.classList.add('still');
+  if (RM) document.documentElement.classList.add('rm');
+
+  var cur = 0, step = 1;
+  var onTime = new WeakMap();
+  var hooks = window.deckHooks = window.deckHooks || {};
+
+  function nSteps(i) { return +slides[i].dataset.steps || 1; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  function fit() {
+    var s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    var x = (innerWidth - 1920 * s) / 2, y = (innerHeight - 1080 * s) / 2;
+    stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+  }
+
+  function render() {
+    var now = performance.now();
+    slides.forEach(function (s, i) {
+      var active = i === cur;
+      s.classList.toggle('active', active);
+      s.querySelectorAll('[data-s]').forEach(function (el) {
+        var on = active && step >= +el.dataset.s;
+        if (on && !el.classList.contains('on')) onTime.set(el, now);
+        el.classList.toggle('on', on);
+        el.classList.toggle('now', active && +el.dataset.s === step);
+      });
+      s.classList.toggle('final', active && step === nSteps(i));
+      s.dataset.step = active ? step : 0;
+      if (!active && hooks[s.id] && hooks[s.id].leave) hooks[s.id].leave(s);
+    });
+    var n = nSteps(cur), dots = '';
+    for (var k = 1; k <= n && n > 1; k++) dots += '<i class="' + (k <= step ? 'on' : '') + '"></i>';
+    document.getElementById('stepdots').innerHTML = dots;
+    document.getElementById('pageno').innerHTML = '<b>' + (cur + 1) + '</b> / ' + slides.length;
+    var h = hooks[slides[cur].id];
+    if (h && h.step) h.step(step, slides[cur]);
+    var q = new URLSearchParams(location.search);
+    q.set('slide', cur + 1); q.set('step', step);
+    try { history.replaceState(null, '', '?' + q.toString()); } catch (e) {}
+  }
+
+  function go(i, k) {
+    cur = clamp(i, 0, slides.length - 1);
+    step = clamp(k, 1, nSteps(cur));
+    render();
+  }
+  function next() {
+    if (step < nSteps(cur)) go(cur, step + 1);
+    else if (cur < slides.length - 1) go(cur + 1, 1);
+  }
+  function prev() {
+    if (step > 1) go(cur, step - 1);
+    else if (cur > 0) go(cur - 1, nSteps(cur - 1));
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown': case 'Enter': next(); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'Backspace': prev(); break;
+      case 'Home': go(0, 1); break;
+      case 'End': go(slides.length - 1, nSteps(slides.length - 1)); break;
+      case 'f': case 'F':
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen().catch(function () {});
+        break;
+      default: return;
+    }
+    e.preventDefault();
+  });
+  document.addEventListener('click', function (e) { if (e.target.closest('a')) return; if (e.shiftKey) prev(); else next(); });
+  window.addEventListener('resize', fit);
+
+  /* shared rAF loop; slide hooks draw continuous motion */
+  window.deck = {
+    STILL: STILL,
+    RM: RM,
+    onTime: function (el) { return onTime.has(el) ? onTime.get(el) : null; },
+    isFinal: function () { return step === nSteps(cur); }
+  };
+
+  /* dots that travel along arrows: path.fl inside an svg.flows */
+  var DMS = { 1: 150, 2: 300, 3: 450, 4: 600, 5: 900, 6: 1300 };
+  var NS = 'http://www.w3.org/2000/svg';
+  var TINTS = ['ghost', 'rep', 'bad', 'warm'];
+  function Flow(svg) {
+    var layer = document.createElementNS(NS, 'g');
+    layer.setAttribute('class', 'dots');
+    svg.appendChild(layer);
+    var items = Array.prototype.map.call(svg.querySelectorAll('path.fl'), function (p) {
+      var len = p.getTotalLength();
+      var n = Math.max(1, Math.round(len / 190));
+      var dots = [];
+      var tint = TINTS.filter(function (k) { return p.classList.contains(k); }).map(function (k) { return ' ' + k; }).join('');
+      for (var i = 0; i < Math.max(n, 2); i++) {
+        var c = document.createElementNS(NS, 'circle');
+        c.setAttribute('r', p.dataset.r || 7);
+        c.setAttribute('class', 'dot' + tint);
+        c.style.opacity = 0;
+        layer.appendChild(c);
+        dots.push(c);
+      }
+      var gate = p.closest('[data-s]');
+      return { p: p, len: len, n: n, dots: dots, gate: gate, bi: p.classList.contains('bi'),
+               delay: gate ? (DMS[gate.dataset.d] || 0) : 0, seq: p.dataset.seq, ord: +(p.dataset.ord || 0) };
+    });
+    /* paths sharing data-seq carry one dot between them, in data-ord order */
+    var seqs = {};
+    items.forEach(function (it) { if (it.seq) (seqs[it.seq] = seqs[it.seq] || []).push(it); });
+    Object.keys(seqs).forEach(function (k) { seqs[k].sort(function (a, b) { return a.ord - b.ord; }); });
+    function place(c, it, f, alpha) {
+      if (it.bi && c._rev) f = 1 - f;
+      var pt = it.p.getPointAtLength(f * it.len);
+      c.setAttribute('cx', pt.x.toFixed(1)); c.setAttribute('cy', pt.y.toFixed(1));
+      c.style.opacity = alpha;
+    }
+    return function tick(t, flowing) {
+      items.forEach(function (it) {
+        var visible = !it.gate || it.gate.classList.contains('on');
+        it.dots.forEach(function (c) { c.style.opacity = 0; });
+        if (!visible) return;
+        if (it.seq) return;
+        if (flowing) {
+          var tt = deck.STILL ? 1400 : t;
+          var speed = RM ? 60 : 105, cyc = it.len / speed;
+          for (var i = 0; i < it.n; i++) {
+            var f = ((tt / 1000) / cyc + i / it.n) % 1;
+            it.dots[i]._rev = it.bi && i % 2 === 1;
+            place(it.dots[i], it, f, Math.min(1, f * 7, (1 - f) * 7));
+          }
+          return;
+        }
+        if (deck.STILL) return;
+        var t0 = deck.onTime(it.gate || it.p);
+        if (t0 == null) return;
+        var dur = Math.min(1700, Math.max(800, it.len * 3.2));
+        for (var j = 0; j < 2; j++) {
+          var e = (t - t0 - it.delay - j * 260) / dur;
+          if (e <= 0 || e >= 1) continue;
+          var f2 = 1 - Math.pow(1 - e, 2.2);
+          it.dots[j]._rev = it.bi && j === 1;
+          place(it.dots[j], it, f2, Math.min(1, e * 6, (1 - e) * 6));
+        }
+      });
+      Object.keys(seqs).forEach(function (k) {
+        var g = seqs[k], first = g[0];
+        if (first.gate && !first.gate.classList.contains('on')) return;
+        var tt = deck.STILL ? (+new URLSearchParams(location.search).get('ft') || 1400) : t, speed = RM ? 60 : 105;
+        var total = g.reduce(function (a, it) { return a + it.len; }, 0);
+        var pos = ((tt / 1000) * speed) % total;
+        for (var q = 0; q < g.length; q++) {
+          if (pos < g[q].len) {
+            var f = pos / g[q].len;
+            place(g[q].dots[0], g[q], f, Math.min(1, f * 7, (1 - f) * 7));
+            return;
+          }
+          pos -= g[q].len;
+        }
+      });
+    };
+  }
+  window.deck.Flow = Flow;
+  function frame(t) {
+    var s = slides[cur], h = hooks[s.id];
+    if (h && h.tick) h.tick(t, s, step);
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    fit();
+    var si = parseInt(params.get('slide'), 10), st = parseInt(params.get('step'), 10);
+    Object.keys(hooks).forEach(function (id) { if (hooks[id].init) hooks[id].init(document.getElementById(id)); });
+    void document.body.offsetWidth;
+    go(isNaN(si) ? 0 : si - 1, isNaN(st) ? 1 : st);
+    requestAnimationFrame(frame);
+    document.documentElement.setAttribute('data-ready', '1');
+  });
+})();
+</script>
+</body>
+</html>
