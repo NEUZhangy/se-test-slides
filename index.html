@@ -1176,11 +1176,8 @@
   #sEx2 .q { position: absolute; left: 104px; top: 420px; font-size: 32px; font-weight: 560; }
   #sEx2 .bot { position: absolute; left: 104px; top: 750px; width: 1712px; display: flex; gap: 40px; }
   #sEx2 .bot > div { flex: 1; }
-  #sEx2 .bot > div:last-child { flex: 1.5; }
-  #sEx2 .bot .chip { font-size: 21px; padding: 8px 16px; }
   #sEx2 .bot .kicker { font-size: 20px; color: var(--good); }
   #sEx2 .bot p { font-size: 27px; line-height: 1.35; margin-top: 8px; }
-  #sEx2 .bot .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 </style>
 <div class="eyebrow ex rise" data-s="1">Exercise 2</div><span class="timer rise" data-s="1">3 min</span>
 <h2 class="rise" data-s="1">Black box: which captions would you test?</h2>
@@ -1207,19 +1204,19 @@
 <div class="bot">
   <div class="rise" data-s="2" data-d="2"><span class="kicker">Equivalence partitioning</span><p>Three regions, so one input from each: 0, 75, 200 would do.</p></div>
   <div class="rise" data-s="2" data-d="3"><span class="kicker">Boundary values</span><p>Bugs hide at the edges: test on each edge and one step past it.</p></div>
-  <div class="rise" data-s="2" data-d="4"><span class="kicker">Ones people forget</span><div class="chips"><span class="chip">你好: 2 chars, 6 bytes</span><span class="chip">こんにちは: 5 chars, 15 bytes</span><span class="chip">é: looks 1, can be 2</span><span class="chip">👍: looks 1, JavaScript says 2</span><span class="chip">Only spaces</span><span class="chip">Missing field</span></div></div>
 </div>
 </section>
 
 <!-- ============ Exercise 2, part 2: what is a character ============ -->
 <section class="slide" id="sChars" data-steps="3">
 <style>
-  #sChars .tiles { position: absolute; left: 104px; top: 268px; display: flex; gap: 24px; }
-  #sChars .tile { position: relative; width: 352px; height: 196px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
-  #sChars .tile .g { font-size: 76px; line-height: 1; }
+  #sChars .tiles { position: absolute; left: 104px; top: 300px; display: flex; gap: 24px; }
+  #sChars .tile { position: relative; width: 410px; height: 172px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  #sChars .tile .g { font-size: 66px; line-height: 1; }
   #sChars .tile .l { font-family: var(--mono); font-size: 28px; color: var(--muted); }
-  #sChars .ask { position: absolute; left: 1250px; top: 290px; width: 566px; font-size: 40px; line-height: 1.25; font-weight: 600; letter-spacing: -.01em; }
-  #sChars .ask span { display: block; color: var(--warm-ink); }
+  #sChars .ask { position: absolute; left: 104px; top: 236px; font-size: 28px; line-height: 1.3; color: var(--muted); }
+  #sChars .ask b { color: var(--ink); font-weight: 600; }
+  #sChars .ask span { color: var(--warm-ink); font-weight: 600; }
   #sChars .tb { left: 104px; top: 500px; width: 1060px; padding: 14px 18px 16px; }
   #sChars table { width: 100%; border-collapse: separate; border-spacing: 0 4px; font-variant-numeric: tabular-nums; }
   #sChars th { font-size: 19px; font-weight: 650; color: var(--muted); text-align: center; line-height: 1.2; padding: 4px 6px 8px; vertical-align: bottom; }
@@ -1246,8 +1243,9 @@
   <div class="card tile rise" data-s="1" data-d="1"><span class="g">👍</span><span class="l">length = ?</span></div>
   <div class="card tile rise" data-s="1" data-d="2"><span class="g">👨‍👩‍👧</span><span class="l">length = ?</span></div>
   <div class="card tile rise" data-s="1" data-d="3"><span class="g">你好世界</span><span class="l">length = ?</span></div>
+  <div class="card tile rise" data-s="1" data-d="4"><span class="g">こんにちは</span><span class="l">length = ?</span></div>
 </div>
-<p class="ask rise" data-s="1" data-d="4">Guess the length.<span>Then ask: length in what?</span></p>
+<p class="ask rise" data-s="1" data-d="1">The spec says <b>150 characters</b>, so the code checks <b>length(caption) &lt;= 150</b>. Guess each length. <span>Then ask: length in what?</span></p>
 <div class="card tb rise" data-s="2">
   <table>
     <tr><th>Input</th><th>You see</th><th>Code points<small>Python len</small></th><th>UTF-16 units<small>JS/Java .length</small></th><th>UTF-8 bytes</th></tr>
