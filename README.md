@@ -76,7 +76,7 @@ A 75-minute introductory lecture on software testing that ends with testing for 
 32. Three tests worth investing in
 33. End-to-end
 34. Property-based
-35. Exercise 4: properties for shorten(caption)
+35. Example properties: the For You feed
 36. Differential
 
 *D. Trusting the result*

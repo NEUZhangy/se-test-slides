@@ -2311,32 +2311,31 @@ p.likes  <span class="r"># -1</span></div>
 <div class="libs rise" data-s="1" data-d="6"><b>Why it suits agents:</b> the rule comes from the spec, not from the agent's code, so it has different blind spots.<br><b>Tools:</b> Hypothesis (Python), fast-check (JS/TS), proptest (Rust)</div>
 </section>
 
-<!-- ============ Exercise 4: properties ============ -->
-<section class="slide" id="sEx4" data-steps="2">
+<!-- ============ Example properties: For You feed ============ -->
+<section class="slide" id="sEx4" data-steps="1">
 <style>
-  #sEx4 .spec { left: 104px; top: 256px; width: 1712px; height: 120px; padding: 0 44px; display: flex; align-items: center; gap: 24px; }
+  #sEx4 .spec { left: 104px; top: 216px; width: 1712px; height: 120px; padding: 0 44px; display: flex; align-items: center; gap: 24px; }
   #sEx4 .spec .kicker { color: var(--accent); }
   #sEx4 .spec code { font-family: var(--mono); font-size: 32px; font-weight: 600; }
   #sEx4 .spec span.d { font-size: 28px; color: var(--muted); }
-  #sEx4 .ps { position: absolute; left: 104px; top: 420px; width: 980px; display: flex; flex-direction: column; gap: 14px; }
+  #sEx4 .ps { position: absolute; left: 104px; top: 380px; width: 900px; display: flex; flex-direction: column; gap: 14px; }
   #sEx4 .ps .ansbox { font-size: 27px; line-height: 1.32; }
   #sEx4 .ps .ansbox b { font-weight: 650; }
-  #sEx4 .ps .ansbox code { font-family: var(--mono); font-size: 23px; color: var(--ink); margin-left: 8px; }
-  #sEx4 .code { position: absolute; left: 1144px; top: 420px; width: 672px; font-size: 24px; }
+  #sEx4 .code { position: absolute; left: 1064px; top: 380px; width: 752px; font-size: 22px; }
 </style>
-<div class="eyebrow ex rise" data-s="1">Exercise 4</div><span class="timer rise" data-s="1">4 min</span>
-<h2 class="rise" data-s="1">Write properties for <code style="font-family:var(--mono);font-size:.86em">shorten(caption)</code></h2>
-<div class="card spec rise" data-s="1" data-d="1"><span class="kicker">Function</span><code>shorten(c)</code><span class="d">cuts a caption down to at most 150 characters. It never adds anything.</span></div>
+<h2 class="rise" data-s="1">Example properties: the For You feed</h2>
+<div class="card spec rise" data-s="1" data-d="1"><span class="kicker">Function</span><code>rank(videos, user)</code><span class="d">returns the videos to show, best first</span></div>
 <div class="ps">
-  <div class="ansbox" data-s="2" data-d="1"><b>Never too long.</b><code>len(shorten(c)) &lt;= 150</code></div>
-  <div class="ansbox" data-s="2" data-d="2"><b>Short captions stay the same.</b><code>if len(c) &lt;= 150: shorten(c) == c</code></div>
-  <div class="ansbox" data-s="2" data-d="3"><b>Twice is the same as once.</b><code>shorten(shorten(c)) == shorten(c)</code></div>
-  <div class="ansbox" data-s="2" data-d="4"><b>Nothing new is added.</b><code>c.startswith(shorten(c))</code></div>
-  <div class="ansbox" data-s="2" data-d="5"><b>Bonus:</b> it never cuts 👨‍👩‍👧 in half.</div>
+  <div class="ansbox" data-s="1" data-d="1"><b>Nothing invented.</b> Every video shown came from the input.</div>
+  <div class="ansbox" data-s="1" data-d="2"><b>No duplicates.</b> Each video shows up once.</div>
+  <div class="ansbox" data-s="1" data-d="3"><b>Blocked creators never appear.</b></div>
+  <div class="ansbox" data-s="1" data-d="4"><b>Same input, same order.</b> Ranking is repeatable.</div>
 </div>
-<div class="code rise" data-s="2" data-d="5"><span class="y">@given</span>(st.text())
-<span class="k">def</span> test_never_too_long(c):
-    <span class="k">assert</span> len(shorten(c)) &lt;= <span class="y">150</span></div>
+<div class="code rise" data-s="1" data-d="5"><span class="y">@given</span>(st.lists(videos()), users())
+<span class="k">def</span> test_rank_invents_nothing(vs, u):
+    out = rank(vs, u)
+    <span class="k">assert</span> set(out) <= set(vs)
+    <span class="k">assert</span> len(out) == len(set(out))</div>
 </section>
 
 <!-- ============ 12. Differential ============ -->
