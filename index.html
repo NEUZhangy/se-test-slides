@@ -746,7 +746,7 @@
       <li>Long-press the video, or tap Share, then "Not interested": show me fewer like this.</li>
     </ul>
 </div>
-<p class="nx rise" data-s="1" data-d="4">We will test this one feature all lecture, from the +1 to what it does to your feed.</p>
+<p class="nx rise" data-s="1" data-d="4">We will test this one feature throughout today's class, from the +1 to what it does to your feed.</p>
 <p class="hint rise" data-s="1" data-d="5">Try it: tap the heart, double-tap the video, or long-press it.</p>
 <script>
   (window.deckHooks = window.deckHooks || {}).sDemo = {
@@ -1588,7 +1588,7 @@ p.likes  <span class="r"># -1</span></div>
     <text class="cap" x="1098" y="562">numbers made up</text>
   </g>
 </svg>
-<p class="gr rise" data-s="2" data-d="2"><b>Guardrail metrics</b> (must not get worse, even if watch time goes up): "Not interested" taps, reports, uninstalls</p>
+<p class="gr rise" data-s="2" data-d="2"><b>Guardrail metrics</b> (must not get worse): "Not interested" taps, reports, uninstalls</p>
 <div class="card rl rise" data-s="2" data-d="2">
   <h3>Rules for a fair test</h3>
   <ul>
@@ -1596,16 +1596,136 @@ p.likes  <span class="r"># -1</span></div>
     <li><b>Pick the metric before you start.</b></li>
     <li><b>Watch guardrails too:</b> crashes, reports, latency.</li>
     <li><b>Run long enough</b> for the difference to be real, not noise.</li>
-    <li><b>Ramp up:</b> 1% → 10% → 50% → 100%.</li>
+    <li><b>Same time, same population:</b> run A and B side by side, not one after the other.</li>
   </ul>
 </div>
-<div class="card dq rise" data-s="3"><span class="kicker">Discuss, 2 min</span><p><b>Goal metric:</b> watch time +3.1% <span style="color:var(--good)">✓</span><br><b>Guardrail:</b> "Not interested" taps ×2 <span style="color:var(--bad)">✗</span><br>Ship B?</p></div>
+<div class="card dq rise" data-s="3"><span class="kicker">Discuss</span><p>Group B watched 3.1% longer.<br>But B users also tapped "Not interested" twice as often.<br><b>Would you ship B? Why or why not?</b></p></div>
 <script>
   (window.deckHooks = window.deckHooks || {}).sAB = {
     init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
     tick: function (t) { this.flow(t, true); }
   };
 </script>
+</section>
+
+<!-- ============ Is the A/B result always right? ============ -->
+<section class="slide" id="sABwhy" data-steps="2">
+<style>
+  #sABwhy .dq { left: 104px; top: 340px; width: 1712px; height: 300px; padding: 0 56px; display: flex; flex-direction: column; justify-content: center;
+    background: var(--warm-soft); box-shadow: inset 0 0 0 2px rgba(201, 138, 75, .4);
+    transition: opacity .7s var(--ease), transform .8s var(--ease), top .8s var(--ease), height .8s var(--ease); }
+  #sABwhy .dq .kicker { color: var(--warm-ink); font-size: 22px; }
+  #sABwhy .dq p { font-size: 58px; line-height: 1.2; font-weight: 600; letter-spacing: -.014em; margin-top: 18px;
+    transition: font-size .8s var(--ease), margin .8s var(--ease); }
+  #sABwhy[data-step="2"] .dq { top: 262px; height: 136px; }
+  #sABwhy[data-step="2"] .dq p { font-size: 34px; margin-top: 6px; }
+  #sABwhy .why { position: absolute; left: 104px; top: 436px; width: 1712px; display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 216px; gap: 32px; }
+  #sABwhy .why .card { position: relative; grid-column: span 2; padding: 30px 36px; }
+  #sABwhy .why .card.w { grid-column: span 3; }
+  #sABwhy .why h3 { font-size: 31px; font-weight: 650; letter-spacing: -.01em; }
+  #sABwhy .why p { font-size: 25px; line-height: 1.38; margin-top: 10px; color: var(--muted); }
+</style>
+<h2 class="rise" data-s="1">Is the A/B result always right?</h2>
+<p class="sub rise" data-s="1" data-d="1">Watch time rose 3.1% in group B. Was it really B?</p>
+<div class="card dq rise" data-s="1" data-d="2"><span class="kicker">Discuss</span><p>What else could make the number move?</p></div>
+<div class="why">
+  <div class="card rise" data-s="2" data-d="1"><h3>Novelty effect</h3><p>Anything new gets more taps at first. The lift fades after a few weeks.</p></div>
+  <div class="card rise" data-s="2" data-d="2"><h3>Something else changed</h3><p>A holiday, a viral trend, another team's experiment running at the same time.</p></div>
+  <div class="card rise" data-s="2" data-d="3"><h3>The split is broken</h3><p>You asked for 50/50 and got 50/48. The assignment itself has a bug (sample ratio mismatch).</p></div>
+  <div class="card w rise" data-s="2" data-d="4"><h3>Luck</h3><p>Check enough metrics and one of them will move by chance.</p></div>
+  <div class="card w rise" data-s="2" data-d="5"><h3>Groups affect each other</h3><p>Group A watches videos shared by group B. A is no longer a clean control.</p></div>
+</div>
+</section>
+
+<!-- ============ After the test: ramp up, keep a control ============ -->
+<section class="slide" id="sABramp" data-steps="2">
+<style>
+  #sABramp .ch { top: 196px; width: 840px; height: 424px; padding: 24px 30px; }
+  #sABramp .ch.l { left: 104px; }
+  #sABramp .ch.r { left: 976px; }
+  #sABramp .ch h3 { font-size: 29px; font-weight: 650; letter-spacing: -.01em; }
+  #sABramp .ch svg { display: block; margin-top: 10px; }
+  #sABramp .ch .cp { font-size: 24px; line-height: 1.35; color: var(--muted); margin-top: 6px; }
+  #sABramp .ch .cp b { color: var(--ink); font-weight: 650; }
+  #sABramp .ax { stroke: #b8bec8; stroke-width: 2; fill: none; }
+  #sABramp .tk { font-size: 19px; fill: var(--faint); text-anchor: middle; }
+  #sABramp .yl { font-size: 19px; fill: var(--muted); text-anchor: middle; }
+  #sABramp .band { fill: var(--warm-soft); }
+  #sABramp .bl { font-size: 19px; font-weight: 600; fill: var(--warm-ink); }
+  #sABramp .ln { stroke: var(--muted); stroke-width: 2.5; stroke-dasharray: 7 7; }
+  #sABramp .ll { font-size: 19px; font-weight: 600; fill: var(--ink); text-anchor: end; }
+  #sABramp .base { stroke: #b8bec8; stroke-width: 2; stroke-dasharray: 4 6; fill: none; }
+  #sABramp .s { fill: none; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+  #sABramp .s.a { stroke: #9aa1ad; }
+  #sABramp .s.b { stroke: var(--accent); }
+  #sABramp .br { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  #sABramp .an { font-size: 28px; font-weight: 700; fill: var(--ink); dominant-baseline: central; }
+  #sABramp .an2 { font-size: 19px; font-weight: 650; fill: var(--accent); dominant-baseline: central; }
+  #sABramp .nm { font-size: 20px; font-weight: 700; }
+  #sABramp .ramp { position: absolute; left: 104px; top: 664px; width: 1712px; display: grid; grid-template-columns: repeat(5, 1fr); }
+  #sABramp .st { position: relative; display: flex; flex-direction: column; align-items: center; }
+  #sABramp .st:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: 10px; font-size: 32px; color: var(--faint); }
+  #sABramp .pill { height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #sABramp .st.end .pill { background: var(--bad-soft); color: var(--bad); }
+  #sABramp .st span { margin-top: 14px; width: 290px; text-align: center; font-size: 21px; line-height: 1.3; color: var(--muted); }
+  #sABramp .st.end span { color: var(--bad); font-weight: 600; }
+  #sABramp .pr { position: absolute; left: 104px; top: 852px; display: flex; flex-direction: column; gap: 12px; }
+  #sABramp .pr p { font-size: 27px; line-height: 1.35; }
+  #sABramp .pr b { color: var(--accent); font-weight: 650; }
+</style>
+<h2 class="rise" data-s="1">After the test: ramp up, but keep a control</h2>
+<div class="card ch l rise" data-s="1" data-d="1">
+  <h3>Before vs after (no control)</h3>
+  <svg width="780" height="280" viewBox="0 0 780 280" aria-hidden="true">
+    <rect class="band" x="288" y="36" width="312" height="184"/>
+    <text class="bl" x="298" y="24">summer break starts</text>
+    <line class="ln" x1="288" y1="36" x2="288" y2="220"/>
+    <text class="ll" x="278" y="24">B launches</text>
+    <path class="ax" d="M60 36 V220 H600"/>
+    <text class="yl" transform="translate(32 128) rotate(-90)">watch time / day</text>
+    <text class="tk" x="80" y="246">1</text><text class="tk" x="184" y="246">2</text><text class="tk" x="288" y="246">3</text><text class="tk" x="392" y="246">4</text><text class="tk" x="496" y="246">5</text><text class="tk" x="600" y="246">6</text>
+    <text class="tk" x="340" y="274">week</text>
+    <path class="base" d="M288 172 H600"/>
+    <path class="s b" d="M80 174 L184 170 L288 172 L392 100 L496 96 L600 98"/>
+    <path class="br" style="stroke:var(--ink)" d="M612 172 H622 V98 H612"/>
+    <text class="an" x="634" y="135">+3.1%?</text>
+  </svg>
+  <p class="cp">Was it B, or summer break? <b>You can't tell.</b></p>
+</div>
+<div class="card ch r rise" data-s="1" data-d="2">
+  <h3>A vs B at the same time</h3>
+  <svg width="780" height="280" viewBox="0 0 780 280" aria-hidden="true">
+    <rect class="band" x="288" y="36" width="312" height="184"/>
+    <text class="bl" x="298" y="24">summer break starts</text>
+    <line class="ln" x1="288" y1="36" x2="288" y2="220"/>
+    <text class="ll" x="278" y="24">B launches</text>
+    <path class="ax" d="M60 36 V220 H600"/>
+    <text class="yl" transform="translate(32 128) rotate(-90)">watch time / day</text>
+    <text class="tk" x="80" y="246">1</text><text class="tk" x="184" y="246">2</text><text class="tk" x="288" y="246">3</text><text class="tk" x="392" y="246">4</text><text class="tk" x="496" y="246">5</text><text class="tk" x="600" y="246">6</text>
+    <text class="tk" x="340" y="274">week</text>
+    <path class="s a" d="M80 176 L184 172 L288 174 L392 122 L496 118 L600 120"/>
+    <path class="s b" d="M80 170 L184 166 L288 168 L392 102 L496 96 L600 98"/>
+    <text class="nm" x="440" y="74" style="fill:var(--accent)">B</text>
+    <text class="nm" x="440" y="150" style="fill:#8b919c">A</text>
+    <path class="br" style="stroke:var(--accent)" d="M612 120 H622 V98 H612"/>
+    <text class="an2" x="634" y="98">the real</text>
+    <text class="an2" x="634" y="121">effect of B</text>
+  </svg>
+  <p class="cp">Both groups get summer break. <b>Only the gap is B.</b></p>
+</div>
+<div class="ramp">
+  <div class="st rise" data-s="2"><div class="pill" style="width:96px">1%</div><span>vs control at the same time</span></div>
+  <div class="st rise" data-s="2" data-d="1"><div class="pill" style="width:124px">5%</div><span>vs control at the same time</span></div>
+  <div class="st rise" data-s="2" data-d="2"><div class="pill" style="width:152px">10%</div><span>vs control at the same time</span></div>
+  <div class="st rise" data-s="2" data-d="3"><div class="pill" style="width:192px">50%</div><span>vs control at the same time</span></div>
+  <div class="st end rise" data-s="2" data-d="4"><div class="pill" style="width:240px">100%</div><span>no control left:<br>back to before vs after</span></div>
+</div>
+<div class="pr">
+  <p class="rise" data-s="2" data-d="5"><b>Holdout:</b> keep about 1% on the old version after launch, so you can keep measuring.</p>
+  <p class="rise" data-s="2" data-d="6"><b>A/A test:</b> split users into two identical groups first. If they differ, your setup is broken.</p>
+</div>
+<p class="src rise" data-s="1" data-d="3">Illustration, numbers made up.</p>
 </section>
 
 <!-- ============ Discussion: why is "Not interested" hidden ============ -->
@@ -1680,7 +1800,7 @@ p.likes  <span class="r"># -1</span></div>
     <span class="how" style="color:var(--bad)">long-press, then pick</span>
   </div>
 </div>
-<div class="card dq rise" data-s="1" data-d="3"><span class="kicker">Discuss, 2 min</span><p>Why would a product make one signal easy and the other hard?</p></div>
+<div class="card dq rise" data-s="1" data-d="3"><span class="kicker">Discuss</span><p>Why would a product make one signal easy and the other hard?</p></div>
 <div class="lens">
   <div class="card rise" data-s="2"><span class="kicker">Product</span><p>A like keeps you watching. "Not interested" shows you less. Friction lowers how often people use it.</p></div>
   <div class="card rise" data-s="2" data-d="1"><span class="kicker">Signals</span><p>Most "no" is implicit: fast swipes, short watch time. An explicit "no" is rare, strong, and easy to tap by accident.</p></div>
