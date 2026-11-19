@@ -525,81 +525,154 @@
 </svg>
 </section>
 
+<!-- ============ Shared: the interactive TikTok phone (sDemo, sEx1) ============ -->
+<style>
+  .ttphone { position: absolute; left: 104px; top: 220px; width: 360px; height: 780px; padding: 12px; border-radius: 48px; background: #17181c;
+    box-shadow: inset 0 0 0 2px #2c2e35, 0 40px 80px -40px rgba(20, 24, 40, .55); }
+  .ttphone .scr { position: relative; width: 100%; height: 100%; border-radius: 38px; background: #000; overflow: hidden; color: #fff; }
+  .ttphone .vid { position: absolute; left: 0; top: 0; right: 0; bottom: 78px; overflow: hidden;
+    background: linear-gradient(172deg, #1d1838 0%, #12142a 45%, #1c0f1e 100%); }
+  .ttphone .blob { position: absolute; border-radius: 50%; filter: blur(34px); }
+  .ttphone .vid::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, .45) 0%, transparent 18%, transparent 55%, rgba(0, 0, 0, .6) 100%); }
+  .ttphone .prog { position: absolute; left: 0; right: 0; bottom: 78px; height: 3px; background: rgba(255, 255, 255, .25); }
+  .ttphone .prog i { display: block; width: 38%; height: 100%; background: rgba(255, 255, 255, .9); }
+  .ttphone .stat { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 26px 0 32px; font-size: 15px; font-weight: 600; }
+  .ttphone .island { position: absolute; left: 50%; top: 10px; width: 96px; height: 28px; margin-left: -48px; border-radius: 14px; background: #000; }
+  .ttphone .top { position: absolute; left: 0; right: 0; top: 52px; height: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 16px; }
+  .ttphone .top .live { position: absolute; left: 16px; top: 6px; }
+  .ttphone .top .srch { position: absolute; right: 16px; top: 6px; }
+  .ttphone .top span { color: rgba(255, 255, 255, .62); font-weight: 560; }
+  .ttphone .top b { position: relative; font-weight: 700; }
+  .ttphone .top b::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 24px; height: 3px; margin-left: -12px; border-radius: 2px; background: #fff; }
+  .ttphone .rail { position: absolute; right: 8px; bottom: 96px; width: 60px; display: flex; flex-direction: column; align-items: center; gap: 15px;
+    font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
+  .ttphone .rail .it { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .ttphone .rail svg { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35)); }
+  .ttphone .av { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 8px;
+    background: radial-gradient(circle at 50% 38%, #f6d2b8 0 26%, transparent 27%), radial-gradient(circle at 50% 100%, #3b6fd8 0 48%, transparent 49%), #9fc3ff; }
+  .ttphone .av i { position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: #fe2c55;
+    font-style: normal; font-size: 17px; font-weight: 700; line-height: 20px; text-align: center; }
+  .ttphone .scr, .ttphone .like { cursor: pointer; }
+  .ttphone .hb { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+  .ttphone .hb path { fill: #fff; }
+  .ttphone .hb.liked path { fill: #fe2c55; }
+  .ttphone .hb.pop svg { animation: ttpop .5s var(--ease); }
+  .ttphone .disc { width: 42px; height: 42px; border-radius: 50%; margin-top: 4px; animation: ttspin 5s linear infinite;
+    background: radial-gradient(circle, #ff8a5c 0 22%, #2a2a2e 23% 30%, #3a3a40 31% 36%, #232327 37% 100%); box-shadow: 0 0 0 7px #1b1b1f; }
+  .ttphone .burst { position: absolute; width: 110px; height: 101px; margin: -50px 0 0 -55px; pointer-events: none; opacity: 0;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4)); animation: ttbig .9s var(--ease) forwards; }
+  .ttphone .burst svg { display: block; }
+  @keyframes ttpop { 0%, 100% { transform: scale(1); } 35% { transform: scale(1.32); } 65% { transform: scale(.92); } }
+  @keyframes ttbig { 0% { opacity: 0; transform: rotate(var(--r)) scale(.2); } 18% { opacity: 1; transform: rotate(var(--r)) scale(1.22); }
+    30% { transform: rotate(var(--r)) scale(.94); } 42% { opacity: 1; transform: rotate(var(--r)) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) rotate(var(--r)) scale(1.06); } }
+  @keyframes ttspin { to { transform: rotate(360deg); } }
+  html.still .ttphone .disc, html.rm .ttphone .disc { animation: none; }
+  .ttphone .cap { position: absolute; left: 14px; bottom: 96px; width: 238px; font-size: 14px; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
+  .ttphone .cap .u { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+  .ttphone .cap .t b { font-weight: 700; }
+  .ttphone .cap .m { margin-top: 7px; display: flex; align-items: center; gap: 6px; }
+  .ttphone .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 78px; background: #000; display: grid; grid-template-columns: repeat(5, 1fr);
+    align-items: start; padding-top: 8px; font-size: 10.5px; font-weight: 560; color: rgba(255, 255, 255, .7); text-align: center; }
+  .ttphone .nav div { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .ttphone .nav .on { color: #fff; }
+  .ttphone .nav svg { display: block; }
+  .ttphone .mk { width: 44px; height: 29px; margin-top: 2px; border-radius: 9px; background: #fff; color: #000; font-size: 24px; font-weight: 600; line-height: 29px;
+    box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55; }
+  .ttphone .home { position: absolute; left: 50%; bottom: 7px; width: 116px; height: 4px; margin-left: -58px; border-radius: 2px; background: #fff; }
+  .ttphone .sheet { position: absolute; inset: 0; visibility: hidden; transition: visibility 0s linear .34s; }
+  .ttphone .sheet.open { visibility: visible; transition: visibility 0s; }
+  .ttphone .sheet .bd { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .34s var(--ease); }
+  .ttphone .sheet .pn { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 30px; border-radius: 18px 18px 0 0; background: #fff; color: #161823;
+    cursor: default; transform: translateY(100%); transition: transform .34s var(--ease); }
+  .ttphone .sheet.open .bd { opacity: 1; }
+  .ttphone .sheet.open .pn { transform: none; }
+  .ttphone .sheet .grab { width: 36px; height: 4px; margin: 0 auto 16px; border-radius: 2px; background: #d3d4d7; }
+  .ttphone .sheet .acts { display: flex; justify-content: space-around; margin-bottom: 18px; }
+  .ttphone .sheet .acts > div { width: 72px; display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 500; color: #57585f; cursor: pointer; }
+  .ttphone .sheet .acts i { width: 50px; height: 50px; border-radius: 50%; background: #f1f1f2; display: flex; align-items: center; justify-content: center; color: #161823; }
+  .ttphone .sheet .ni { height: 58px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-radius: 12px; background: #f1f1f2;
+    font-size: 17px; font-weight: 700; cursor: pointer; }
+  .ttphone .sheet svg { display: block; }
+  .ttphone .toast { position: absolute; left: 20px; right: 20px; top: 150px; padding: 12px 12px; border-radius: 10px; background: rgba(36, 36, 42, .92);
+    font-size: 14px; font-weight: 560; line-height: 1.35; text-align: center; opacity: 0; transition: opacity .25s var(--ease); pointer-events: none; }
+  .ttphone .toast.on { opacity: 1; }
+</style>
+<script>
+  window.TikTokPhone = function (root) {
+    var scr = root.querySelector('.scr'), hb = root.querySelector('.hb'), num = root.querySelector('.like .n');
+    var HEART = root.querySelector('.hb svg').outerHTML.replace('width="38" height="36"', 'width="110" height="101"').replace('<path ', '<path fill="#fe2c55" ');
+    var sheet = root.querySelector('.sheet'), toast = root.querySelector('.toast');
+    var phone, shownLiked = false, press = null, held = false, toastTimer = 0;
+    function tap(s) { return Object.assign({}, s, { liked: !s.liked, count: s.count + (s.liked ? -1 : 1) }); }
+    function doubleTap(s) { return s.liked ? s : Object.assign({}, s, { liked: true, count: s.count + 1 }); }
+    function openSheet(s) { return Object.assign({}, s, { sheet: true }); }
+    function closeSheet(s) { return Object.assign({}, s, { sheet: false }); }
+    function markNotInterested(s) { return Object.assign({}, s, { sheet: false, notInterested: true }); }
+    function render() {
+      hb.classList.toggle('liked', phone.liked);
+      if (phone.liked && !shownLiked) { hb.classList.remove('pop'); void hb.offsetWidth; hb.classList.add('pop'); }
+      shownLiked = phone.liked;
+      num.textContent = phone.count;
+      sheet.classList.toggle('open', phone.sheet);
+      scr.toggleAttribute('data-not-interested', phone.notInterested);
+    }
+    function apply(f) { phone = f(phone); render(); }
+    function showToast() {
+      clearTimeout(toastTimer);
+      toast.classList.add('on');
+      toastTimer = setTimeout(function () { toast.classList.remove('on'); }, 1600);
+    }
+    function cancelPress() { if (press) clearTimeout(press.timer); press = null; }
+    function burst(e) {
+      var box = scr.getBoundingClientRect(), k = box.width / scr.offsetWidth;
+      var b = document.createElement('div');
+      b.className = 'burst';
+      b.style.left = (e.clientX - box.left) / k + 'px';
+      b.style.top = (e.clientY - box.top) / k + 'px';
+      b.style.setProperty('--r', Math.round(Math.random() * 30 - 15) + 'deg');
+      b.innerHTML = HEART;
+      b.addEventListener('animationend', function () { b.remove(); });
+      scr.appendChild(b);
+    }
+    root.querySelector('.like').addEventListener('click', function () { apply(tap); });
+    root.querySelector('.share').addEventListener('click', function () { apply(openSheet); });
+    sheet.querySelector('.bd').addEventListener('click', function () { apply(closeSheet); });
+    sheet.querySelectorAll('.acts > div').forEach(function (a) { a.addEventListener('click', function () { apply(closeSheet); }); });
+    sheet.querySelector('.ni').addEventListener('click', function () { apply(markNotInterested); showToast(); });
+    scr.addEventListener('pointerdown', function (e) {
+      held = false;
+      if (e.button !== 0 || e.target.closest('.rail, .nav, .sheet')) return;
+      press = { x: e.clientX, y: e.clientY, timer: setTimeout(function () { press = null; held = true; apply(openSheet); }, 500) };
+    });
+    scr.addEventListener('pointermove', function (e) {
+      if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) cancelPress();
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (t) { scr.addEventListener(t, cancelPress); });
+    scr.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    scr.addEventListener('dblclick', function (e) {
+      /* the second click of a double-click can end a long-press; that press opened the sheet, so it must not also like */
+      if (held || e.target.closest('.rail, .nav, .sheet')) return;
+      apply(doubleTap); burst(e);
+    });
+    function reset() {
+      phone = { liked: false, count: 128, sheet: false, notInterested: false };
+      cancelPress();
+      clearTimeout(toastTimer);
+      toast.classList.remove('on');
+      scr.querySelectorAll('.burst').forEach(function (b) { b.remove(); });
+      render();
+    }
+    reset();
+    return { reset: reset };
+  };
+</script>
+
 <!-- ============ Running example: Like button ============ -->
 <section class="slide" id="sDemo" data-steps="1">
 <style>
-  #sDemo .phone { position: absolute; left: 104px; top: 220px; width: 360px; height: 780px; padding: 12px; border-radius: 48px; background: #17181c;
-    box-shadow: inset 0 0 0 2px #2c2e35, 0 40px 80px -40px rgba(20, 24, 40, .55); }
-  #sDemo .scr { position: relative; width: 100%; height: 100%; border-radius: 38px; background: #000; overflow: hidden; color: #fff; }
-  #sDemo .vid { position: absolute; left: 0; top: 0; right: 0; bottom: 78px; overflow: hidden;
-    background: linear-gradient(172deg, #1d1838 0%, #12142a 45%, #1c0f1e 100%); }
-  #sDemo .blob { position: absolute; border-radius: 50%; filter: blur(34px); }
-  #sDemo .vid::after { content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, .45) 0%, transparent 18%, transparent 55%, rgba(0, 0, 0, .6) 100%); }
-  #sDemo .prog { position: absolute; left: 0; right: 0; bottom: 78px; height: 3px; background: rgba(255, 255, 255, .25); }
-  #sDemo .prog i { display: block; width: 38%; height: 100%; background: rgba(255, 255, 255, .9); }
-  #sDemo .stat { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 26px 0 32px; font-size: 15px; font-weight: 600; }
-  #sDemo .island { position: absolute; left: 50%; top: 10px; width: 96px; height: 28px; margin-left: -48px; border-radius: 14px; background: #000; }
-  #sDemo .top { position: absolute; left: 0; right: 0; top: 52px; height: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 16px; }
-  #sDemo .top .live { position: absolute; left: 16px; top: 6px; }
-  #sDemo .top .srch { position: absolute; right: 16px; top: 6px; }
-  #sDemo .top span { color: rgba(255, 255, 255, .62); font-weight: 560; }
-  #sDemo .top b { position: relative; font-weight: 700; }
-  #sDemo .top b::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 24px; height: 3px; margin-left: -12px; border-radius: 2px; background: #fff; }
-  #sDemo .rail { position: absolute; right: 8px; bottom: 96px; width: 60px; display: flex; flex-direction: column; align-items: center; gap: 15px;
-    font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
-  #sDemo .rail .it { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  #sDemo .rail svg { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35)); }
-  #sDemo .av { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 8px;
-    background: radial-gradient(circle at 50% 38%, #f6d2b8 0 26%, transparent 27%), radial-gradient(circle at 50% 100%, #3b6fd8 0 48%, transparent 49%), #9fc3ff; }
-  #sDemo .av i { position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: #fe2c55;
-    font-style: normal; font-size: 17px; font-weight: 700; line-height: 20px; text-align: center; }
-  #sDemo .scr, #sDemo .like { cursor: pointer; }
-  #sDemo .hb { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-  #sDemo .hb path { fill: #fff; }
-  #sDemo .hb.liked path { fill: #fe2c55; }
-  #sDemo .hb.pop svg { animation: sDemopop .5s var(--ease); }
-  #sDemo .disc { width: 42px; height: 42px; border-radius: 50%; margin-top: 4px; animation: sDemospin 5s linear infinite;
-    background: radial-gradient(circle, #ff8a5c 0 22%, #2a2a2e 23% 30%, #3a3a40 31% 36%, #232327 37% 100%); box-shadow: 0 0 0 7px #1b1b1f; }
-  #sDemo .burst { position: absolute; width: 110px; height: 101px; margin: -50px 0 0 -55px; pointer-events: none; opacity: 0;
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4)); animation: sDemobig .9s var(--ease) forwards; }
-  #sDemo .burst svg { display: block; }
-  @keyframes sDemopop { 0%, 100% { transform: scale(1); } 35% { transform: scale(1.32); } 65% { transform: scale(.92); } }
-  @keyframes sDemobig { 0% { opacity: 0; transform: rotate(var(--r)) scale(.2); } 18% { opacity: 1; transform: rotate(var(--r)) scale(1.22); }
-    30% { transform: rotate(var(--r)) scale(.94); } 42% { opacity: 1; transform: rotate(var(--r)) scale(1); }
-    100% { opacity: 0; transform: translateY(-80px) rotate(var(--r)) scale(1.06); } }
-  @keyframes sDemospin { to { transform: rotate(360deg); } }
-  html.still #sDemo .disc, html.rm #sDemo .disc { animation: none; }
   #sDemo .hint { position: absolute; left: 528px; top: 952px; font-size: 24px; color: var(--faint); }
-  #sDemo .cap { position: absolute; left: 14px; bottom: 96px; width: 238px; font-size: 14px; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
-  #sDemo .cap .u { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
-  #sDemo .cap .t b { font-weight: 700; }
-  #sDemo .cap .m { margin-top: 7px; display: flex; align-items: center; gap: 6px; }
-  #sDemo .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 78px; background: #000; display: grid; grid-template-columns: repeat(5, 1fr);
-    align-items: start; padding-top: 8px; font-size: 10.5px; font-weight: 560; color: rgba(255, 255, 255, .7); text-align: center; }
-  #sDemo .nav div { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  #sDemo .nav .on { color: #fff; }
-  #sDemo .nav svg { display: block; }
-  #sDemo .mk { width: 44px; height: 29px; margin-top: 2px; border-radius: 9px; background: #fff; color: #000; font-size: 24px; font-weight: 600; line-height: 29px;
-    box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55; }
-  #sDemo .home { position: absolute; left: 50%; bottom: 7px; width: 116px; height: 4px; margin-left: -58px; border-radius: 2px; background: #fff; }
-  #sDemo .sheet { position: absolute; inset: 0; visibility: hidden; transition: visibility 0s linear .34s; }
-  #sDemo .sheet.open { visibility: visible; transition: visibility 0s; }
-  #sDemo .sheet .bd { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .34s var(--ease); }
-  #sDemo .sheet .pn { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 30px; border-radius: 18px 18px 0 0; background: #fff; color: #161823;
-    cursor: default; transform: translateY(100%); transition: transform .34s var(--ease); }
-  #sDemo .sheet.open .bd { opacity: 1; }
-  #sDemo .sheet.open .pn { transform: none; }
-  #sDemo .sheet .grab { width: 36px; height: 4px; margin: 0 auto 16px; border-radius: 2px; background: #d3d4d7; }
-  #sDemo .sheet .acts { display: flex; justify-content: space-around; margin-bottom: 18px; }
-  #sDemo .sheet .acts > div { width: 72px; display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 500; color: #57585f; cursor: pointer; }
-  #sDemo .sheet .acts i { width: 50px; height: 50px; border-radius: 50%; background: #f1f1f2; display: flex; align-items: center; justify-content: center; color: #161823; }
-  #sDemo .sheet .ni { height: 58px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-radius: 12px; background: #f1f1f2;
-    font-size: 17px; font-weight: 700; cursor: pointer; }
-  #sDemo .sheet svg { display: block; }
-  #sDemo .toast { position: absolute; left: 20px; right: 20px; top: 150px; padding: 12px 12px; border-radius: 10px; background: rgba(36, 36, 42, .92);
-    font-size: 14px; font-weight: 560; line-height: 1.35; text-align: center; opacity: 0; transition: opacity .25s var(--ease); pointer-events: none; }
-  #sDemo .toast.on { opacity: 1; }
   #sDemo .fs { left: 528px; top: 256px; width: 1288px; padding: 34px 48px 36px; }
   #sDemo .fs ul { list-style: none; margin-top: 14px; display: flex; flex-direction: column; gap: 11px; }
   #sDemo .fs li { font-size: 30px; line-height: 1.3; padding-left: 30px; position: relative; }
@@ -607,7 +680,7 @@
   #sDemo .nx { position: absolute; left: 528px; top: 790px; width: 1288px; font-size: 36px; line-height: 1.3; font-weight: 600; letter-spacing: -.01em; color: var(--accent); }
 </style>
 <h2 class="rise" data-s="1">Our running example: TikTok's Like button</h2>
-<div class="phone rise" data-s="1" data-d="1" aria-hidden="true">
+<div class="ttphone rise" data-s="1" data-d="1" aria-hidden="true">
   <div class="scr" data-interactive>
     <div class="vid">
       <div class="blob" style="left:-40px;top:150px;width:220px;height:220px;background:rgba(255,72,126,.55)"></div>
@@ -677,74 +750,8 @@
 <p class="hint rise" data-s="1" data-d="5">Try it: tap the heart, double-tap the video, or long-press it.</p>
 <script>
   (window.deckHooks = window.deckHooks || {}).sDemo = {
-    init: function (el) {
-      var scr = el.querySelector('.scr'), hb = el.querySelector('.hb'), num = el.querySelector('.like .n');
-      var stage = document.getElementById('stage');
-      var HEART = el.querySelector('.hb svg').outerHTML.replace('width="38" height="36"', 'width="110" height="101"').replace('<path ', '<path fill="#fe2c55" ');
-      var sheet = el.querySelector('.sheet'), toast = el.querySelector('.toast');
-      var phone, shownLiked = false, press = null, held = false, toastTimer = 0;
-      function tap(s) { return Object.assign({}, s, { liked: !s.liked, count: s.count + (s.liked ? -1 : 1) }); }
-      function doubleTap(s) { return s.liked ? s : Object.assign({}, s, { liked: true, count: s.count + 1 }); }
-      function openSheet(s) { return Object.assign({}, s, { sheet: true }); }
-      function closeSheet(s) { return Object.assign({}, s, { sheet: false }); }
-      function markNotInterested(s) { return Object.assign({}, s, { sheet: false, notInterested: true }); }
-      function render() {
-        hb.classList.toggle('liked', phone.liked);
-        if (phone.liked && !shownLiked) { hb.classList.remove('pop'); void hb.offsetWidth; hb.classList.add('pop'); }
-        shownLiked = phone.liked;
-        num.textContent = phone.count;
-        sheet.classList.toggle('open', phone.sheet);
-        scr.toggleAttribute('data-not-interested', phone.notInterested);
-      }
-      function apply(f) { phone = f(phone); render(); }
-      function showToast() {
-        clearTimeout(toastTimer);
-        toast.classList.add('on');
-        toastTimer = setTimeout(function () { toast.classList.remove('on'); }, 1600);
-      }
-      function cancelPress() { if (press) clearTimeout(press.timer); press = null; }
-      function burst(e) {
-        var box = scr.getBoundingClientRect(), k = stage.getBoundingClientRect().width / 1920;
-        var b = document.createElement('div');
-        b.className = 'burst';
-        b.style.left = (e.clientX - box.left) / k + 'px';
-        b.style.top = (e.clientY - box.top) / k + 'px';
-        b.style.setProperty('--r', Math.round(Math.random() * 30 - 15) + 'deg');
-        b.innerHTML = HEART;
-        b.addEventListener('animationend', function () { b.remove(); });
-        scr.appendChild(b);
-      }
-      el.querySelector('.like').addEventListener('click', function () { apply(tap); });
-      el.querySelector('.share').addEventListener('click', function () { apply(openSheet); });
-      sheet.querySelector('.bd').addEventListener('click', function () { apply(closeSheet); });
-      sheet.querySelectorAll('.acts > div').forEach(function (a) { a.addEventListener('click', function () { apply(closeSheet); }); });
-      sheet.querySelector('.ni').addEventListener('click', function () { apply(markNotInterested); showToast(); });
-      scr.addEventListener('pointerdown', function (e) {
-        held = false;
-        if (e.button !== 0 || e.target.closest('.rail, .nav, .sheet')) return;
-        press = { x: e.clientX, y: e.clientY, timer: setTimeout(function () { press = null; held = true; apply(openSheet); }, 500) };
-      });
-      scr.addEventListener('pointermove', function (e) {
-        if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) cancelPress();
-      });
-      ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (t) { scr.addEventListener(t, cancelPress); });
-      scr.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-      scr.addEventListener('dblclick', function (e) {
-        /* the second click of a double-click can end a long-press; that press opened the sheet, so it must not also like */
-        if (held || e.target.closest('.rail, .nav, .sheet')) return;
-        apply(doubleTap); burst(e);
-      });
-      this.reset = function () {
-        phone = { liked: false, count: 128, sheet: false, notInterested: false };
-        cancelPress();
-        clearTimeout(toastTimer);
-        toast.classList.remove('on');
-        scr.querySelectorAll('.burst').forEach(function (b) { b.remove(); });
-        render();
-      };
-      this.reset();
-    },
-    step: function () { this.reset(); }
+    init: function (el) { this.phone = TikTokPhone(el.querySelector('.ttphone')); },
+    step: function () { this.phone.reset(); }
   };
 </script>
 </section>
@@ -954,67 +961,6 @@
 <!-- ============ Exercise 1: Like button ============ -->
 <section class="slide" id="sEx1" data-steps="2">
 <style>
-  #sEx1 .phone { position: absolute; left: 104px; top: 220px; width: 360px; height: 780px; padding: 12px; border-radius: 48px; background: #17181c;
-    box-shadow: inset 0 0 0 2px #2c2e35, 0 40px 80px -40px rgba(20, 24, 40, .55); }
-  #sEx1 .scr { position: relative; width: 100%; height: 100%; border-radius: 38px; background: #000; overflow: hidden; color: #fff; }
-  #sEx1 .vid { position: absolute; left: 0; top: 0; right: 0; bottom: 78px; overflow: hidden;
-    background: linear-gradient(172deg, #1d1838 0%, #12142a 45%, #1c0f1e 100%); }
-  #sEx1 .blob { position: absolute; border-radius: 50%; filter: blur(34px); }
-  #sEx1 .vid::after { content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, .45) 0%, transparent 18%, transparent 55%, rgba(0, 0, 0, .6) 100%); }
-  #sEx1 .prog { position: absolute; left: 0; right: 0; bottom: 78px; height: 3px; background: rgba(255, 255, 255, .25); }
-  #sEx1 .prog i { display: block; width: 38%; height: 100%; background: rgba(255, 255, 255, .9); }
-  #sEx1 .stat { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 26px 0 32px; font-size: 15px; font-weight: 600; }
-  #sEx1 .island { position: absolute; left: 50%; top: 10px; width: 96px; height: 28px; margin-left: -48px; border-radius: 14px; background: #000; }
-  #sEx1 .top { position: absolute; left: 0; right: 0; top: 52px; height: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 16px; }
-  #sEx1 .top .live { position: absolute; left: 16px; top: 6px; }
-  #sEx1 .top .srch { position: absolute; right: 16px; top: 6px; }
-  #sEx1 .top span { color: rgba(255, 255, 255, .62); font-weight: 560; }
-  #sEx1 .top b { position: relative; font-weight: 700; }
-  #sEx1 .top b::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 24px; height: 3px; margin-left: -12px; border-radius: 2px; background: #fff; }
-  #sEx1 .rail { position: absolute; right: 8px; bottom: 96px; width: 60px; display: flex; flex-direction: column; align-items: center; gap: 15px;
-    font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
-  #sEx1 .rail .it { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  #sEx1 .rail svg { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35)); }
-  #sEx1 .av { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 8px;
-    background: radial-gradient(circle at 50% 38%, #f6d2b8 0 26%, transparent 27%), radial-gradient(circle at 50% 100%, #3b6fd8 0 48%, transparent 49%), #9fc3ff; }
-  #sEx1 .av i { position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: #fe2c55;
-    font-style: normal; font-size: 17px; font-weight: 700; line-height: 20px; text-align: center; }
-  #sEx1 .hb { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-  #sEx1 .hb svg { animation: sEx1pop 6s var(--ease) infinite; }
-  #sEx1 .tap { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: .55; transform: none; animation: sEx1tap 6s ease-out infinite; }
-  #sEx1 .disc { width: 42px; height: 42px; border-radius: 50%; margin-top: 4px; animation: sEx1spin 5s linear infinite;
-    background: radial-gradient(circle, #ff8a5c 0 22%, #2a2a2e 23% 30%, #3a3a40 31% 36%, #232327 37% 100%); box-shadow: 0 0 0 7px #1b1b1f; }
-  #sEx1 .dt { position: absolute; left: 118px; top: 318px; width: 0; height: 0; }
-  #sEx1 .dt i { position: absolute; left: -28px; top: -28px; width: 56px; height: 56px; border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: 0; animation: sEx1dt1 6s ease-out infinite; }
-  #sEx1 .dt i + i { animation-name: sEx1dt2; }
-  #sEx1 .dt svg { position: absolute; left: -55px; top: -50px; display: block; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4));
-    transform: rotate(-12deg); animation: sEx1big 6s var(--ease) infinite; }
-  /* one 6s cycle: rail tap in the first half, double-tap on the video in the second */
-  @keyframes sEx1pop { 0%, 9.5%, 100% { transform: scale(1); } 3.5% { transform: scale(1.28); } 6% { transform: scale(.94); } }
-  @keyframes sEx1tap { 0% { opacity: .9; transform: scale(.45); } 18%, 100% { opacity: 0; transform: scale(1.5); } }
-  @keyframes sEx1dt1 { 0%, 50% { opacity: 0; transform: scale(.4); } 50.5% { opacity: .9; transform: scale(.4); } 57%, 100% { opacity: 0; transform: scale(1.4); } }
-  @keyframes sEx1dt2 { 0%, 54% { opacity: 0; transform: scale(.4); } 54.5% { opacity: .9; transform: scale(.4); } 61%, 100% { opacity: 0; transform: scale(1.4); } }
-  @keyframes sEx1big { 0%, 55% { opacity: 0; transform: translateY(0) rotate(-12deg) scale(.2); }
-    60% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1.22); } 64% { transform: translateY(0) rotate(-12deg) scale(.94); }
-    68% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1); } 80%, 100% { opacity: 0; transform: translateY(-80px) rotate(-12deg) scale(1.06); } }
-  @keyframes sEx1spin { to { transform: rotate(360deg); } }
-  html.still #sEx1 .hb svg, html.still #sEx1 .tap, html.still #sEx1 .disc, html.still #sEx1 .dt i, html.still #sEx1 .dt svg,
-  html.rm #sEx1 .hb svg, html.rm #sEx1 .tap, html.rm #sEx1 .disc, html.rm #sEx1 .dt i, html.rm #sEx1 .dt svg { animation: none; }
-  #sEx1 .cap { position: absolute; left: 14px; bottom: 96px; width: 238px; font-size: 14px; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
-  #sEx1 .cap .u { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
-  #sEx1 .cap .t b { font-weight: 700; }
-  #sEx1 .cap .m { margin-top: 7px; display: flex; align-items: center; gap: 6px; }
-  #sEx1 .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 78px; background: #000; display: grid; grid-template-columns: repeat(5, 1fr);
-    align-items: start; padding-top: 8px; font-size: 10.5px; font-weight: 560; color: rgba(255, 255, 255, .7); text-align: center; }
-  #sEx1 .nav div { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  #sEx1 .nav .on { color: #fff; }
-  #sEx1 .nav svg { display: block; }
-  #sEx1 .mk { width: 44px; height: 29px; margin-top: 2px; border-radius: 9px; background: #fff; color: #000; font-size: 24px; font-weight: 600; line-height: 29px;
-    box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55; }
-  #sEx1 .home { position: absolute; left: 50%; bottom: 7px; width: 116px; height: 4px; margin-left: -58px; border-radius: 2px; background: #fff; }
   #sEx1 .rt { position: absolute; left: 528px; top: 232px; bottom: 80px; width: 1288px; display: flex; flex-direction: column; gap: 16px; }
   #sEx1 .fs { position: static; padding: 22px 32px 24px; border-radius: 24px; }
   #sEx1 .fs ul { list-style: none; margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: column; grid-template-rows: auto auto auto; gap: 8px 56px; }
@@ -1028,15 +974,14 @@
 </style>
 <div class="eyebrow ex rise" data-s="1">Exercise 1</div><span class="timer rise" data-s="1">4 min</span>
 <h2 class="rise" data-s="1">Test the Like button</h2>
-<div class="phone rise" data-s="1" data-d="1" aria-hidden="true">
-  <div class="scr">
+<div class="ttphone rise" data-s="1" data-d="1" aria-hidden="true">
+  <div class="scr" data-interactive>
     <div class="vid">
       <div class="blob" style="left:-40px;top:150px;width:220px;height:220px;background:rgba(255,72,126,.55)"></div>
       <div class="blob" style="left:150px;top:300px;width:230px;height:250px;background:rgba(64,118,255,.5)"></div>
       <div class="blob" style="left:40px;top:470px;width:200px;height:150px;background:rgba(255,168,72,.38)"></div>
       <div class="blob" style="left:190px;top:90px;width:120px;height:120px;background:rgba(37,244,238,.22)"></div>
     </div>
-    <div class="dt"><i></i><i></i><svg width="110" height="101" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>
     <div class="prog"><i></i></div>
     <div class="island"></div>
     <div class="stat"><span>9:41</span>
@@ -1049,10 +994,10 @@
     </div>
     <div class="rail">
       <div class="av"><i>+</i></div>
-      <div class="it"><div class="hb"><span class="tap"></span><svg width="38" height="36" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>128.4K</div>
+      <div class="it like"><div class="hb"><svg width="38" height="36" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z"/></svg></div><span class="n">128</span></div>
       <div class="it"><svg width="36" height="34" viewBox="0 0 24 23"><path d="M12 1.8C6 1.8 1.6 5.7 1.6 10.6c0 2.8 1.4 5.2 3.7 6.8l-.8 4 4.4-2.4c1 .2 2 .3 3.1.3 6 0 10.4-3.9 10.4-8.7S18 1.8 12 1.8z" fill="#fff"/><g fill="#5a5a60"><circle cx="7.4" cy="10.6" r="1.4"/><circle cx="12" cy="10.6" r="1.4"/><circle cx="16.6" cy="10.6" r="1.4"/></g></svg>1,024</div>
       <div class="it"><svg width="30" height="34" viewBox="0 0 20 23"><path d="M3 2.4c0-.8.6-1.4 1.4-1.4h11.2c.8 0 1.4.6 1.4 1.4v19L10 16.6l-7 4.8v-19z" fill="#fff"/></svg>8,812</div>
-      <div class="it"><svg width="34" height="32" viewBox="0 0 24 22"><path d="M13.5 1.5l9 8.6-9 8.6v-5.1C7.6 13.6 4 15.6 1.5 20.5c.6-7 4.2-12.6 12-13.7V1.5z" fill="#fff"/></svg>2,301</div>
+      <div class="it share"><svg width="34" height="32" viewBox="0 0 24 22"><path d="M13.5 1.5l9 8.6-9 8.6v-5.1C7.6 13.6 4 15.6 1.5 20.5c.6-7 4.2-12.6 12-13.7V1.5z" fill="#fff"/></svg>2,301</div>
       <div class="disc"></div>
     </div>
     <div class="cap">
@@ -1068,6 +1013,19 @@
       <div><svg width="26" height="24" viewBox="0 0 24 22"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="6.8" r="4.6"/><path d="M3.5 20.5c.8-4.6 4.2-7.2 8.5-7.2s7.7 2.6 8.5 7.2"/></g></svg>Profile</div>
     </div>
     <div class="home"></div>
+    <div class="toast">Got it. We'll show fewer videos like this.</div>
+    <div class="sheet">
+      <div class="bd"></div>
+      <div class="pn">
+        <div class="grab"></div>
+        <div class="acts">
+          <div><i><svg width="20" height="22" viewBox="0 0 20 23"><path d="M3 2.4c0-.8.6-1.4 1.4-1.4h11.2c.8 0 1.4.6 1.4 1.4v19L10 16.6l-7 4.8v-19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></i>Save video</div>
+          <div><i><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3v12M7 10.5l5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Download</div>
+          <div><i><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 21V3.5M5 4h11.5l-2.5 4.5 2.5 4.5H5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Report</div>
+        </div>
+        <div class="ni"><svg width="26" height="24" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M12 4.2l-2 4.4 3.2 2.8-2.2 4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>Not interested</div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="rt">
@@ -1087,6 +1045,14 @@
   <div class="rw rise" data-s="1" data-d="4"><span class="num">3</span><div class="q">QA, by hand<small>What would you try?</small></div><div class="ansbox" data-s="2" data-d="3">Like on a phone, check the tablet. Like in airplane mode, then reconnect.</div></div>
   <div class="rw rise" data-s="1" data-d="5"><span class="num">4</span><div class="q">Beta<small>What would you watch?</small></div><div class="ansbox" data-s="2" data-d="4">Like-error rate and crash reports, by app version</div></div>
 </div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).sEx1 = {
+    init: function (el) { this.phone = TikTokPhone(el.querySelector('.ttphone')); },
+    /* step 2 reveals the answers; keep the phone's state across it and reset only on entry */
+    step: function () { if (!this.here) this.phone.reset(); this.here = true; },
+    leave: function () { this.here = false; }
+  };
+</script>
 </section>
 
 <!-- ============ 3. Three axes ============ -->
