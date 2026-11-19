@@ -1056,7 +1056,7 @@
 </section>
 
 <!-- ============ 3. Three axes ============ -->
-<section class="slide" id="s3" data-steps="4">
+<section class="slide" id="s3" data-steps="3">
 <style>
   #s3 svg.tree { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
   #s3 .tl { fill: none; stroke: var(--line); stroke-width: 3; stroke-linecap: round; }
@@ -1075,13 +1075,8 @@
   #s3 .gl { flex: 0 0 100%; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
   #s3 .bxi { width: 18px; height: 18px; border-radius: 4px; flex: none; }
   #s3 .chip { font-size: 23px; padding: 9px 18px; }
-  #s3[data-step="4"] .chip.focus { background: var(--accent); color: #fff; border-color: var(--accent); }
   #s3 .ft { position: absolute; left: 104px; top: 700px; width: 940px; padding-top: 18px; border-top: 3px solid var(--line); font-size: 24px; line-height: 1.45; color: var(--faint); }
   #s3 .ft b { font-weight: 650; color: var(--muted); }
-  #s3 .ft .focus { border-radius: 8px; padding: 1px 6px; margin: 0 2px; transition: background .6s var(--ease), color .6s var(--ease); }
-  #s3[data-step="4"] .ft .focus { background: var(--accent); color: #fff; }
-  #s3 .legend { position: absolute; left: 104px; top: 826px; display: flex; align-items: center; gap: 14px; font-size: 26px; color: var(--muted); }
-  #s3 .legend i { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); }
 </style>
 <h2 class="rise" data-s="1">Three ways to classify a test</h2>
 <svg class="tree" viewBox="0 0 1920 1080" aria-hidden="true">
@@ -1096,7 +1091,7 @@
   <p>How much of the system?</p>
 </div>
 <div class="leaves rise" data-s="1" data-d="2" style="left:104px;width:400px">
-  <span class="chip">Unit</span><span class="chip">Integration</span><span class="chip focus">System (E2E)</span><span class="chip">Acceptance</span>
+  <span class="chip">Unit</span><span class="chip">Integration</span><span class="chip">System (E2E)</span><span class="chip">Acceptance</span>
 </div>
 
 <div class="card br rise" data-s="2" data-d="1" style="left:544px;width:520px">
@@ -1105,7 +1100,7 @@
 </div>
 <div class="leaves rise" data-s="2" data-d="2" style="left:544px;width:520px">
   <span class="chip">Functional</span><span class="chip">Performance / Load</span><span class="chip">Security</span>
-  <span class="chip">Usability</span><span class="chip">Compatibility</span><span class="chip focus">Regression</span><span class="chip focus">Smoke</span>
+  <span class="chip">Usability</span><span class="chip">Compatibility</span><span class="chip">Regression</span><span class="chip">Smoke</span>
 </div>
 
 <div class="card br rise" data-s="3" data-d="1" style="left:1104px;width:712px">
@@ -1115,15 +1110,14 @@
 <div class="leaves rise" data-s="3" data-d="2" style="left:1104px;width:712px;display:block">
   <div class="grp"><span class="gl"><span class="bxi" style="background:var(--ink)"></span>Black box</span>
     <span class="chip">Equivalence partitioning</span><span class="chip">Boundary value</span><span class="chip">Decision table</span>
-    <span class="chip">State transition</span><span class="chip focus">Property-based</span><span class="chip focus">Differential</span></div>
+    <span class="chip">State transition</span><span class="chip">Property-based</span><span class="chip">Differential</span></div>
   <div class="grp"><span class="gl"><span class="bxi" style="background:var(--card);box-shadow:inset 0 0 0 2.5px var(--ink)"></span>White box</span>
     <span class="chip">Statement coverage</span><span class="chip">Branch coverage</span><span class="chip">Path coverage</span><span class="chip">Mutation testing</span></div>
   <div class="grp"><span class="gl">Experience-based</span>
     <span class="chip">Exploratory</span><span class="chip">Error guessing</span></div>
 </div>
 
-<p class="ft rise" data-s="3" data-d="4"><b>Gray box:</b> black-box tests designed with some knowledge of the internals, such as the API or database. <b>Static testing</b> (<span class="focus">code review</span>, static analysis) checks code without running it.</p>
-<div class="legend" data-s="4"><i></i>What we focus on today</div>
+<p class="ft rise" data-s="3" data-d="4"><b>Gray box:</b> black-box tests designed with some knowledge of the internals, such as the API or database. <b>Static testing</b> (code review, static analysis) checks code without running it.</p>
 </section>
 
 <!-- ============ Exercise 2: boundaries ============ -->
