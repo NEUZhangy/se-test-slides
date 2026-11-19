@@ -2195,7 +2195,7 @@ p.likes  <span class="r"># -1</span></div>
   #s10 .utc { position: absolute; left: 104px; top: 636px; width: 700px; font-size: 30px; line-height: 1.35; }
   #s10 .utc b { color: var(--bad); }
   #s10 .utc span { display: block; font-size: 25px; color: var(--muted); margin-top: 12px; }
-  #s10 .e2e { left: 860px; top: 280px; width: 956px; height: 580px; padding: 36px 40px; }
+  #s10 .e2e { left: 860px; top: 280px; width: 956px; height: 624px; padding: 36px 40px; }
   #s10 .steps { width: 530px; display: flex; flex-direction: column; gap: 16px; }
   #s10 .sp { display: flex; align-items: center; gap: 16px; font-size: 27px; line-height: 1.25; }
   #s10 .sp .ico { width: 40px; height: 40px; }
@@ -2203,44 +2203,77 @@ p.likes  <span class="r"># -1</span></div>
   #s10 .sp.off { color: var(--faint); }
   #s10 .sum { margin-top: 26px; width: 530px; background: var(--bad-soft); border-radius: 18px; padding: 18px 22px; font-size: 25px; line-height: 1.35; }
   #s10 .sum .kicker { color: var(--bad); font-size: 19px; display: block; margin-bottom: 6px; }
-  #s10 .ph { position: absolute; right: 44px; top: 36px; width: 280px; height: 508px; border-radius: 42px; background: var(--ink); padding: 14px; }
-  #s10 .scr { width: 100%; height: 100%; border-radius: 30px; background: #f4f5f7; position: relative; overflow: hidden; }
-  #s10 .vid { position: absolute; left: 16px; right: 16px; top: 44px; height: 220px; border-radius: 16px; background: linear-gradient(135deg, #2c59d6, #7a4fd6 60%, #d64f8a); }
-  #s10 .vid::after { content: ""; position: absolute; left: 50%; top: 50%; margin: -18px 0 0 -12px; border-left: 30px solid rgba(255,255,255,.85); border-top: 18px solid transparent; border-bottom: 18px solid transparent; }
-  #s10 .fld { position: absolute; left: 16px; right: 16px; top: 282px; height: 52px; border-radius: 12px; background: #fff; border: 1.5px solid #d5d9e0; font-size: 19px; padding: 14px 14px; color: var(--ink); font-family: var(--mono); }
-  #s10 .post { position: absolute; left: 16px; right: 16px; bottom: 24px; height: 58px; border-radius: 14px; background: #d5d9e0; color: #8b919c; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  #s10 .post::after { content: ""; position: absolute; inset: -7px; border-radius: 19px; border: 3px dashed var(--bad); }
-  #s10 .ptag { position: absolute; right: 22px; bottom: 98px; font-size: 16px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--bad); border-radius: 8px; padding: 4px 10px; }
-  #s10 .drv { position: absolute; left: 104px; top: 912px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; width: 1712px; }
+  #s10 .ttphone { left: auto; right: 40px; top: 24px; scale: .74; transform-origin: top right; }
+  #s10 .ttphone .scr, #s10 .ttphone .like { cursor: inherit; }
+  #s10 .ttphone .like { position: relative; }
+  #s10 .ttphone .ring { position: absolute; left: -9px; right: -9px; top: -7px; bottom: -7px; border-radius: 20px; border: 3px dashed var(--bad); opacity: .75; }
+  #s10 .ttphone .tag { position: absolute; right: calc(100% + 16px); top: 12px; white-space: nowrap; font-size: 19px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #fff; text-shadow: none; background: var(--bad); border-radius: 8px; padding: 5px 11px; }
+  #s10 .drv { position: absolute; left: 104px; top: 936px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; width: 1712px; }
   #s10 .drv .kicker { margin-right: 6px; }
 </style>
 <h2 class="rise" data-s="1">End-to-end: give the agent hands and eyes</h2>
 <div class="lb rise" data-s="1" style="left:104px"><span class="kicker">Unit test fails</span></div>
 <div class="code ut rise" data-s="1" data-d="1"><span class="p">$</span> npm test
 
- <span class="r">FAIL</span>  upload.test.ts
-  <span class="r">✕</span> uploads a video <span class="c">(30012 ms)</span>
+ <span class="r">FAIL</span>  like.test.ts
+  <span class="r">✕</span> likes a video <span class="c">(30012 ms)</span>
 
   <span class="r">Error: Timeout after 30 seconds</span></div>
 <div class="utc rise" data-s="1" data-d="2"><b>No step. No trace.</b> The agent can only guess.
   <span>Unit tests can pass while the feature is broken: the test and the agent can both miss the full task.</span></div>
 
-<div class="lb rise" data-s="2" style="left:860px"><span class="kicker" style="color:var(--accent)">E2E run fails: post a video</span></div>
+<div class="lb rise" data-s="2" style="left:860px"><span class="kicker" style="color:var(--accent)">E2E run fails: like a video</span></div>
 <div class="card e2e rise" data-s="2" data-d="1">
   <div class="steps">
     <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Open the app, signed in</div>
-    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Record a 15-second clip</div>
-    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Add the caption "#cs101"</div>
-    <div class="sp no"><span class="ico no solid"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>Tap Post: the button stays disabled</div>
-    <div class="sp off"><span class="ico off"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"/></svg></span>Video shows in followers' feeds</div>
+    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Scroll to a video</div>
+    <div class="sp"><span class="ico ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Tap ♥: the heart turns red, the count shows 129</div>
+    <div class="sp no"><span class="ico no solid"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>Close and reopen the app: the heart is white, the count is 128 again</div>
+    <div class="sp off"><span class="ico off"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"/></svg></span>The like shows on a second device</div>
   </div>
-  <div class="sum"><span class="kicker">What the agent gets back</span>Failed at step 4. "Post" stayed disabled after the caption was added. Screenshot attached.</div>
-  <div class="ph"><div class="scr">
-    <div class="vid"></div>
-    <div class="fld">#cs101</div>
-    <span class="ptag">disabled</span>
-    <div class="post">Post</div>
-  </div></div>
+  <div class="sum"><span class="kicker">What the agent gets back</span>Failed at step 4. The like never reached the server. Screenshot attached.</div>
+  <div class="ttphone" aria-hidden="true">
+    <div class="scr">
+      <div class="vid">
+        <div class="blob" style="left:-40px;top:150px;width:220px;height:220px;background:rgba(255,72,126,.55)"></div>
+        <div class="blob" style="left:150px;top:300px;width:230px;height:250px;background:rgba(64,118,255,.5)"></div>
+        <div class="blob" style="left:40px;top:470px;width:200px;height:150px;background:rgba(255,168,72,.38)"></div>
+        <div class="blob" style="left:190px;top:90px;width:120px;height:120px;background:rgba(37,244,238,.22)"></div>
+      </div>
+      <div class="prog"><i></i></div>
+      <div class="island"></div>
+      <div class="stat"><span>9:41</span>
+        <svg width="70" height="13" viewBox="0 0 70 13"><g fill="#fff"><rect x="0" y="8" width="3.4" height="4.5" rx="1"/><rect x="5" y="5.5" width="3.4" height="7" rx="1"/><rect x="10" y="3" width="3.4" height="9.5" rx="1"/><rect x="15" y="0.5" width="3.4" height="12" rx="1"/></g><path d="M25 4.6a10 10 0 0 1 14 0M27.6 7.4a6.2 6.2 0 0 1 8.8 0M30.2 10.1a2.4 2.4 0 0 1 3.6 0" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><rect x="44.5" y="1" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.2"/><rect x="46.5" y="3" width="15" height="7" rx="1.5" fill="#fff"/><rect x="67.5" y="4.5" width="1.6" height="4" rx=".8" fill="#fff" fill-opacity=".5"/></svg>
+      </div>
+      <div class="top">
+        <svg class="live" width="30" height="24" viewBox="0 0 30 24"><path d="M10 1.5l5 4 5-4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="6" width="26" height="16.5" rx="4" fill="none" stroke="#fff" stroke-width="1.8"/><text x="15" y="17.6" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">LIVE</text></svg>
+        <span>Following</span><b>For You</b>
+        <svg class="srch" width="24" height="24" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M15.8 15.8l5 5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="rail">
+        <div class="av"><i>+</i></div>
+        <div class="it like"><div class="hb"><svg width="38" height="36" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z"/></svg></div><span class="n">128</span><i class="ring"></i><span class="tag">after reopening</span></div>
+        <div class="it"><svg width="36" height="34" viewBox="0 0 24 23"><path d="M12 1.8C6 1.8 1.6 5.7 1.6 10.6c0 2.8 1.4 5.2 3.7 6.8l-.8 4 4.4-2.4c1 .2 2 .3 3.1.3 6 0 10.4-3.9 10.4-8.7S18 1.8 12 1.8z" fill="#fff"/><g fill="#5a5a60"><circle cx="7.4" cy="10.6" r="1.4"/><circle cx="12" cy="10.6" r="1.4"/><circle cx="16.6" cy="10.6" r="1.4"/></g></svg>1,024</div>
+        <div class="it"><svg width="30" height="34" viewBox="0 0 20 23"><path d="M3 2.4c0-.8.6-1.4 1.4-1.4h11.2c.8 0 1.4.6 1.4 1.4v19L10 16.6l-7 4.8v-19z" fill="#fff"/></svg>8,812</div>
+        <div class="it share"><svg width="34" height="32" viewBox="0 0 24 22"><path d="M13.5 1.5l9 8.6-9 8.6v-5.1C7.6 13.6 4 15.6 1.5 20.5c.6-7 4.2-12.6 12-13.7V1.5z" fill="#fff"/></svg>2,301</div>
+        <div class="disc"></div>
+      </div>
+      <div class="cap">
+        <div class="u">@cs_student</div>
+        <div class="t">Testing my Like button <b>#cs101</b> <b>#softwaretesting</b></div>
+        <div class="m"><span>♫</span><span>original sound, cs_student</span></div>
+      </div>
+      <div class="nav">
+        <div class="on"><svg width="26" height="24" viewBox="0 0 24 22"><path d="M2.5 9.6L12 1.8l9.5 7.8V20a.8.8 0 0 1-.8.8h-5.6v-6.4H8.9v6.4H3.3a.8.8 0 0 1-.8-.8V9.6z" fill="#fff"/></svg>Home</div>
+        <div><svg width="26" height="24" viewBox="0 0 26 22"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="9.5" cy="6.5" r="4"/><path d="M2 20c.6-4.2 3.6-6.6 7.5-6.6S16.4 15.8 17 20"/><path d="M16.4 2.9a4 4 0 0 1 0 7.3M19.6 13.8c2.4.9 3.8 3 4.2 6.2"/></g></svg>Friends</div>
+        <div><div class="mk">+</div></div>
+        <div><svg width="26" height="24" viewBox="0 0 24 22"><path d="M3 4.5A2.5 2.5 0 0 1 5.5 2h13A2.5 2.5 0 0 1 21 4.5v10a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4h0A2 2 0 0 1 3 15V4.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M7.5 8h9M7.5 11.5h6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>Inbox</div>
+        <div><svg width="26" height="24" viewBox="0 0 24 22"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="6.8" r="4.6"/><path d="M3.5 20.5c.8-4.6 4.2-7.2 8.5-7.2s7.7 2.6 8.5 7.2"/></g></svg>Profile</div>
+      </div>
+      <div class="home"></div>
+    </div>
+  </div>
 </div>
 
 <div class="drv rise" data-s="2" data-d="3"><span class="kicker">How the agent drives it</span>
