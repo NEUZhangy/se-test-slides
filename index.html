@@ -2628,7 +2628,7 @@ p.likes  <span class="r"># -1</span></div>
   #s14 .hc p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.38; }
 </style>
 <h2 class="rise" data-s="1">Keep the verifier honest</h2>
-<div class="card hc rise" data-s="1" data-d="1" style="left:104px;top:226px"><div class="kicker">Out of reach</div><h3>A change can't edit its own checks</h3><p>Review rules are read from the main branch, never from the PR.</p></div>
+<div class="card hc rise" data-s="1" data-d="1" style="left:104px;top:226px"><div class="kicker">Out of reach</div><h3>A PR can't grade itself</h3><p>The rules that check a change come from the main branch, so the change can't rewrite them.</p></div>
 <div class="card hc rise" data-s="1" data-d="2" style="left:688px;top:226px"><div class="kicker">Fresh</div><h3>Review the commit you ship</h3><p>A pass on an older commit means nothing.</p></div>
 <div class="card hc rise" data-s="1" data-d="3" style="left:1272px;top:226px"><div class="kicker">No retry-until-green</div><h3>Flaky tests get fixed or deleted</h3><p>No sleeps, no skips. Find the cause, or delete it and write down why.</p></div>
 <div class="card hc rise" data-s="1" data-d="4" style="left:104px;top:578px"><div class="kicker">Escalate</div><h3>Three strikes, then a human</h3><p>After three failed rounds the agent stops and asks.</p></div>
