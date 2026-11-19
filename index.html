@@ -273,11 +273,11 @@
 <div class="card pt rise" data-s="1" data-d="1" style="left:104px">
   <h3>Foundations</h3>
   <ul>
-    <li>Why we test, and what a test is</li>
+    <li>Why we test: a real outage</li>
+    <li>Our running example, and what a test is</li>
     <li>Test levels, and how TikTok tested</li>
-    <li>Black box, white box, gray box</li>
-    <li>Coverage, and what makes a test good</li>
-    <li>When to stop, and what you can't test</li>
+    <li>Levels, types, and techniques</li>
+    <li>Coverage, good tests, and when to stop</li>
   </ul>
 </div>
 <div class="card pt two rise" data-s="1" data-d="2" style="left:988px">
@@ -307,6 +307,75 @@
 </div>
 </section>
 
+<!-- ============ Why test: CrowdStrike ============ -->
+<section class="slide" id="sWhy" data-steps="2">
+<style>
+  #sWhy .mon { position: absolute; left: 104px; top: 236px; width: 900px; height: 524px; padding: 20px; border-radius: 22px; background: #1a1b1f;
+    box-shadow: inset 0 0 0 2px #2c2e35, 0 40px 80px -40px rgba(20, 24, 40, .55); }
+  #sWhy .neck { position: absolute; left: 494px; top: 760px; width: 120px; height: 54px; background: linear-gradient(90deg, #8d929b, #c3c7ce 45%, #9aa0a9); }
+  #sWhy .base { position: absolute; left: 394px; top: 812px; width: 320px; height: 16px; border-radius: 8px 8px 4px 4px; background: linear-gradient(180deg, #c3c7ce, #8d929b); }
+  #sWhy .bs { width: 100%; height: 100%; background: #0078d7; color: #fff; padding: 58px 64px 0; overflow: hidden;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+  #sWhy .bs .face { font-size: 112px; line-height: 1; font-weight: 300; letter-spacing: -.12em; }
+  #sWhy .bs .msg { font-size: 23px; line-height: 1.34; margin-top: 24px; max-width: 700px; font-weight: 350; }
+  #sWhy .bs .pct { font-size: 23px; margin-top: 18px; font-weight: 350; }
+  #sWhy .bs .info { display: flex; gap: 16px; margin-top: 24px; }
+  #sWhy .bs .qr { flex: none; display: grid; grid-template-columns: repeat(21, 4px); grid-auto-rows: 4px; padding: 4px; background: #fff; align-self: flex-start; }
+  #sWhy .bs .qr b { background: #000; }
+  #sWhy .bs .qr i { background: #fff; }
+  #sWhy .bs .tx { font-size: 13.5px; line-height: 1.45; font-weight: 400; }
+  #sWhy .bs .tx p { font-size: inherit; line-height: inherit; }
+  #sWhy .bs .tx p + p { margin-top: 10px; }
+  #sWhy .facts { position: absolute; left: 1060px; top: 236px; width: 756px; display: flex; flex-direction: column; gap: 18px; }
+  #sWhy .fact { padding-top: 12px; border-top: 3px solid var(--ink); }
+  #sWhy .fact b { display: block; font-size: 50px; line-height: 1.05; font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  #sWhy .fact b.bad { color: var(--bad); }
+  #sWhy .fact span { display: block; font-size: 25px; line-height: 1.32; color: var(--muted); margin-top: 6px; }
+  #sWhy .rp { left: 1060px; top: 640px; width: 756px; padding: 26px 34px 28px; }
+  #sWhy .rp .kicker { font-size: 19px; color: var(--accent); }
+  #sWhy .rp q { display: block; margin-top: 10px; font-size: 28px; line-height: 1.3; font-weight: 600; letter-spacing: -.008em; quotes: "\201C" "\201D"; }
+  #sWhy .rp .by { font-size: 19px; color: var(--faint); margin-top: 6px; }
+  #sWhy .rp ul { list-style: none; margin-top: 16px; padding-top: 14px; border-top: 1.5px solid #e3e6eb; display: flex; flex-direction: column; gap: 8px; }
+  #sWhy .rp li { font-size: 24px; line-height: 1.3; padding-left: 24px; position: relative; }
+  #sWhy .rp li::before { content: ""; position: absolute; left: 0; top: 11px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+</style>
+<h2 class="rise" data-s="1">Why test? One update, 8.5 million blue screens</h2>
+
+<div class="mon rise" data-s="1" data-d="1" aria-hidden="true">
+  <div class="bs">
+    <div class="face">:(</div>
+    <div class="msg">Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.</div>
+    <div class="pct">0% complete</div>
+    <div class="info">
+      <div class="qr"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><b></b><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><i></i><b></b><b></b><b></b><i></i><i></i><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><i></i><i></i><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><i></i><b></b><i></i><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><b></b><i></i><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><i></i><b></b><b></b><i></i><b></b><b></b><b></b><b></b><i></i><i></i><b></b><i></i><i></i><i></i><b></b><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><b></b><i></i><b></b><b></b><i></i><i></i><b></b><b></b><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><i></i><i></i><i></i><b></b><b></b><i></i><i></i><b></b><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><b></b><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><i></i><b></b><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><i></i><b></b><b></b><b></b><i></i><i></i><b></b><b></b><b></b><b></b><i></i><i></i><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><i></i><b></b><i></i><b></b><b></b><b></b><b></b><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><i></i><b></b><i></i><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><b></b><i></i><b></b><b></b><i></i><i></i><i></i><b></b><b></b><i></i><i></i><b></b><i></i></div>
+      <div class="tx">
+        <p>For more information about this issue and possible fixes, visit https://www.windows.com/stopcode</p>
+        <p>If you call a support person, give them this info:<br>Stop code: PAGE_FAULT_IN_NONPAGED_AREA<br>What failed: csagent.sys</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="neck rise" data-s="1" data-d="1"></div>
+<div class="base rise" data-s="1" data-d="1"></div>
+
+<div class="facts">
+  <div class="fact rise" data-s="1" data-d="2"><b>July 19, 2024</b><span>A routine content update for CrowdStrike's Falcon security sensor</span></div>
+  <div class="fact rise" data-s="1" data-d="3"><b class="bad">8.5M</b><span>Windows PCs crashed into a blue screen</span></div>
+  <div class="fact rise" data-s="1" data-d="4"><b>78 min</b><span>before the update was pulled. The damage was done.</span></div>
+</div>
+
+<div class="card rp rise" data-s="2">
+  <div class="kicker">What the post-incident report says</div>
+  <q>This parameter count mismatch evaded multiple layers of build validation and testing</q>
+  <div class="by">CrowdStrike root cause analysis, Aug 2024</div>
+  <ul>
+    <li>Every test used a wildcard for field 21, so no test ever read it.</li>
+    <li>Their fix: tests with a real value in every field, and a staged rollout.</li>
+  </ul>
+</div>
+<div class="src">Sources: CrowdStrike, Channel File 291 Root Cause Analysis (Aug 6, 2024); Microsoft blog (Jul 20, 2024); Microsoft Security blog (Jul 27, 2024).</div>
+</section>
+
 <!-- ============ Why we test: mistake, defect, failure ============ -->
 <section class="slide" id="sRoot" data-steps="3">
 <style>
@@ -328,9 +397,10 @@
   #sRoot .why > div { flex: 1; font-size: 28px; line-height: 1.35; padding-top: 16px; border-top: 3px solid var(--ink); }
   #sRoot .why b { font-weight: 650; }
   #sRoot .why span { color: var(--muted); }
-  #sRoot .def { position: absolute; left: 104px; top: 846px; width: 1712px; background: var(--accent-soft); border-radius: 0 24px 24px 0; border-left: 8px solid var(--accent);
+  #sRoot .def { position: absolute; left: 104px; top: 812px; width: 1712px; background: var(--accent-soft); border-radius: 0 24px 24px 0; border-left: 8px solid var(--accent);
     padding: 26px 36px; font-size: 36px; line-height: 1.3; font-weight: 560; letter-spacing: -.008em; }
   #sRoot .def em { font-style: normal; color: var(--accent); }
+  #sRoot .def small { display: block; margin-top: 8px; font-size: 22px; line-height: 1.3; font-weight: 450; letter-spacing: 0; color: var(--faint); }
 </style>
 <h2 class="rise" data-s="1">Why do we test? Because people write bugs.</h2>
 
@@ -338,8 +408,8 @@
   <div class="hd"><div class="ic"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="7.5" r="4"/><path d="M4 21 C4.8 15.8 8 13.6 12 13.6 C16 13.6 19.2 15.8 20 21"/>
   </svg></div><h3>Mistake</h3></div>
-  <p>A developer forgets a case.</p>
-  <div class="eg">What if the user never liked it?</div>
+  <p>A mismatch nobody noticed.</p>
+  <div class="eg">The template defined 21 inputs. The sensor code supplied 20.</div>
 </div>
 
 <div class="card lk rise" data-s="1" data-d="2" style="left:720px">
@@ -347,15 +417,15 @@
     <path d="M8 6 L2.5 12 L8 18"/><path d="M16 6 L21.5 12 L16 18"/><path d="M13.6 4 L10.4 20"/>
   </svg></div><h3>Defect</h3></div>
   <p>The mistake lands in the code.</p>
-  <div class="eg"><code>post.likes -= 1</code></div>
+  <div class="eg"><code>read input[20]</code></div>
 </div>
 
 <div class="card lk fail rise" data-s="1" data-d="3" style="left:1336px">
   <div class="hd"><div class="ic"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--bad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M10.5 18.6 H13.5"/><path d="M9.6 8.4 L14.4 13.2 M14.4 8.4 L9.6 13.2"/>
+    <rect x="2.5" y="3.5" width="19" height="13" rx="2"/><path d="M8.5 20.5 H15.5"/><path d="M12 16.5 V20.5"/><path d="M9.8 7.8 L14.2 12.2 M14.2 7.8 L9.8 12.2"/>
   </svg></div><h3>Failure</h3></div>
-  <p>A user sees it.</p>
-  <div class="eg">The like count shows -1.</div>
+  <p>Users see it.</p>
+  <div class="eg">8.5 million PCs show a blue screen.</div>
 </div>
 
 <svg class="ar" viewBox="0 0 1920 1080" aria-hidden="true">
@@ -373,67 +443,7 @@
   <div class="rise" data-s="2" data-d="2"><b>Code changes every day.</b> <span>Yesterday's careful read is out of date.</span></div>
 </div>
 
-<div class="def rise" data-s="3"><em>Testing</em> means running the software on purpose to find failures before users do.</div>
-</section>
-
-<!-- ============ Why test ============ -->
-<section class="slide" id="sWhy" data-steps="3">
-<style>
-  #sWhy .st { top: 250px; width: 544px; height: 600px; padding: 40px 44px; }
-  #sWhy .st .top { display: flex; justify-content: space-between; align-items: flex-start; }
-  #sWhy .st .ic { width: 96px; height: 96px; border-radius: 24px; background: var(--bad-soft); display: flex; align-items: center; justify-content: center; }
-  #sWhy .st .ic svg { display: block; }
-  #sWhy .st .big { font-size: 112px; line-height: 1; font-weight: 750; letter-spacing: -.03em; color: var(--bad); margin-top: 14px; font-variant-numeric: tabular-nums; }
-  #sWhy .st h3 { font-size: 40px; font-weight: 650; letter-spacing: -.015em; margin-top: 18px; }
-  #sWhy .st p { font-size: 25px; line-height: 1.4; color: var(--muted); margin-top: 14px; }
-  #sWhy .out { position: absolute; left: 104px; top: 884px; font-size: 36px; font-weight: 600; letter-spacing: -.01em; }
-  #sWhy .out em { font-style: normal; color: var(--accent); }
-</style>
-<h2 class="rise" data-s="1">Why test? Small bugs, huge bills</h2>
-
-<div class="card st rise" data-s="1" style="left:104px">
-  <div class="top"><div class="kicker">1996</div>
-    <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <g transform="rotate(35 32 32)">
-        <path d="M32 6 C42 16 44 30 40 44 L24 44 C20 30 22 16 32 6 Z" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
-        <circle cx="32" cy="24" r="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="3"/>
-        <path d="M24 34 L16 44 L24 44 M40 34 L48 44 L40 44" stroke="var(--ink)" stroke-width="3"/>
-        <path d="M27 48 L32 60 L37 48" fill="var(--warm)" stroke="var(--warm)" stroke-width="3"/>
-      </g>
-      <path d="M50 8 L54 4 M56 16 L61 15 M44 4 L45 0" stroke="var(--bad)" stroke-width="3"/>
-    </svg></div></div>
-  <div class="big">37 s</div>
-  <h3>Ariane 5</h3>
-  <p>The rocket broke apart about 37 seconds after launch. A 64-bit number was squeezed into 16 bits and overflowed. Code reused from Ariane 4 was never tested with Ariane 5's flight data.</p>
-</div>
-
-<div class="card st rise" data-s="2" style="left:688px">
-  <div class="top"><div class="kicker">2012</div>
-    <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 8 L8 56 L58 56" stroke="var(--ink)" stroke-width="3"/>
-      <path d="M14 18 L24 26 L32 20 L42 38 L52 46" stroke="var(--bad)" stroke-width="4"/>
-      <path d="M42 46 L52 46 L52 36" stroke="var(--bad)" stroke-width="4"/>
-    </svg></div></div>
-  <div class="big">$440M</div>
-  <h3>Knight Capital</h3>
-  <p>A botched deployment left old code running. In 45 minutes it sent millions of unintended orders and lost about $440 million.</p>
-</div>
-
-<div class="card st rise" data-s="3" style="left:1272px">
-  <div class="top"><div class="kicker">2024</div>
-    <div class="ic"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="10" y="12" width="44" height="30" rx="4" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/>
-      <circle cx="25" cy="24" r="2.5" fill="#fff"/><circle cx="39" cy="24" r="2.5" fill="#fff"/>
-      <path d="M24 35 C27 31 37 31 40 35" stroke="#fff" stroke-width="3"/>
-      <path d="M4 50 L60 50 L56 44 L8 44 Z" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
-    </svg></div></div>
-  <div class="big">8.5M</div>
-  <h3>CrowdStrike</h3>
-  <p>One faulty update crashed about 8.5 million Windows PCs. Airlines, hospitals, and banks went down.</p>
-</div>
-
-<div class="out rise" data-s="3" data-d="5">Each was a small mistake. <em>Testing is how you find it first.</em></div>
-<div class="src">Sources: Ariane 501 Inquiry Board report (1996); SEC order on Knight Capital (2013); Microsoft, July 2024.</div>
+<div class="def rise" data-s="3"><em>Testing</em> means executing software on purpose to find failures before users do.<small>Many definitions also count reviews and static analysis as testing (static testing).</small></div>
 </section>
 
 <!-- ============ What testing is for ============ -->
@@ -469,7 +479,7 @@
     <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="var(--accent)"/>
   </svg></div>
   <h3>Build it right, and build the right thing</h3>
-  <p>Verification checks the code matches the spec. Validation checks the spec matches what users need.</p>
+  <p>Verification checks the code matches the spec. Validation checks the product meets what users actually need.</p>
 </div>
 <div class="card gl rise" data-s="1" data-d="2" style="left:976px">
   <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -510,6 +520,132 @@
     <text class="mx prod" x="1665" y="644">100x</text><text class="bl" x="1665" y="986">In production</text>
   </g>
 </svg>
+</section>
+
+<!-- ============ Running example: Like button ============ -->
+<section class="slide" id="sDemo" data-steps="1">
+<style>
+  #sDemo .phone { position: absolute; left: 104px; top: 220px; width: 360px; height: 780px; padding: 12px; border-radius: 48px; background: #17181c;
+    box-shadow: inset 0 0 0 2px #2c2e35, 0 40px 80px -40px rgba(20, 24, 40, .55); }
+  #sDemo .scr { position: relative; width: 100%; height: 100%; border-radius: 38px; background: #000; overflow: hidden; color: #fff; }
+  #sDemo .vid { position: absolute; left: 0; top: 0; right: 0; bottom: 78px; overflow: hidden;
+    background: linear-gradient(172deg, #1d1838 0%, #12142a 45%, #1c0f1e 100%); }
+  #sDemo .blob { position: absolute; border-radius: 50%; filter: blur(34px); }
+  #sDemo .vid::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, .45) 0%, transparent 18%, transparent 55%, rgba(0, 0, 0, .6) 100%); }
+  #sDemo .prog { position: absolute; left: 0; right: 0; bottom: 78px; height: 3px; background: rgba(255, 255, 255, .25); }
+  #sDemo .prog i { display: block; width: 38%; height: 100%; background: rgba(255, 255, 255, .9); }
+  #sDemo .stat { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 26px 0 32px; font-size: 15px; font-weight: 600; }
+  #sDemo .island { position: absolute; left: 50%; top: 10px; width: 96px; height: 28px; margin-left: -48px; border-radius: 14px; background: #000; }
+  #sDemo .top { position: absolute; left: 0; right: 0; top: 52px; height: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 16px; }
+  #sDemo .top .live { position: absolute; left: 16px; top: 6px; }
+  #sDemo .top .srch { position: absolute; right: 16px; top: 6px; }
+  #sDemo .top span { color: rgba(255, 255, 255, .62); font-weight: 560; }
+  #sDemo .top b { position: relative; font-weight: 700; }
+  #sDemo .top b::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 24px; height: 3px; margin-left: -12px; border-radius: 2px; background: #fff; }
+  #sDemo .rail { position: absolute; right: 8px; bottom: 96px; width: 60px; display: flex; flex-direction: column; align-items: center; gap: 15px;
+    font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
+  #sDemo .rail .it { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  #sDemo .rail svg { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35)); }
+  #sDemo .av { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 8px;
+    background: radial-gradient(circle at 50% 38%, #f6d2b8 0 26%, transparent 27%), radial-gradient(circle at 50% 100%, #3b6fd8 0 48%, transparent 49%), #9fc3ff; }
+  #sDemo .av i { position: absolute; left: 50%; bottom: -10px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: #fe2c55;
+    font-style: normal; font-size: 17px; font-weight: 700; line-height: 20px; text-align: center; }
+  #sDemo .hb { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+  #sDemo .hb svg { animation: sDemopop 6s var(--ease) infinite; }
+  #sDemo .tap { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: .55; transform: none; animation: sDemotap 6s ease-out infinite; }
+  #sDemo .disc { width: 42px; height: 42px; border-radius: 50%; margin-top: 4px; animation: sDemospin 5s linear infinite;
+    background: radial-gradient(circle, #ff8a5c 0 22%, #2a2a2e 23% 30%, #3a3a40 31% 36%, #232327 37% 100%); box-shadow: 0 0 0 7px #1b1b1f; }
+  #sDemo .dt { position: absolute; left: 118px; top: 318px; width: 0; height: 0; }
+  #sDemo .dt i { position: absolute; left: -28px; top: -28px; width: 56px; height: 56px; border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .12); opacity: 0; animation: sDemodt1 6s ease-out infinite; }
+  #sDemo .dt i + i { animation-name: sDemodt2; }
+  #sDemo .dt svg { position: absolute; left: -55px; top: -50px; display: block; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .4));
+    transform: rotate(-12deg); animation: sDemobig 6s var(--ease) infinite; }
+  /* one 6s cycle: rail tap in the first half, double-tap on the video in the second */
+  @keyframes sDemopop { 0%, 9.5%, 100% { transform: scale(1); } 3.5% { transform: scale(1.28); } 6% { transform: scale(.94); } }
+  @keyframes sDemotap { 0% { opacity: .9; transform: scale(.45); } 18%, 100% { opacity: 0; transform: scale(1.5); } }
+  @keyframes sDemodt1 { 0%, 50% { opacity: 0; transform: scale(.4); } 50.5% { opacity: .9; transform: scale(.4); } 57%, 100% { opacity: 0; transform: scale(1.4); } }
+  @keyframes sDemodt2 { 0%, 54% { opacity: 0; transform: scale(.4); } 54.5% { opacity: .9; transform: scale(.4); } 61%, 100% { opacity: 0; transform: scale(1.4); } }
+  @keyframes sDemobig { 0%, 55% { opacity: 0; transform: translateY(0) rotate(-12deg) scale(.2); }
+    60% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1.22); } 64% { transform: translateY(0) rotate(-12deg) scale(.94); }
+    68% { opacity: 1; transform: translateY(0) rotate(-12deg) scale(1); } 80%, 100% { opacity: 0; transform: translateY(-80px) rotate(-12deg) scale(1.06); } }
+  @keyframes sDemospin { to { transform: rotate(360deg); } }
+  html.still #sDemo .hb svg, html.still #sDemo .tap, html.still #sDemo .disc, html.still #sDemo .dt i, html.still #sDemo .dt svg,
+  html.rm #sDemo .hb svg, html.rm #sDemo .tap, html.rm #sDemo .disc, html.rm #sDemo .dt i, html.rm #sDemo .dt svg { animation: none; }
+  #sDemo .cap { position: absolute; left: 14px; bottom: 96px; width: 238px; font-size: 14px; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
+  #sDemo .cap .u { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+  #sDemo .cap .t b { font-weight: 700; }
+  #sDemo .cap .m { margin-top: 7px; display: flex; align-items: center; gap: 6px; }
+  #sDemo .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 78px; background: #000; display: grid; grid-template-columns: repeat(5, 1fr);
+    align-items: start; padding-top: 8px; font-size: 10.5px; font-weight: 560; color: rgba(255, 255, 255, .7); text-align: center; }
+  #sDemo .nav div { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  #sDemo .nav .on { color: #fff; }
+  #sDemo .nav svg { display: block; }
+  #sDemo .mk { width: 44px; height: 29px; margin-top: 2px; border-radius: 9px; background: #fff; color: #000; font-size: 24px; font-weight: 600; line-height: 29px;
+    box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55; }
+  #sDemo .home { position: absolute; left: 50%; bottom: 7px; width: 116px; height: 4px; margin-left: -58px; border-radius: 2px; background: #fff; }
+  #sDemo .fs { left: 528px; top: 290px; width: 1288px; padding: 40px 48px 44px; }
+  #sDemo .fs ul { list-style: none; margin-top: 18px; display: flex; flex-direction: column; gap: 20px; }
+  #sDemo .fs li { font-size: 32px; line-height: 1.32; padding-left: 30px; position: relative; }
+  #sDemo .fs li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12px; height: 12px; border-radius: 50%; background: var(--bad); }
+  #sDemo .nx { position: absolute; left: 528px; top: 790px; width: 1288px; font-size: 36px; line-height: 1.3; font-weight: 600; letter-spacing: -.01em; color: var(--accent); }
+</style>
+<h2 class="rise" data-s="1">Our running example: TikTok's Like button</h2>
+<div class="phone rise" data-s="1" data-d="1" aria-hidden="true">
+  <div class="scr">
+    <div class="vid">
+      <div class="blob" style="left:-40px;top:150px;width:220px;height:220px;background:rgba(255,72,126,.55)"></div>
+      <div class="blob" style="left:150px;top:300px;width:230px;height:250px;background:rgba(64,118,255,.5)"></div>
+      <div class="blob" style="left:40px;top:470px;width:200px;height:150px;background:rgba(255,168,72,.38)"></div>
+      <div class="blob" style="left:190px;top:90px;width:120px;height:120px;background:rgba(37,244,238,.22)"></div>
+    </div>
+    <div class="dt"><i></i><i></i><svg width="110" height="101" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>
+    <div class="prog"><i></i></div>
+    <div class="island"></div>
+    <div class="stat"><span>9:41</span>
+      <svg width="70" height="13" viewBox="0 0 70 13"><g fill="#fff"><rect x="0" y="8" width="3.4" height="4.5" rx="1"/><rect x="5" y="5.5" width="3.4" height="7" rx="1"/><rect x="10" y="3" width="3.4" height="9.5" rx="1"/><rect x="15" y="0.5" width="3.4" height="12" rx="1"/></g><path d="M25 4.6a10 10 0 0 1 14 0M27.6 7.4a6.2 6.2 0 0 1 8.8 0M30.2 10.1a2.4 2.4 0 0 1 3.6 0" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><rect x="44.5" y="1" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.2"/><rect x="46.5" y="3" width="15" height="7" rx="1.5" fill="#fff"/><rect x="67.5" y="4.5" width="1.6" height="4" rx=".8" fill="#fff" fill-opacity=".5"/></svg>
+    </div>
+    <div class="top">
+      <svg class="live" width="30" height="24" viewBox="0 0 30 24"><path d="M10 1.5l5 4 5-4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="6" width="26" height="16.5" rx="4" fill="none" stroke="#fff" stroke-width="1.8"/><text x="15" y="17.6" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">LIVE</text></svg>
+      <span>Following</span><b>For You</b>
+      <svg class="srch" width="24" height="24" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M15.8 15.8l5 5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    </div>
+    <div class="rail">
+      <div class="av"><i>+</i></div>
+      <div class="it"><div class="hb"><span class="tap"></span><svg width="38" height="36" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg></div>128.4K</div>
+      <div class="it"><svg width="36" height="34" viewBox="0 0 24 23"><path d="M12 1.8C6 1.8 1.6 5.7 1.6 10.6c0 2.8 1.4 5.2 3.7 6.8l-.8 4 4.4-2.4c1 .2 2 .3 3.1.3 6 0 10.4-3.9 10.4-8.7S18 1.8 12 1.8z" fill="#fff"/><g fill="#5a5a60"><circle cx="7.4" cy="10.6" r="1.4"/><circle cx="12" cy="10.6" r="1.4"/><circle cx="16.6" cy="10.6" r="1.4"/></g></svg>1,024</div>
+      <div class="it"><svg width="30" height="34" viewBox="0 0 20 23"><path d="M3 2.4c0-.8.6-1.4 1.4-1.4h11.2c.8 0 1.4.6 1.4 1.4v19L10 16.6l-7 4.8v-19z" fill="#fff"/></svg>8,812</div>
+      <div class="it"><svg width="34" height="32" viewBox="0 0 24 22"><path d="M13.5 1.5l9 8.6-9 8.6v-5.1C7.6 13.6 4 15.6 1.5 20.5c.6-7 4.2-12.6 12-13.7V1.5z" fill="#fff"/></svg>2,301</div>
+      <div class="disc"></div>
+    </div>
+    <div class="cap">
+      <div class="u">@cs_student</div>
+      <div class="t">Testing my Like button <b>#cs101</b> <b>#softwaretesting</b></div>
+      <div class="m"><span>♫</span><span>original sound, cs_student</span></div>
+    </div>
+    <div class="nav">
+      <div class="on"><svg width="26" height="24" viewBox="0 0 24 22"><path d="M2.5 9.6L12 1.8l9.5 7.8V20a.8.8 0 0 1-.8.8h-5.6v-6.4H8.9v6.4H3.3a.8.8 0 0 1-.8-.8V9.6z" fill="#fff"/></svg>Home</div>
+      <div><svg width="26" height="24" viewBox="0 0 26 22"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="9.5" cy="6.5" r="4"/><path d="M2 20c.6-4.2 3.6-6.6 7.5-6.6S16.4 15.8 17 20"/><path d="M16.4 2.9a4 4 0 0 1 0 7.3M19.6 13.8c2.4.9 3.8 3 4.2 6.2"/></g></svg>Friends</div>
+      <div><div class="mk">+</div></div>
+      <div><svg width="26" height="24" viewBox="0 0 24 22"><path d="M3 4.5A2.5 2.5 0 0 1 5.5 2h13A2.5 2.5 0 0 1 21 4.5v10a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4h0A2 2 0 0 1 3 15V4.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M7.5 8h9M7.5 11.5h6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>Inbox</div>
+      <div><svg width="26" height="24" viewBox="0 0 24 22"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="6.8" r="4.6"/><path d="M3.5 20.5c.8-4.6 4.2-7.2 8.5-7.2s7.7 2.6 8.5 7.2"/></g></svg>Profile</div>
+    </div>
+    <div class="home"></div>
+  </div>
+</div>
+<div class="card fs rise" data-s="1" data-d="2">
+    <div class="kicker">The feature</div>
+    <ul>
+      <li>Tap ♥ to like a video. Tap again to unlike.</li>
+      <li>Double-tap the video to like. Double-tapping again never unlikes.</li>
+      <li>The count shows total likes.</li>
+      <li>One like per user.</li>
+      <li>On a slow network, the heart turns red at once and syncs later.</li>
+    </ul>
+</div>
+<p class="nx rise" data-s="1" data-d="4">We will test this one feature all lecture: what a test is, coverage, mutants, properties, and a real bug.</p>
 </section>
 
 <!-- ============ What is a test ============ -->
@@ -558,7 +694,7 @@
   <span class="fail"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg>FAIL</span>
 </div>
 <div class="terms">
-  <div class="rise" data-s="2" data-d="2"><b>Test case:</b> one Given, When, Then.</div>
+  <div class="rise" data-s="2" data-d="2"><b>Test case:</b> preconditions, inputs, actions, and an expected result.</div>
   <div class="rise" data-s="2" data-d="3"><b>Expected result:</b> what the spec says should happen.</div>
   <div class="rise" data-s="2" data-d="4"><b>Oracle:</b> where the expected result comes from.</div>
 </div>
@@ -600,7 +736,7 @@
   </g>
   <g class="rise" data-s="1" data-d="3">
     <polygon class="ly l1" points="461.6,410 690.4,410 737.3,560 414.8,560"/>
-    <text class="lt" x="576" y="487">System (E2E)</text>
+    <text class="lt" x="576" y="487">System</text>
   </g>
   <g class="rise" data-s="1" data-d="2">
     <polygon class="ly l2" points="412.3,568 739.8,568 786.6,718 365.4,718"/>
@@ -616,10 +752,10 @@
 
 <div class="card lv rise" data-s="1" data-d="4" style="top:256px">
   <div class="h"><b>Acceptance</b>Does it solve the user's problem?</div>
-  <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg>Beta users like more videos.</div>
+  <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg>A product owner checks the acceptance criteria: a like shows on every device within 2 seconds.</div>
 </div>
 <div class="card lv rise" data-s="1" data-d="3" style="top:414px">
-  <div class="h"><b>System (E2E)</b>Does the whole app work?</div>
+  <div class="h"><b>System</b>Does the whole app work, end to end?</div>
   <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg>Like on a phone, the count updates on another device.</div>
 </div>
 <div class="card lv rise" data-s="1" data-d="2" style="top:572px">
@@ -854,64 +990,74 @@
 </div>
 </section>
 
-<!-- ============ 3. Taxonomy ============ -->
+<!-- ============ 3. Three axes ============ -->
 <section class="slide" id="s3" data-steps="4">
 <style>
   #s3 svg.tree { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
   #s3 .tl { fill: none; stroke: var(--line); stroke-width: 3; stroke-linecap: round; }
   #s3 .root {
-    position: absolute; left: 790px; top: 196px; width: 340px; height: 76px; border-radius: 38px;
+    position: absolute; left: 840px; top: 184px; width: 240px; height: 68px; border-radius: 34px;
     background: var(--ink); color: #fff; font-size: 31px; font-weight: 650; display: flex; align-items: center; justify-content: center;
   }
-  #s3 .br { position: absolute; top: 330px; width: 512px; height: 160px; padding: 28px 32px; }
-  #s3 .br h3 { font-size: 40px; font-weight: 650; letter-spacing: -.015em; display: flex; align-items: center; gap: 16px; }
-  #s3 .br p { font-size: 25px; color: var(--muted); margin-top: 10px; line-height: 1.3; }
-  #s3 .bxi { width: 34px; height: 34px; border-radius: 8px; flex: none; }
-  #s3 .leaves { position: absolute; top: 522px; width: 512px; display: flex; flex-wrap: wrap; gap: 12px; align-content: flex-start; }
+  #s3 .br { position: absolute; top: 304px; height: 136px; padding: 26px 30px; }
+  #s3 .br h3 { font-size: 38px; font-weight: 650; letter-spacing: -.015em; display: flex; align-items: center; gap: 16px; }
+  #s3 .br p { font-size: 24px; color: var(--muted); margin-top: 8px; line-height: 1.3; }
+  #s3 .br .ic { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; flex: none; }
+  #s3 .br .ic svg { display: block; }
+  #s3 .leaves { position: absolute; top: 468px; display: flex; flex-wrap: wrap; gap: 12px; align-content: flex-start; }
+  #s3 .grp { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  #s3 .grp + .grp { margin-top: 18px; }
+  #s3 .gl { flex: 0 0 100%; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+  #s3 .bxi { width: 18px; height: 18px; border-radius: 4px; flex: none; }
   #s3 .chip { font-size: 23px; padding: 9px 18px; }
   #s3[data-step="4"] .chip.focus { background: var(--accent); color: #fff; border-color: var(--accent); }
-  #s3 .legend { position: absolute; left: 104px; bottom: 40px; display: flex; align-items: center; gap: 14px; font-size: 26px; color: var(--muted); }
+  #s3 .ft { position: absolute; left: 104px; top: 700px; width: 940px; padding-top: 18px; border-top: 3px solid var(--line); font-size: 24px; line-height: 1.45; color: var(--faint); }
+  #s3 .ft b { font-weight: 650; color: var(--muted); }
+  #s3 .ft .focus { border-radius: 8px; padding: 1px 6px; margin: 0 2px; transition: background .6s var(--ease), color .6s var(--ease); }
+  #s3[data-step="4"] .ft .focus { background: var(--accent); color: #fff; }
+  #s3 .legend { position: absolute; left: 104px; top: 826px; display: flex; align-items: center; gap: 14px; font-size: 26px; color: var(--muted); }
   #s3 .legend i { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); }
 </style>
-<h2 class="rise" data-s="1">Three ways to look at a test</h2>
+<h2 class="rise" data-s="1">Three ways to classify a test</h2>
 <svg class="tree" viewBox="0 0 1920 1080" aria-hidden="true">
-  <path class="tl" data-s="1" d="M960 272 C960 310 360 290 360 328"/>
-  <path class="tl" data-s="2" d="M960 272 L960 328"/>
-  <path class="tl" data-s="3" d="M960 272 C960 310 1560 290 1560 328"/>
+  <path class="tl" data-s="1" d="M960 252 C960 284 304 272 304 302"/>
+  <path class="tl" data-s="2" d="M960 252 C960 284 804 272 804 302"/>
+  <path class="tl" data-s="3" d="M960 252 C960 284 1460 272 1460 302"/>
 </svg>
-<div class="root rise" data-s="1">Software testing</div>
+<div class="root rise" data-s="1">A test</div>
 
-<div class="card br rise" data-s="1" data-d="1" style="left:104px">
-  <h3><span class="bxi" style="background:var(--ink)"></span>Black box</h3>
-  <p>Test from the outside. You don't see the code.</p>
+<div class="card br rise" data-s="1" data-d="1" style="left:104px;width:400px">
+  <h3><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L21 8 L12 13 L3 8 Z"/><path d="M3 12.5 L12 17.5 L21 12.5"/><path d="M3 17 L12 22 L21 17"/></svg></span>Level</h3>
+  <p>How much of the system?</p>
 </div>
-<div class="leaves rise" data-s="1" data-d="2" style="left:104px">
-  <span class="chip">Functional</span><span class="chip focus">Smoke</span><span class="chip">Sanity</span>
-  <span class="chip focus">Regression</span><span class="chip">UI</span><span class="chip focus">End-to-end (E2E)</span>
-  <span class="chip">Acceptance (UAT)</span><span class="chip">Alpha / Beta</span><span class="chip">Exploratory</span>
-  <span class="chip">Usability</span><span class="chip">Boundary value</span><span class="chip">Equivalence classes</span>
-  <span class="chip focus">Differential</span>
+<div class="leaves rise" data-s="1" data-d="2" style="left:104px;width:400px">
+  <span class="chip">Unit</span><span class="chip">Integration</span><span class="chip focus">System (E2E)</span><span class="chip">Acceptance</span>
 </div>
 
-<div class="card br rise" data-s="2" data-d="1" style="left:704px">
-  <h3><span class="bxi" style="background:#a3a9b4"></span>Gray box</h3>
-  <p>Know some internals. Test through the interface.</p>
+<div class="card br rise" data-s="2" data-d="1" style="left:544px;width:520px">
+  <h3><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L19 6 V11.5 C19 16 16 19.5 12 21 C8 19.5 5 16 5 11.5 V6 Z"/><path d="M8.8 12 L11 14.2 L15.4 9.8"/></svg></span>Type</h3>
+  <p>What quality does it check?</p>
 </div>
-<div class="leaves rise" data-s="2" data-d="2" style="left:704px">
-  <span class="chip">Integration</span><span class="chip">API</span><span class="chip">Contract</span>
-  <span class="chip">Database</span><span class="chip">Security / Penetration</span><span class="chip">Performance / Load</span>
-  <span class="chip">Snapshot</span><span class="chip focus">Property-based</span>
+<div class="leaves rise" data-s="2" data-d="2" style="left:544px;width:520px">
+  <span class="chip">Functional</span><span class="chip">Performance / Load</span><span class="chip">Security</span>
+  <span class="chip">Usability</span><span class="chip">Compatibility</span><span class="chip focus">Regression</span><span class="chip focus">Smoke</span>
 </div>
 
-<div class="card br rise" data-s="3" data-d="1" style="left:1304px">
-  <h3><span class="bxi" style="background:var(--card);box-shadow:inset 0 0 0 3px var(--ink)"></span>White box</h3>
-  <p>Test from the inside. You know the code.</p>
+<div class="card br rise" data-s="3" data-d="1" style="left:1104px;width:712px">
+  <h3><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 L8 19 L19 8 L16 5 L5 16 Z"/><path d="M14 7 L17 10"/></svg></span>Technique</h3>
+  <p>How were the cases designed?</p>
 </div>
-<div class="leaves rise" data-s="3" data-d="2" style="left:1304px">
-  <span class="chip">Unit</span><span class="chip">Statement coverage</span><span class="chip">Branch coverage</span>
-  <span class="chip">Path coverage</span><span class="chip">Mutation testing</span><span class="chip">Static analysis</span>
-  <span class="chip">Data-flow</span><span class="chip focus">Code review</span>
+<div class="leaves rise" data-s="3" data-d="2" style="left:1104px;width:712px;display:block">
+  <div class="grp"><span class="gl"><span class="bxi" style="background:var(--ink)"></span>Black box</span>
+    <span class="chip">Equivalence partitioning</span><span class="chip">Boundary value</span><span class="chip">Decision table</span>
+    <span class="chip">State transition</span><span class="chip focus">Property-based</span><span class="chip focus">Differential</span></div>
+  <div class="grp"><span class="gl"><span class="bxi" style="background:var(--card);box-shadow:inset 0 0 0 2.5px var(--ink)"></span>White box</span>
+    <span class="chip">Statement coverage</span><span class="chip">Branch coverage</span><span class="chip">Path coverage</span><span class="chip">Mutation testing</span></div>
+  <div class="grp"><span class="gl">Experience-based</span>
+    <span class="chip">Exploratory</span><span class="chip">Error guessing</span></div>
 </div>
+
+<p class="ft rise" data-s="3" data-d="4"><b>Gray box:</b> black-box tests designed with some knowledge of the internals, such as the API or database. <b>Static testing</b> (<span class="focus">code review</span>, static analysis) checks code without running it.</p>
 <div class="legend" data-s="4"><i></i>What we focus on today</div>
 </section>
 
@@ -958,7 +1104,7 @@
   </g>
 </svg>
 <div class="bot">
-  <div class="rise" data-s="2" data-d="2"><span class="kicker">Equivalence classes</span><p>Three regions, so one input from each: 0, 75, 200 would do.</p></div>
+  <div class="rise" data-s="2" data-d="2"><span class="kicker">Equivalence partitioning</span><p>Three regions, so one input from each: 0, 75, 200 would do.</p></div>
   <div class="rise" data-s="2" data-d="3"><span class="kicker">Boundary values</span><p>Bugs hide at the edges: test on each edge and one step past it.</p></div>
   <div class="rise" data-s="2" data-d="4"><span class="kicker">Ones people forget</span><div class="chips"><span class="chip">Only spaces</span><span class="chip">Emoji 👍</span><span class="chip">Missing field</span></div></div>
 </div>
