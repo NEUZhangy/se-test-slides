@@ -251,25 +251,108 @@
   <div class="kicker">Part 1, about 30 min</div>
   <h3>Foundations</h3>
   <ul>
-    <li>Why we test, and what testing is for</li>
-    <li>How TikTok tested before agents</li>
-    <li>Exercise: test the Like button</li>
+    <li>Why we test, and what a test is</li>
+    <li>Test levels, and how TikTok tested</li>
     <li>Black box, white box, gray box</li>
-    <li>Coverage: what it measures, what it misses</li>
-    <li>What makes a test good, and when to stop</li>
+    <li>Coverage, and what makes a test good</li>
+    <li>When to stop, and what you can't test</li>
   </ul>
 </div>
 <div class="card pt two rise" data-s="1" data-d="2" style="left:988px">
   <div class="kicker">Part 2, about 40 min</div>
   <h3>Testing with agents</h3>
   <ul>
-    <li>Why tests matter more now</li>
-    <li>Negative prompts: making "don't" stick</li>
+    <li>What changes, and why tests matter more</li>
+    <li>The verification loop, and making "don't" stick</li>
     <li>E2E, property-based, differential</li>
-    <li>How pstack proves work is done</li>
-    <li>Exercises along the way</li>
+    <li>Trusting the result: prove it, red then green, verify independently</li>
   </ul>
 </div>
+</section>
+
+<!-- ============ Part 1 divider ============ -->
+<section class="slide" id="sP1" data-steps="1">
+<style>
+  #sP1 .big { position: absolute; left: 120px; top: 250px; font-size: 300px; font-weight: 700; letter-spacing: -.05em; color: #d3def8; line-height: 1; }
+  #sP1 .lead { position: absolute; left: 120px; top: 600px; width: 1500px; }
+  #sP1 h1 { font-size: 110px; line-height: 1; font-weight: 700; letter-spacing: -.034em; }
+  #sP1 h1 em { font-style: normal; color: var(--accent); }
+  #sP1 .tag { font-size: 40px; color: var(--muted); margin-top: 36px; }
+</style>
+<div class="big rise" data-s="1">01</div>
+<div class="lead">
+  <h1 class="rise" data-s="1" data-d="1">How <em>testing</em> works</h1>
+  <div class="tag rise" data-s="1" data-d="3">Why we test, what a test is, and how to judge one.</div>
+</div>
+</section>
+
+<!-- ============ Why we test: mistake, defect, failure ============ -->
+<section class="slide" id="sRoot" data-steps="3">
+<style>
+  #sRoot .lk { top: 236px; width: 480px; height: 330px; padding: 34px 36px; display: flex; flex-direction: column; }
+  #sRoot .lk .hd { display: flex; align-items: center; gap: 20px; }
+  #sRoot .lk .ic { width: 72px; height: 72px; border-radius: 20px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; flex: none; }
+  #sRoot .lk .ic svg { display: block; }
+  #sRoot .lk h3 { font-size: 42px; font-weight: 650; letter-spacing: -.015em; }
+  #sRoot .lk p { font-size: 28px; line-height: 1.32; margin-top: 22px; }
+  #sRoot .lk .eg { margin-top: auto; background: var(--panel); border-radius: 16px; padding: 14px 18px; font-size: 24px; line-height: 1.3; color: var(--muted); }
+  #sRoot .lk .eg code { font-family: var(--mono); font-size: 23px; color: var(--ink); background: var(--card); border: 1.5px solid #dde1e7; border-radius: 10px; padding: 3px 10px; }
+  #sRoot .lk.fail { background: var(--bad-soft); box-shadow: inset 0 0 0 2px rgba(194, 65, 45, .3); }
+  #sRoot .lk.fail .ic { background: var(--card); }
+  #sRoot .lk.fail h3 { color: var(--bad); }
+  #sRoot .lk.fail .eg { background: var(--card); color: var(--bad); font-weight: 560; }
+  #sRoot svg.ar { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #sRoot .q { position: absolute; left: 104px; top: 618px; font-size: 36px; font-weight: 650; letter-spacing: -.01em; }
+  #sRoot .why { position: absolute; left: 104px; top: 684px; width: 1712px; display: flex; gap: 40px; }
+  #sRoot .why > div { flex: 1; font-size: 28px; line-height: 1.35; padding-top: 16px; border-top: 3px solid var(--ink); }
+  #sRoot .why b { font-weight: 650; }
+  #sRoot .why span { color: var(--muted); }
+  #sRoot .def { position: absolute; left: 104px; top: 846px; width: 1712px; background: var(--accent-soft); border-radius: 0 24px 24px 0; border-left: 8px solid var(--accent);
+    padding: 26px 36px; font-size: 36px; line-height: 1.3; font-weight: 560; letter-spacing: -.008em; }
+  #sRoot .def em { font-style: normal; color: var(--accent); }
+</style>
+<h2 class="rise" data-s="1">Why do we test? Because people write bugs.</h2>
+
+<div class="card lk rise" data-s="1" data-d="1" style="left:104px">
+  <div class="hd"><div class="ic"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="7.5" r="4"/><path d="M4 21 C4.8 15.8 8 13.6 12 13.6 C16 13.6 19.2 15.8 20 21"/>
+  </svg></div><h3>Mistake</h3></div>
+  <p>A developer forgets a case.</p>
+  <div class="eg">What if the user never liked it?</div>
+</div>
+
+<div class="card lk rise" data-s="1" data-d="2" style="left:720px">
+  <div class="hd"><div class="ic"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 6 L2.5 12 L8 18"/><path d="M16 6 L21.5 12 L16 18"/><path d="M13.6 4 L10.4 20"/>
+  </svg></div><h3>Defect</h3></div>
+  <p>The mistake lands in the code.</p>
+  <div class="eg"><code>post.likes -= 1</code></div>
+</div>
+
+<div class="card lk fail rise" data-s="1" data-d="3" style="left:1336px">
+  <div class="hd"><div class="ic"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--bad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M10.5 18.6 H13.5"/><path d="M9.6 8.4 L14.4 13.2 M14.4 8.4 L9.6 13.2"/>
+  </svg></div><h3>Failure</h3></div>
+  <p>A user sees it.</p>
+  <div class="eg">The like count shows -1.</div>
+</div>
+
+<svg class="ar" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="sRoota" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+    <marker id="sRootr" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c2412d"/></marker>
+  </defs>
+  <path class="arrow" data-s="1" data-d="2" marker-end="url(#sRoota)" d="M604 401 L700 401"/>
+  <path class="arrow bad" data-s="1" data-d="3" marker-end="url(#sRootr)" d="M1220 401 L1316 401"/>
+</svg>
+
+<div class="q rise" data-s="2">Why not just read the code carefully?</div>
+<div class="why">
+  <div class="rise" data-s="2" data-d="1"><b>Reading checks what you thought of.</b> <span>Bugs live in what you didn't.</span></div>
+  <div class="rise" data-s="2" data-d="2"><b>Code changes every day.</b> <span>Yesterday's careful read is out of date.</span></div>
+</div>
+
+<div class="def rise" data-s="3"><em>Testing</em> means running the software on purpose to find failures before users do.</div>
 </section>
 
 <!-- ============ Why test ============ -->
@@ -406,6 +489,128 @@
     <text class="mx prod" x="1665" y="644">100x</text><text class="bl" x="1665" y="986">In production</text>
   </g>
 </svg>
+</section>
+
+<!-- ============ What is a test ============ -->
+<section class="slide" id="sTest" data-steps="2">
+<style>
+  #sTest .hk { position: absolute; top: 236px; }
+  #sTest .gw { position: absolute; left: 104px; top: 280px; width: 800px; display: flex; flex-direction: column; gap: 16px; }
+  #sTest .gw .row { position: relative; display: flex; align-items: center; gap: 28px; height: 96px; padding: 0 28px; }
+  #sTest .gw .tg { flex: none; width: 128px; text-align: center; font-size: 26px; font-weight: 700; letter-spacing: .02em; border-radius: 999px; padding: 10px 0;
+    background: var(--accent-soft); color: var(--accent); }
+  #sTest .gw .row span:last-child { font-size: 32px; line-height: 1.25; }
+  #sTest .cd { position: absolute; left: 984px; top: 280px; width: 832px; font-size: 26px; line-height: 1.8; padding: 32px 36px; }
+  #sTest .cmp { left: 104px; top: 664px; width: 1712px; height: 116px; padding: 0 40px; display: flex; align-items: center; gap: 40px; }
+  #sTest .cmp .v { display: flex; align-items: baseline; gap: 16px; }
+  #sTest .cmp .v .kicker { font-size: 22px; }
+  #sTest .cmp .v b { font-size: 60px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+  #sTest .cmp .v.e b { color: var(--good); }
+  #sTest .cmp .v.a b { color: var(--bad); }
+  #sTest .cmp .vs { font-size: 28px; color: var(--faint); font-weight: 500; }
+  #sTest .cmp .fail { margin-left: auto; background: var(--bad); color: #fff; font-size: 28px; font-weight: 750; letter-spacing: .14em; border-radius: 999px; padding: 12px 30px 12px 22px;
+    display: inline-flex; align-items: center; gap: 12px; }
+  #sTest .cmp .fail svg { display: block; }
+  #sTest .terms { position: absolute; left: 104px; top: 828px; width: 1712px; display: flex; gap: 40px; }
+  #sTest .terms > div { flex: 1; font-size: 27px; line-height: 1.35; padding-top: 16px; border-top: 3px solid var(--ink); color: var(--muted); }
+  #sTest .terms b { color: var(--ink); font-weight: 650; }
+</style>
+<h2 class="rise" data-s="1">What is a test?</h2>
+
+<div class="kicker hk rise" data-s="1" style="left:104px">In words</div>
+<div class="gw">
+  <div class="card row rise" data-s="1" data-d="1"><span class="tg">Given</span><span>A post nobody has liked</span></div>
+  <div class="card row rise" data-s="1" data-d="2"><span class="tg">When</span><span>User u1 taps unlike</span></div>
+  <div class="card row rise" data-s="1" data-d="3"><span class="tg">Then</span><span>The like count is 0</span></div>
+</div>
+
+<div class="kicker hk rise" data-s="1" data-d="4" style="left:984px">In code</div>
+<div class="code cd rise" data-s="1" data-d="4"><span class="k">def</span> test_unlike_without_like():
+    p = Post()                      <span class="c"># given</span>
+    tap(p, <span class="s">"unlike"</span>, <span class="s">"u1"</span>)          <span class="c"># when</span>
+    <span class="k">assert</span> p.likes == <span class="y">0</span>             <span class="c"># then</span></div>
+
+<div class="card cmp rise" data-s="2">
+  <div class="v e"><span class="kicker">Expected</span><b>0</b></div>
+  <span class="vs">vs</span>
+  <div class="v a"><span class="kicker">Actual</span><b>-1</b></div>
+  <span class="fail"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg>FAIL</span>
+</div>
+<div class="terms">
+  <div class="rise" data-s="2" data-d="2"><b>Test case:</b> one Given, When, Then.</div>
+  <div class="rise" data-s="2" data-d="3"><b>Expected result:</b> what the spec says should happen.</div>
+  <div class="rise" data-s="2" data-d="4"><b>Oracle:</b> where the expected result comes from.</div>
+</div>
+</section>
+
+<!-- ============ Test levels ============ -->
+<section class="slide" id="sLevels" data-steps="2">
+<style>
+  #sLevels svg.py { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+  #sLevels .ly { stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+  #sLevels .ly.l0 { fill: var(--card); }
+  #sLevels .ly.l1 { fill: var(--accent-soft); }
+  #sLevels .ly.l2 { fill: var(--accent-mid); }
+  #sLevels .ly.l3 { fill: var(--accent); }
+  #sLevels .lt { font-size: 27px; font-weight: 650; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+  #sLevels .lt.w { fill: #fff; }
+  #sLevels .dir { position: absolute; left: 148px; width: 200px; font-size: 22px; line-height: 1.3; color: var(--muted); font-weight: 520; }
+  #sLevels .lv { left: 904px; width: 912px; height: 142px; padding: 0 36px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+  #sLevels .lv .h { font-size: 30px; line-height: 1.2; }
+  #sLevels .lv .h b { font-weight: 650; color: var(--accent); margin-right: 14px; }
+  #sLevels .lv .eg { display: flex; align-items: center; gap: 12px; font-size: 25px; line-height: 1.3; color: var(--muted); }
+  #sLevels .lv .eg svg { display: block; flex: none; }
+  #sLevels .ft { position: absolute; left: 104px; top: 922px; font-size: 28px; color: var(--muted); }
+  #sLevels .ft b { color: var(--ink); font-weight: 600; }
+</style>
+<h2 class="rise" data-s="1">Test levels: from one function to the whole product</h2>
+
+<svg class="py" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="sLevelsa" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+  </defs>
+  <g data-s="1" data-d="1">
+    <path class="arrow" marker-end="url(#sLevelsa)" d="M124 552 L124 258"/>
+    <path class="arrow" marker-end="url(#sLevelsa)" d="M124 576 L124 870"/>
+  </g>
+  <g class="rise" data-s="1" data-d="4">
+    <polygon class="ly l0" points="511,252 641,252 687.9,402 464.1,402"/>
+    <text class="lt" x="576" y="330">Acceptance</text>
+  </g>
+  <g class="rise" data-s="1" data-d="3">
+    <polygon class="ly l1" points="461.6,410 690.4,410 737.3,560 414.8,560"/>
+    <text class="lt" x="576" y="487">System (E2E)</text>
+  </g>
+  <g class="rise" data-s="1" data-d="2">
+    <polygon class="ly l2" points="412.3,568 739.8,568 786.6,718 365.4,718"/>
+    <text class="lt" x="576" y="645">Integration</text>
+  </g>
+  <g class="rise" data-s="1" data-d="1">
+    <polygon class="ly l3" points="362.9,726 789.1,726 836,876 316,876"/>
+    <text class="lt w" x="576" y="803">Unit</text>
+  </g>
+</svg>
+<div class="dir rise" data-s="1" data-d="1" style="top:252px">fewer tests,<br>slower,<br>closer to users</div>
+<div class="dir rise" data-s="1" data-d="1" style="top:790px">more tests,<br>faster,<br>cheaper</div>
+
+<div class="card lv rise" data-s="1" data-d="4" style="top:256px">
+  <div class="h"><b>Acceptance</b>Does it solve the user's problem?</div>
+  <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg>Beta users like more videos.</div>
+</div>
+<div class="card lv rise" data-s="1" data-d="3" style="top:414px">
+  <div class="h"><b>System (E2E)</b>Does the whole app work?</div>
+  <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg>Like on a phone, the count updates on another device.</div>
+</div>
+<div class="card lv rise" data-s="1" data-d="2" style="top:572px">
+  <div class="h"><b>Integration</b>Do the parts work together?</div>
+  <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg>The like API writes to the database and cache.</div>
+</div>
+<div class="card lv rise" data-s="1" data-d="1" style="top:730px">
+  <div class="h"><b>Unit</b>Does one function work?</div>
+  <div class="eg"><svg width="24" height="22" viewBox="0 0 24 22"><path d="M12 21.2S1.5 14.6 1.5 7.4C1.5 4 4.1 1.4 7.3 1.4c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.6 5.8 6 0 7.2-10.5 13.8-10.5 13.8z" fill="#fe2c55"/></svg><span><code style="font-family:var(--mono)">tap()</code> adds 1, never goes below 0.</span></div>
+</div>
+
+<p class="ft rise" data-s="2">The <b>V-model</b> on the title slide pairs each level with the design step it checks.</p>
 </section>
 
 <!-- ============ 2. Before agents: TikTok ============ -->
@@ -878,6 +1083,50 @@ p.likes  <span class="r"># -1</span></div>
 <div class="tools rise" data-s="2" data-d="5">Tools: mutmut (Python), Stryker (JS/TS), PIT (Java)</div>
 </section>
 
+<!-- ============ 17. Behavior, not implementation ============ -->
+<section class="slide" id="s17" data-steps="2">
+<style>
+  #s17 .ex { left: 104px; width: 760px; height: 284px; padding: 34px 40px; }
+  #s17 .ex .kicker { color: var(--accent); font-size: 20px; }
+  #s17 .ex h3 { font-size: 36px; font-weight: 650; margin-top: 10px; letter-spacing: -.01em; }
+  #s17 .ex .ar { font-size: 30px; margin-top: 14px; font-weight: 560; }
+  #s17 .ex .ar b { color: var(--good); }
+  #s17 .ex p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.35; }
+  #s17 .ex p b { color: var(--bad); font-weight: 600; }
+  #s17 .cl { position: absolute; left: 924px; width: 892px; }
+  #s17 .cl .kicker { display: inline-flex; align-items: center; gap: 10px; }
+  #s17 .cl .code { margin-top: 12px; font-size: 23px; padding: 26px 32px; }
+  #s17 .ft { position: absolute; left: 104px; top: 930px; font-size: 29px; color: var(--muted); }
+  #s17 .ft b { color: var(--ink); font-weight: 600; }
+</style>
+<div class="eyebrow rise" data-s="1">pstack</div>
+<h2 class="rise" data-s="1">Test behavior, not implementation</h2>
+<div class="card ex rise" data-s="1" data-d="1" style="top:300px">
+  <div class="kicker">Check 1</div><h3>Break the behavior</h3>
+  <div class="ar">→ the test must <b style="color:var(--bad)">fail</b></div>
+  <p><b>Still passes?</b> It proves nothing. Usually a loose assertion, or an expected value computed by the code under test.</p>
+</div>
+<div class="card ex rise" data-s="1" data-d="2" style="top:608px">
+  <div class="kicker">Check 2</div><h3>Change the internals, keep the results</h3>
+  <div class="ar">→ the test must <b>pass</b></div>
+  <p><b>Fails?</b> It's pinned to the implementation, and it will break on every refactor.</p>
+</div>
+<div class="cl rise" data-s="2" style="top:300px">
+  <span class="kicker" style="color:var(--bad)"><span class="ico no solid" style="width:28px;height:28px"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></span>Pinned to implementation</span>
+  <div class="code"><span class="k">def</span> test_post_video():
+    db = Mock()
+    post_video(db, clip)
+    db.insert.assert_called_once()</div>
+</div>
+<div class="cl rise" data-s="2" data-d="2" style="top:612px">
+  <span class="kicker" style="color:var(--good)"><span class="ico ok" style="width:28px;height:28px"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Tests what a user sees</span>
+  <div class="code"><span class="k">def</span> test_followers_see_new_video():
+    post_video(app, clip, by=alice)
+    <span class="k">assert</span> clip.id <span class="k">in</span> feed(app, for_user=bob)</div>
+</div>
+<p class="ft rise" data-s="2" data-d="4"><b>Take expected values from the requirement,</b> never from the code you're testing.</p>
+</section>
+
 <!-- ============ When is testing complete ============ -->
 <section class="slide" id="sDone" data-steps="2">
 <style>
@@ -1031,6 +1280,51 @@ p.likes  <span class="r"># -1</span></div>
 </div>
 </section>
 
+<!-- ============ 7. What changes ============ -->
+<section class="slide" id="s7" data-steps="1">
+<style>
+  #s7 .cmp { position: relative; margin-top: 52px; display: grid; grid-template-columns: 250px 1fr 1fr; column-gap: 28px; }
+  #s7 .colbg { grid-column: 3; grid-row: 1 / span 6; background: var(--accent-soft); border-radius: 28px; box-shadow: inset 0 0 0 1.5px rgba(44, 89, 214, .18); }
+  #s7 .cell { position: relative; z-index: 1; padding: 24px 36px; font-size: 34px; line-height: 1.28; display: flex; align-items: center; }
+  #s7 .hd { font-size: 36px; font-weight: 650; letter-spacing: -.01em; padding-top: 28px; padding-bottom: 18px; }
+  #s7 .hd.ag { color: var(--accent); }
+  #s7 .k { grid-column: 1; font-size: 23px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding-left: 0; }
+  #s7 .b { grid-column: 2; color: var(--muted); }
+  #s7 .a { grid-column: 3; color: var(--ink); font-weight: 560; }
+  #s7 .r { border-top: 1.5px solid #e1e4e9; }
+  #s7 .a.r { border-top-color: rgba(44, 89, 214, .16); }
+  #s7 .outro { margin-top: 48px; font-size: 38px; line-height: 1.3; font-weight: 560; letter-spacing: -.01em; }
+</style>
+<h2 class="rise" data-s="1">What changes when agents write the code</h2>
+<div class="cmp">
+  <div class="colbg" data-s="1" data-d="1"></div>
+  <div class="cell hd" style="grid-row:1;grid-column:1"></div>
+  <div class="cell hd rise" style="grid-row:1;grid-column:2" data-s="1" data-d="1">Before agents</div>
+  <div class="cell hd ag rise" style="grid-row:1;grid-column:3" data-s="1" data-d="1">With agents</div>
+
+  <div class="cell k r rise" style="grid-row:2" data-s="1" data-d="2">Writes code</div>
+  <div class="cell b r rise" style="grid-row:2" data-s="1" data-d="2">Developers</div>
+  <div class="cell a r rise" style="grid-row:2" data-s="1" data-d="2">Agents, many at once</div>
+
+  <div class="cell k r rise" style="grid-row:3" data-s="1" data-d="3">Tests it</div>
+  <div class="cell b r rise" style="grid-row:3" data-s="1" data-d="3">A QA team, after the build</div>
+  <div class="cell a r rise" style="grid-row:3" data-s="1" data-d="3">The agent, before every commit</div>
+
+  <div class="cell k r rise" style="grid-row:4" data-s="1" data-d="4">Feedback</div>
+  <div class="cell b r rise" style="grid-row:4" data-s="1" data-d="4">Days</div>
+  <div class="cell a r rise" style="grid-row:4" data-s="1" data-d="4">Seconds to minutes</div>
+
+  <div class="cell k r rise" style="grid-row:5" data-s="1" data-d="5">Says "wrong"</div>
+  <div class="cell b r rise" style="grid-row:5" data-s="1" data-d="5">A person</div>
+  <div class="cell a r rise" style="grid-row:5" data-s="1" data-d="5">A check that gives the same answer every run</div>
+
+  <div class="cell k r rise" style="grid-row:6" data-s="1" data-d="5">Your job</div>
+  <div class="cell b r rise" style="grid-row:6" data-s="1" data-d="5">Write code, then test it</div>
+  <div class="cell a r rise" style="grid-row:6" data-s="1" data-d="5">Define "done", then read the evidence</div>
+</div>
+<p class="outro rise" data-s="1" data-d="6">Testing moves from the end of the pipeline into the agent's inner loop.</p>
+</section>
+
 <!-- ============ 4. Why testing matters more ============ -->
 <section class="slide" id="s4" data-steps="3">
 <style>
@@ -1100,6 +1394,77 @@ p.likes  <span class="r"># -1</span></div>
   <div class="cap">Same code, same verdict. The agent can't talk its way past it.</div>
 </div>
 <div class="outro rise" data-s="3" data-d="6">A test turns "I think it works" into a fact.</div>
+</section>
+
+<!-- ============ 8. Verification loop ============ -->
+<section class="slide" id="s8" data-steps="2">
+<style>
+  #s8 svg.lp { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #s8 .sc { left: 1210px; top: 236px; width: 606px; height: 690px; padding: 40px 44px; }
+  #s8 .sc h3 { font-size: 38px; font-weight: 650; letter-spacing: -.015em; }
+  #s8 .row { margin-top: 36px; }
+  #s8 .row .kicker { font-size: 20px; }
+  #s8 .row .ln { font-size: 28px; font-weight: 560; margin-top: 8px; }
+  #s8 .ags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; width: 470px; }
+  #s8 .ags i { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); position: relative; }
+  #s8 .ags i::after { content: ""; position: absolute; left: 10px; top: 10px; width: 12px; height: 12px; border-radius: 3px; background: #fff; }
+  #s8 .ags.few i { background: #a3a9b4; }
+  #s8 .res { font-size: 26px; color: var(--muted); margin-top: 14px; }
+  #s8 .res b { color: var(--accent); }
+  #s8 .sc .foot { position: absolute; left: 44px; right: 44px; bottom: 34px; font-size: 19px; color: var(--faint); line-height: 1.35; }
+</style>
+<h2 class="rise" data-s="1">The verification loop</h2>
+<svg class="lp flows" viewBox="0 0 1920 1080" aria-hidden="true">
+  <defs>
+    <marker id="s8a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
+    <marker id="s8b" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#2c59d6"/></marker>
+    <marker id="s8r" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c2412d"/></marker>
+    <marker id="s8g" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#1f8a5b"/></marker>
+  </defs>
+  <g data-s="1">
+    <rect class="bx" x="104" y="250" width="320" height="96" rx="20"/><text class="t b" x="264" y="298">You define "done"</text>
+    <rect class="bx key" x="560" y="250" width="380" height="96" rx="20"/><text class="t b" x="750" y="298">Agent changes code</text>
+    <rect class="bx" x="560" y="510" width="380" height="160" rx="22"/>
+    <text class="t b" x="750" y="556">Checks run</text>
+    <text class="cap" x="750" y="600">tests, build, lint, E2E</text>
+    <text class="cap" x="750" y="636">same input, same verdict</text>
+  </g>
+  <g data-s="1" data-d="2">
+    <path class="arrow fl" marker-end="url(#s8a)" d="M426 298 L554 298"/>
+    <path class="arrow acc fl" marker-end="url(#s8b)" d="M750 348 L750 504"/>
+    <path class="arrow bad fl" marker-end="url(#s8r)" d="M942 590 C1090 590 1090 298 946 298"/>
+    <text class="lbl bad" x="1080" y="420">FAIL</text>
+    <text class="lbl mut" x="1080" y="456" style="font-weight:500">exact error</text>
+    <text class="lbl mut" x="1080" y="488" style="font-weight:500">goes back</text>
+    <path class="arrow dash fl ghost" marker-end="url(#s8a)" d="M556 620 C380 620 264 560 264 352"/>
+    <text class="lbl mut" x="296" y="430" style="font-weight:500">after 3 failed</text>
+    <text class="lbl mut" x="296" y="464" style="font-weight:500">rounds, ask you</text>
+  </g>
+  <g data-s="2">
+    <rect class="bx good" x="560" y="826" width="380" height="96" rx="20"/><text class="t b" x="750" y="874">Evidence</text>
+    <rect class="bx" x="104" y="826" width="320" height="96" rx="20"/><text class="t b" x="264" y="874">You read it</text>
+    <path class="arrow rep fl" marker-end="url(#s8g)" d="M750 672 L750 820"/>
+    <text class="lbl rep" x="772" y="746">PASS</text>
+    <path class="arrow fl" marker-end="url(#s8a)" d="M558 874 L430 874"/>
+    <text class="cap" x="750" y="958">screenshots, logs, red then green</text>
+  </g>
+</svg>
+<div class="card sc rise" data-s="2" data-d="2">
+  <h3>Why it scales</h3>
+  <div class="row"><div class="kicker">You check every diff</div>
+    <div class="ags few"><i></i><i></i></div>
+    <div class="res">1 or 2 agents at a time</div></div>
+  <div class="row"><div class="kicker">The loop checks, you read evidence</div>
+    <div class="ags"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="res"><b>Dozens</b> in parallel</div></div>
+  <div class="foot">The Claude Code team says about 90% of its code is written and reviewed by Claude. Osmani, claude.dev, Nov 2026.</div>
+</div>
+<script>
+  (window.deckHooks = window.deckHooks || {}).s8 = {
+    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
+    tick: function (t) { this.flow(t, true); }
+  };
+</script>
 </section>
 
 <!-- ============ 5. Negative prompts ============ -->
@@ -1228,122 +1593,6 @@ p.likes  <span class="r"># -1</span></div>
   <div class="q">What blocks it every time?</div>
   <div class="ansbox" data-s="2" data-d="3"><span class="kicker">One answer</span>CI fails if any existing migration file changed. New ones only.</div>
 </div>
-</section>
-
-<!-- ============ 7. What changes ============ -->
-<section class="slide" id="s7" data-steps="1">
-<style>
-  #s7 .cmp { position: relative; margin-top: 52px; display: grid; grid-template-columns: 250px 1fr 1fr; column-gap: 28px; }
-  #s7 .colbg { grid-column: 3; grid-row: 1 / span 6; background: var(--accent-soft); border-radius: 28px; box-shadow: inset 0 0 0 1.5px rgba(44, 89, 214, .18); }
-  #s7 .cell { position: relative; z-index: 1; padding: 24px 36px; font-size: 34px; line-height: 1.28; display: flex; align-items: center; }
-  #s7 .hd { font-size: 36px; font-weight: 650; letter-spacing: -.01em; padding-top: 28px; padding-bottom: 18px; }
-  #s7 .hd.ag { color: var(--accent); }
-  #s7 .k { grid-column: 1; font-size: 23px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); padding-left: 0; }
-  #s7 .b { grid-column: 2; color: var(--muted); }
-  #s7 .a { grid-column: 3; color: var(--ink); font-weight: 560; }
-  #s7 .r { border-top: 1.5px solid #e1e4e9; }
-  #s7 .a.r { border-top-color: rgba(44, 89, 214, .16); }
-  #s7 .outro { margin-top: 48px; font-size: 38px; line-height: 1.3; font-weight: 560; letter-spacing: -.01em; }
-</style>
-<h2 class="rise" data-s="1">What changes when agents write the code</h2>
-<div class="cmp">
-  <div class="colbg" data-s="1" data-d="1"></div>
-  <div class="cell hd" style="grid-row:1;grid-column:1"></div>
-  <div class="cell hd rise" style="grid-row:1;grid-column:2" data-s="1" data-d="1">Before agents</div>
-  <div class="cell hd ag rise" style="grid-row:1;grid-column:3" data-s="1" data-d="1">With agents</div>
-
-  <div class="cell k r rise" style="grid-row:2" data-s="1" data-d="2">Writes code</div>
-  <div class="cell b r rise" style="grid-row:2" data-s="1" data-d="2">Developers</div>
-  <div class="cell a r rise" style="grid-row:2" data-s="1" data-d="2">Agents, many at once</div>
-
-  <div class="cell k r rise" style="grid-row:3" data-s="1" data-d="3">Tests it</div>
-  <div class="cell b r rise" style="grid-row:3" data-s="1" data-d="3">A QA team, after the build</div>
-  <div class="cell a r rise" style="grid-row:3" data-s="1" data-d="3">The agent, before every commit</div>
-
-  <div class="cell k r rise" style="grid-row:4" data-s="1" data-d="4">Feedback</div>
-  <div class="cell b r rise" style="grid-row:4" data-s="1" data-d="4">Days</div>
-  <div class="cell a r rise" style="grid-row:4" data-s="1" data-d="4">Seconds to minutes</div>
-
-  <div class="cell k r rise" style="grid-row:5" data-s="1" data-d="5">Says "wrong"</div>
-  <div class="cell b r rise" style="grid-row:5" data-s="1" data-d="5">A person</div>
-  <div class="cell a r rise" style="grid-row:5" data-s="1" data-d="5">A check that gives the same answer every run</div>
-
-  <div class="cell k r rise" style="grid-row:6" data-s="1" data-d="5">Your job</div>
-  <div class="cell b r rise" style="grid-row:6" data-s="1" data-d="5">Write code, then test it</div>
-  <div class="cell a r rise" style="grid-row:6" data-s="1" data-d="5">Define "done", then read the evidence</div>
-</div>
-<p class="outro rise" data-s="1" data-d="6">Testing moves from the end of the pipeline into the agent's inner loop.</p>
-</section>
-
-<!-- ============ 8. Verification loop ============ -->
-<section class="slide" id="s8" data-steps="2">
-<style>
-  #s8 svg.lp { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
-  #s8 .sc { left: 1210px; top: 236px; width: 606px; height: 690px; padding: 40px 44px; }
-  #s8 .sc h3 { font-size: 38px; font-weight: 650; letter-spacing: -.015em; }
-  #s8 .row { margin-top: 36px; }
-  #s8 .row .kicker { font-size: 20px; }
-  #s8 .row .ln { font-size: 28px; font-weight: 560; margin-top: 8px; }
-  #s8 .ags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; width: 470px; }
-  #s8 .ags i { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); position: relative; }
-  #s8 .ags i::after { content: ""; position: absolute; left: 10px; top: 10px; width: 12px; height: 12px; border-radius: 3px; background: #fff; }
-  #s8 .ags.few i { background: #a3a9b4; }
-  #s8 .res { font-size: 26px; color: var(--muted); margin-top: 14px; }
-  #s8 .res b { color: var(--accent); }
-  #s8 .sc .foot { position: absolute; left: 44px; right: 44px; bottom: 34px; font-size: 19px; color: var(--faint); line-height: 1.35; }
-</style>
-<h2 class="rise" data-s="1">The verification loop</h2>
-<svg class="lp flows" viewBox="0 0 1920 1080" aria-hidden="true">
-  <defs>
-    <marker id="s8a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#9aa1ad"/></marker>
-    <marker id="s8b" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#2c59d6"/></marker>
-    <marker id="s8r" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#c2412d"/></marker>
-    <marker id="s8g" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#1f8a5b"/></marker>
-  </defs>
-  <g data-s="1">
-    <rect class="bx" x="104" y="250" width="320" height="96" rx="20"/><text class="t b" x="264" y="298">You define "done"</text>
-    <rect class="bx key" x="560" y="250" width="380" height="96" rx="20"/><text class="t b" x="750" y="298">Agent changes code</text>
-    <rect class="bx" x="560" y="510" width="380" height="160" rx="22"/>
-    <text class="t b" x="750" y="556">Checks run</text>
-    <text class="cap" x="750" y="600">tests, build, lint, E2E</text>
-    <text class="cap" x="750" y="636">same input, same verdict</text>
-  </g>
-  <g data-s="1" data-d="2">
-    <path class="arrow fl" marker-end="url(#s8a)" d="M426 298 L554 298"/>
-    <path class="arrow acc fl" marker-end="url(#s8b)" d="M750 348 L750 504"/>
-    <path class="arrow bad fl" marker-end="url(#s8r)" d="M942 590 C1090 590 1090 298 946 298"/>
-    <text class="lbl bad" x="1080" y="420">FAIL</text>
-    <text class="lbl mut" x="1080" y="456" style="font-weight:500">exact error</text>
-    <text class="lbl mut" x="1080" y="488" style="font-weight:500">goes back</text>
-    <path class="arrow dash fl ghost" marker-end="url(#s8a)" d="M556 620 C380 620 264 560 264 352"/>
-    <text class="lbl mut" x="296" y="430" style="font-weight:500">after 3 failed</text>
-    <text class="lbl mut" x="296" y="464" style="font-weight:500">rounds, ask you</text>
-  </g>
-  <g data-s="2">
-    <rect class="bx good" x="560" y="826" width="380" height="96" rx="20"/><text class="t b" x="750" y="874">Evidence</text>
-    <rect class="bx" x="104" y="826" width="320" height="96" rx="20"/><text class="t b" x="264" y="874">You read it</text>
-    <path class="arrow rep fl" marker-end="url(#s8g)" d="M750 672 L750 820"/>
-    <text class="lbl rep" x="772" y="746">PASS</text>
-    <path class="arrow fl" marker-end="url(#s8a)" d="M558 874 L430 874"/>
-    <text class="cap" x="750" y="958">screenshots, logs, red then green</text>
-  </g>
-</svg>
-<div class="card sc rise" data-s="2" data-d="2">
-  <h3>Why it scales</h3>
-  <div class="row"><div class="kicker">You check every diff</div>
-    <div class="ags few"><i></i><i></i></div>
-    <div class="res">1 or 2 agents at a time</div></div>
-  <div class="row"><div class="kicker">The loop checks, you read evidence</div>
-    <div class="ags"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="res"><b>Dozens</b> in parallel</div></div>
-  <div class="foot">The Claude Code team says about 90% of its code is written and reviewed by Claude. Osmani, claude.dev, Nov 2026.</div>
-</div>
-<script>
-  (window.deckHooks = window.deckHooks || {}).s8 = {
-    init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
-    tick: function (t) { this.flow(t, true); }
-  };
-</script>
 </section>
 
 <!-- ============ 9. Three tests ============ -->
@@ -1632,24 +1881,6 @@ p.likes  <span class="r"># -1</span></div>
 <div class="src" style="left:1040px;max-width:780px">Quote and ladder: Osmani, claude.dev, Nov 2026.</div>
 </section>
 
-<!-- ============ 14. Keep the verifier honest ============ -->
-<section class="slide" id="s14" data-steps="1">
-<style>
-  #s14 .hc { width: 544px; height: 316px; padding: 34px 38px; }
-  #s14 .hc .kicker { color: var(--accent); font-size: 20px; }
-  #s14 .hc h3 { font-size: 34px; font-weight: 650; letter-spacing: -.01em; line-height: 1.15; margin-top: 12px; }
-  #s14 .hc p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.38; }
-</style>
-<h2 class="rise" data-s="1">Keep the verifier honest</h2>
-<div class="card hc rise" data-s="1" data-d="1" style="left:104px;top:226px"><div class="kicker">Out of reach</div><h3>A change can't edit its own checks</h3><p>Review rules are read from the main branch, never from the PR.</p></div>
-<div class="card hc rise" data-s="1" data-d="2" style="left:688px;top:226px"><div class="kicker">Fresh</div><h3>Review the commit you ship</h3><p>A pass on an older commit means nothing.</p></div>
-<div class="card hc rise" data-s="1" data-d="3" style="left:1272px;top:226px"><div class="kicker">No retry-until-green</div><h3>Flaky tests get fixed or deleted</h3><p>No sleeps, no skips. Find the cause, or delete it and write down why.</p></div>
-<div class="card hc rise" data-s="1" data-d="4" style="left:104px;top:578px"><div class="kicker">Escalate</div><h3>Three strikes, then a human</h3><p>After three failed rounds the agent stops and asks.</p></div>
-<div class="card hc rise" data-s="1" data-d="5" style="left:688px;top:578px"><div class="kicker">Roll out slowly</div><h3>Off → observe → enforce</h3><p>A new gate first only logs what it would block, to catch false alarms.</p></div>
-<div class="card hc rise" data-s="1" data-d="6" style="left:1272px;top:578px"><div class="kicker">Learn</div><h3>Test the checks too</h3><p>Score them on past bugs that got reverted. Every miss becomes a new rule.</p></div>
-<div class="src">Source: Osmani, "How the Claude Code team thinks about verification," claude.dev, Nov 2026.</div>
-</section>
-
 <!-- ============ 15. pstack: prove it works ============ -->
 <section class="slide" id="s15" data-steps="2">
 <style>
@@ -1751,50 +1982,6 @@ p.likes  <span class="r"># -1</span></div>
 </div>
 </section>
 
-<!-- ============ 17. Behavior, not implementation ============ -->
-<section class="slide" id="s17" data-steps="2">
-<style>
-  #s17 .ex { left: 104px; width: 760px; height: 284px; padding: 34px 40px; }
-  #s17 .ex .kicker { color: var(--accent); font-size: 20px; }
-  #s17 .ex h3 { font-size: 36px; font-weight: 650; margin-top: 10px; letter-spacing: -.01em; }
-  #s17 .ex .ar { font-size: 30px; margin-top: 14px; font-weight: 560; }
-  #s17 .ex .ar b { color: var(--good); }
-  #s17 .ex p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.35; }
-  #s17 .ex p b { color: var(--bad); font-weight: 600; }
-  #s17 .cl { position: absolute; left: 924px; width: 892px; }
-  #s17 .cl .kicker { display: inline-flex; align-items: center; gap: 10px; }
-  #s17 .cl .code { margin-top: 12px; font-size: 23px; padding: 26px 32px; }
-  #s17 .ft { position: absolute; left: 104px; top: 930px; font-size: 29px; color: var(--muted); }
-  #s17 .ft b { color: var(--ink); font-weight: 600; }
-</style>
-<div class="eyebrow rise" data-s="1">pstack</div>
-<h2 class="rise" data-s="1">Test behavior, not implementation</h2>
-<div class="card ex rise" data-s="1" data-d="1" style="top:300px">
-  <div class="kicker">Check 1</div><h3>Break the behavior</h3>
-  <div class="ar">→ the test must <b style="color:var(--bad)">fail</b></div>
-  <p><b>Still passes?</b> It proves nothing. Usually a loose assertion, or an expected value computed by the code under test.</p>
-</div>
-<div class="card ex rise" data-s="1" data-d="2" style="top:608px">
-  <div class="kicker">Check 2</div><h3>Change the internals, keep the results</h3>
-  <div class="ar">→ the test must <b>pass</b></div>
-  <p><b>Fails?</b> It's pinned to the implementation, and it will break on every refactor.</p>
-</div>
-<div class="cl rise" data-s="2" style="top:300px">
-  <span class="kicker" style="color:var(--bad)"><span class="ico no solid" style="width:28px;height:28px"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></span>Pinned to implementation</span>
-  <div class="code"><span class="k">def</span> test_post_video():
-    db = Mock()
-    post_video(db, clip)
-    db.insert.assert_called_once()</div>
-</div>
-<div class="cl rise" data-s="2" data-d="2" style="top:612px">
-  <span class="kicker" style="color:var(--good)"><span class="ico ok" style="width:28px;height:28px"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Tests what a user sees</span>
-  <div class="code"><span class="k">def</span> test_followers_see_new_video():
-    post_video(app, clip, by=alice)
-    <span class="k">assert</span> clip.id <span class="k">in</span> feed(app, for_user=bob)</div>
-</div>
-<p class="ft rise" data-s="2" data-d="4"><b>Take expected values from the requirement,</b> never from the code you're testing.</p>
-</section>
-
 <!-- ============ 18. Independent verifier ============ -->
 <section class="slide" id="s18" data-steps="2">
 <style>
@@ -1855,6 +2042,24 @@ p.likes  <span class="r"># -1</span></div>
     tick: function (t) { this.flow(t, true); }
   };
 </script>
+</section>
+
+<!-- ============ 14. Keep the verifier honest ============ -->
+<section class="slide" id="s14" data-steps="1">
+<style>
+  #s14 .hc { width: 544px; height: 316px; padding: 34px 38px; }
+  #s14 .hc .kicker { color: var(--accent); font-size: 20px; }
+  #s14 .hc h3 { font-size: 34px; font-weight: 650; letter-spacing: -.01em; line-height: 1.15; margin-top: 12px; }
+  #s14 .hc p { font-size: 25px; color: var(--muted); margin-top: 14px; line-height: 1.38; }
+</style>
+<h2 class="rise" data-s="1">Keep the verifier honest</h2>
+<div class="card hc rise" data-s="1" data-d="1" style="left:104px;top:226px"><div class="kicker">Out of reach</div><h3>A change can't edit its own checks</h3><p>Review rules are read from the main branch, never from the PR.</p></div>
+<div class="card hc rise" data-s="1" data-d="2" style="left:688px;top:226px"><div class="kicker">Fresh</div><h3>Review the commit you ship</h3><p>A pass on an older commit means nothing.</p></div>
+<div class="card hc rise" data-s="1" data-d="3" style="left:1272px;top:226px"><div class="kicker">No retry-until-green</div><h3>Flaky tests get fixed or deleted</h3><p>No sleeps, no skips. Find the cause, or delete it and write down why.</p></div>
+<div class="card hc rise" data-s="1" data-d="4" style="left:104px;top:578px"><div class="kicker">Escalate</div><h3>Three strikes, then a human</h3><p>After three failed rounds the agent stops and asks.</p></div>
+<div class="card hc rise" data-s="1" data-d="5" style="left:688px;top:578px"><div class="kicker">Roll out slowly</div><h3>Off → observe → enforce</h3><p>A new gate first only logs what it would block, to catch false alarms.</p></div>
+<div class="card hc rise" data-s="1" data-d="6" style="left:1272px;top:578px"><div class="kicker">Learn</div><h3>Test the checks too</h3><p>Score them on past bugs that got reverted. Every miss becomes a new rule.</p></div>
+<div class="src">Source: Osmani, "How the Claude Code team thinks about verification," claude.dev, Nov 2026.</div>
 </section>
 
 <!-- ============ 19. Back to TikTok ============ -->
