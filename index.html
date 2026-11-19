@@ -1588,18 +1588,18 @@ p.likes  <span class="r"># -1</span></div>
     <text class="cap" x="1098" y="562">numbers made up</text>
   </g>
 </svg>
-<p class="gr rise" data-s="2" data-d="2"><b>Guardrails:</b> "not interested" taps, reports, uninstalls</p>
+<p class="gr rise" data-s="2" data-d="2"><b>Guardrail metrics</b> (must not get worse, even if watch time goes up): "Not interested" taps, reports, uninstalls</p>
 <div class="card rl rise" data-s="2" data-d="2">
   <h3>Rules for a fair test</h3>
   <ul>
     <li><b>Random split,</b> so the groups are alike.</li>
     <li><b>Pick the metric before you start.</b></li>
-    <li><b>Guardrails too:</b> crashes, reports, latency.</li>
+    <li><b>Watch guardrails too:</b> crashes, reports, latency.</li>
     <li><b>Run long enough</b> for the difference to be real, not noise.</li>
     <li><b>Ramp up:</b> 1% → 10% → 50% → 100%.</li>
   </ul>
 </div>
-<div class="card dq rise" data-s="3"><span class="kicker">Discuss, 2 min</span><p>B raises watch time, but "not interested" taps double. Ship B?</p></div>
+<div class="card dq rise" data-s="3"><span class="kicker">Discuss, 2 min</span><p><b>Goal metric:</b> watch time +3.1% <span style="color:var(--good)">✓</span><br><b>Guardrail:</b> "Not interested" taps ×2 <span style="color:var(--bad)">✗</span><br>Ship B?</p></div>
 <script>
   (window.deckHooks = window.deckHooks || {}).sAB = {
     init: function (el) { this.flow = deck.Flow(el.querySelector('svg.flows')); },
